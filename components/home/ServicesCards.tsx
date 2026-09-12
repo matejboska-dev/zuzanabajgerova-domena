@@ -11,10 +11,13 @@ export default function ServicesCards({ hrefServices }: { hrefServices: string }
             href={`${hrefServices}${service.anchor}`}
             className="service-card"
           >
-            <div
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={service.image}
+              alt=""
               className="service-card__bg"
-              style={{ backgroundImage: `url("${service.image}")` }}
-              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
             />
             <div className="service-card__overlay" aria-hidden="true" />
 

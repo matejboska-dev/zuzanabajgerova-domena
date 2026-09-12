@@ -222,25 +222,25 @@ export const SERVICES_CARDS: ServiceCardItem[] = [
   {
     title: 'Chci koupit',
     lead: 'Provedu Vás celým nákupem, prověřím smlouvy a pohlídám každý krok.',
-    image: '/services/koupit.jpg',
+    image: '/services/koupit.webp',
     anchor: '#servis',
   },
   {
     title: 'Chci rekonstrukci',
     lead: 'Zajistím spolehlivé místní řemeslníky, architekta i dohled nad rozpočtem.',
-    image: '/services/rekonstrukce.jpg',
+    image: '/services/rekonstrukce.webp',
     anchor: '#rekonstrukce',
   },
   {
     title: 'Chci správu',
     lead: 'Postarám se o energie, místní daně i pravidelnou kontrolu, když jste v ČR.',
-    image: '/services/sprava.jpg',
+    image: '/services/sprava.webp',
     anchor: '#sprava',
   },
   {
     title: 'Chci pronajímat',
     lead: 'Připravím apartmán pro turisty a zajistím provoz, úklid i stabilní výnos.',
-    image: '/services/pronajem.jpg',
+    image: '/services/pronajem.webp',
     anchor: '#investice',
   },
 ];

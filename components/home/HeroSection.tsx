@@ -12,29 +12,32 @@ interface HeroSectionProps {
   };
 }
 
+// .webp: predem zmensene a prekomprimovane z puvodnich pexels JPG (5-6k px, 1.2-3.4 MB)
+// na max. sirku 2560 px, quality 76 -> ~500-630 KB/kus. Puvodni .jpg zustavaji v repu
+// jako zdroj, ale uz se z teto sekce nenacitaji.
 const HERO_BACKGROUNDS = [
   {
-    src: '/hero/backgrounds/pexels-rinoadamo-35052274.jpg',
+    src: '/hero/backgrounds/pexels-rinoadamo-35052274.webp',
     title: 'Rocca Calascio · Gran Sasso',
   },
   {
-    src: '/hero/backgrounds/pexels-baran-robin-76507255-28377904.jpg',
+    src: '/hero/backgrounds/pexels-baran-robin-76507255-28377904.webp',
     title: 'Pobřeží a vily v Itálii',
   },
   {
-    src: '/hero/backgrounds/pexels-aul-haque-391107949-14743851.jpg',
+    src: '/hero/backgrounds/pexels-aul-haque-391107949-14743851.webp',
     title: 'Historické městečko v Abruzzu',
   },
   {
-    src: '/hero/backgrounds/pexels-c1superstar-33386371.jpg',
+    src: '/hero/backgrounds/pexels-c1superstar-33386371.webp',
     title: 'Hory a příroda Abruzza',
   },
   {
-    src: '/hero/backgrounds/pexels-lefrancois-38709749.jpg',
+    src: '/hero/backgrounds/pexels-lefrancois-38709749.webp',
     title: 'Italská architektura a slunce',
   },
   {
-    src: '/hero/backgrounds/pexels-titouan-jullien-504247666-29142700.jpg',
+    src: '/hero/backgrounds/pexels-titouan-jullien-504247666-29142700.webp',
     title: 'Tyrkysové moře Costa dei Trabocchi',
   },
 ];
@@ -105,13 +108,22 @@ export default function HeroSection({ locale, href }: HeroSectionProps) {
 
   return (
     <section className="hero-bienes" aria-label="Úvodní představení">
-      {/* 1) Plynule se měnící snímky na pozadí */}
+      {/* Prioritne nacte prvni snimek pozadi (LCP) drive, nez na nej prijde rada
+          v poradi vlozeni do DOM — React 19 tento <link> automaticky vytahne do <head>. */}
+      <link rel="preload" as="image" href={HERO_BACKGROUNDS[0].src} fetchPriority="high" />
+
+      {/* 1) Plynule se měnící snímky na pozadí. Prvni snimek nacte hned (je to LCP
+          prvek), zbytek lazy — stejne je 5-30 s neviditelny, nez se na nej otoci karusel. */}
       <div className="hero-bienes__bg-wrap" aria-hidden="true">
         {HERO_BACKGROUNDS.map((bg, idx) => (
-          <div
+          <img
             key={bg.src}
+            src={bg.src}
+            alt=""
             className={`hero-bienes__bg-slide ${idx === currentIndex ? 'is-active' : ''}`}
-            style={{ backgroundImage: `url(${bg.src})` }}
+            loading={idx === 0 ? 'eager' : 'lazy'}
+            fetchPriority={idx === 0 ? 'high' : 'low'}
+            decoding="async"
           />
         ))}
       </div>
@@ -135,12 +147,14 @@ export default function HeroSection({ locale, href }: HeroSectionProps) {
       {/* 4) Popředí: precizně vyříznutý portrét Bc. Zuzany Bajgerové ukotvený uprostřed ke spodní hraně */}
       <div className="hero-bienes__portrait-wrap" aria-hidden="true">
         <img
-          src="/hero/portret-4k.png"
+          src="/hero/portret-4k.webp"
           alt="Bc. Zuzana Bajgerová"
           className="hero-bienes__portrait"
           width={1254}
           height={1254}
           loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
       </div>
 
