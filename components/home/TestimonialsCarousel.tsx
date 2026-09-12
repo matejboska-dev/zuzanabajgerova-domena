@@ -12,6 +12,7 @@ interface Testimonial {
   avatar?: string;
   isVideo?: boolean;
   videoSrc?: string;
+  videoPoster?: string;
 }
 
 const TESTIMONIALS: Testimonial[] = [
@@ -20,7 +21,11 @@ const TESTIMONIALS: Testimonial[] = [
     role: 'Google recenze',
     text: '',
     isVideo: true,
-    videoSrc: '/video/referencni-video.MOV',
+    // .mp4 je prekomprimovana verze puvodniho referencni-video.MOV (73 MB, 4K
+    // portret) na 720x1280 / ~7 MB s +faststart, aby sla prehrat okamzite po
+    // najeti do viewportu. Puvodni .MOV zustava (gitignore) jako zdrojovy soubor.
+    videoSrc: '/video/referencni-video.mp4',
+    videoPoster: '/video/referencni-video-poster.jpg',
   },
   {
     name: 'Lenka R',
@@ -90,7 +95,7 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
-function VideoTestimonialCard({ src }: { src: string }) {
+function VideoTestimonialCard({ src, poster }: { src: string; poster?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -117,6 +122,9 @@ function VideoTestimonialCard({ src }: { src: string }) {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            // Pokazde od zacatku — i kdyz uzivatel video predtim rozjel, odscrolloval
+            // a vratil se zpet, ma zase najet od nulte sekundy.
+            video.currentTime = 0;
             video.play().catch(() => {});
             setIsInViewport(true);
           } else {
@@ -157,9 +165,9 @@ function VideoTestimonialCard({ src }: { src: string }) {
       <video
         ref={videoRef}
         src={src}
-        autoPlay
+        poster={poster}
         playsInline
-        preload="auto"
+        preload="metadata"
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
@@ -312,7 +320,7 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
           {TESTIMONIALS.map((t, i) => (
             <article className="test-card" key={i}>
               {t.isVideo && t.videoSrc ? (
-                <VideoTestimonialCard src={t.videoSrc} />
+                <VideoTestimonialCard src={t.videoSrc} poster={t.videoPoster} />
               ) : (
                 <div className="test-card__avatar">
                   <span className="test-card__initials">{getInitials(t.name)}</span>
