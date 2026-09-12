@@ -614,15 +614,27 @@ img { display: block; max-width: 100%; }
   margin: calc(-1 * var(--hdr-space) + 10px) var(--margin) clamp(32px, 5vw, 64px);
   border-radius: var(--r-shell);
   overflow: hidden;
-  min-height: clamp(640px, calc(100vh - 40px), 880px);
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   background: var(--cobalto-deep);
   box-shadow: var(--shadow-2);
 }
 
-/* 1) Pozadí — plynulá změna snímků */
+/* Textová/CTA zóna (přepínač fotek + obsah). Fotokarusel a gradient (níže)
+   jsou teď přímé děti `.hero-bienes`, ne tohoto boxu — sahají přes celé hero
+   včetně "poličky" s portrétem na mobilu. Tenhle box jen drží min-height a
+   zarovnání obsahu ke spodku téhle horní části. Na desktopu/tabletu
+   vyplňuje celé hero (portrét ji jen absolutně překrývá); na mobilu (≤640px)
+   je to jen horní část nad portrétem. */
+.hero-bienes__top {
+  position: relative;
+  min-height: clamp(640px, calc(100vh - 40px), 880px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* 1) Pozadí — plynulá změna snímků, přes celé hero (viz komentář výše) */
 .hero-bienes__bg-wrap {
   position: absolute;
   inset: 0;
@@ -757,6 +769,7 @@ img { display: block; max-width: 100%; }
   padding: 6px 14px;
   border-radius: var(--r-pill);
   border: 1px solid rgba(241, 239, 231, 0.15);
+  white-space: nowrap;
 }
 
 .hero-bienes__dot {
@@ -777,7 +790,10 @@ img { display: block; max-width: 100%; }
   letter-spacing: -0.04em;
   color: #ffffff;
   margin: 0 0 16px 0;
-  text-shadow: 0 2px 24px rgba(12, 29, 54, 0.6);
+  text-shadow:
+    0 2px 8px rgba(12, 29, 54, 0.85),
+    0 4px 20px rgba(12, 29, 54, 0.75),
+    0 8px 36px rgba(0, 0, 0, 0.6);
 }
 
 .hero-bienes__h1 em {
@@ -793,10 +809,13 @@ img { display: block; max-width: 100%; }
 .hero-bienes__lead {
   font-size: clamp(0.95rem, 1.2vw, 1.12rem);
   line-height: 1.62;
-  color: rgba(241, 239, 231, 0.88);
+  color: rgba(241, 239, 231, 0.96);
   max-width: 44ch;
   margin-bottom: 24px;
-  text-shadow: 0 1px 12px rgba(12, 29, 54, 0.5);
+  text-shadow:
+    0 1px 4px rgba(12, 29, 54, 0.9),
+    0 2px 12px rgba(12, 29, 54, 0.8),
+    0 4px 24px rgba(0, 0, 0, 0.55);
 }
 
 .hero-bienes__cta {
@@ -809,7 +828,8 @@ img { display: block; max-width: 100%; }
 /* Statistické karty vpravo (ref Bienes: 300+, 100M+, 600+) */
 .hero-bienes__stats {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   gap: clamp(16px, 2.5vw, 36px);
   flex: none;
   background: rgba(12, 29, 54, 0.4);
@@ -822,12 +842,16 @@ img { display: block; max-width: 100%; }
 .hero-bienes__stat-col {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: clamp(16px, 2.5vw, 36px);
 }
 
 .hero-bienes__stat {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   gap: 4px;
 }
 
@@ -838,6 +862,7 @@ img { display: block; max-width: 100%; }
   line-height: 1;
   letter-spacing: -0.03em;
   color: #ffffff;
+  text-align: center;
 }
 
 .hero-bienes__stat-lbl {
@@ -848,6 +873,7 @@ img { display: block; max-width: 100%; }
   text-transform: uppercase;
   color: rgba(241, 239, 231, 0.75);
   white-space: nowrap;
+  text-align: center;
 }
 
 .hero-bienes__stat-sep {
@@ -897,7 +923,7 @@ img { display: block; max-width: 100%; }
 }
 
 @media (max-width: 960px) {
-  .hero-bienes {
+  .hero-bienes__top {
     min-height: clamp(660px, 92vh, 800px);
   }
   .hero-bienes__content {
@@ -919,7 +945,8 @@ img { display: block; max-width: 100%; }
   }
   .hero-bienes__stats {
     width: 100%;
-    justify-content: space-between;
+    justify-content: space-around;
+    align-items: center;
     gap: 12px;
   }
 }
@@ -927,10 +954,44 @@ img { display: block; max-width: 100%; }
 @media (max-width: 640px) {
   .hero-bienes {
     margin: calc(-1 * var(--hdr-space) + 6px) 12px clamp(24px, 4vw, 40px);
-    min-height: 620px;
+    /* Ať se celá karta i s portrétem vejde na jednu obrazovku a nepřesahuje
+       výšku — 6px je posun karty nahoru pod plovoucí hlavičku, 36px pokrývá
+       spodní okraj karty (viz margin výše). dvh (ne vh) počítá se skutečně
+       viditelnou výškou v mobilním prohlížeči, i když se lišta adresy skryje. */
+    height: calc(100vh - 36px);
+    height: calc(100dvh - 36px);
+  }
+  .hero-bienes__top {
+    /* Textová zóna je teď přesně tak vysoká, kolik potřebuje její obsah —
+       zbytek obrazovky (viz níže) dostane fotka. Dřív tohle místo dělal
+       min-height + justify-content:flex-end na obsahu; bez min-height je
+       potřeba odsadit obsah od plovoucí hlavičky přes padding-top níže. */
+    min-height: 0;
+    flex: 0 0 auto;
   }
   .hero-bienes__content {
+    padding-top: 84px;
+    padding-left: clamp(14px, 4vw, 24px);
+    padding-right: clamp(14px, 4vw, 24px);
     padding-bottom: 48px;
+  }
+  .hero-bienes__badge {
+    gap: 6px;
+    font-size: clamp(0.48rem, 2.15vw, 0.65rem);
+    letter-spacing: 0.03em;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+    max-width: 100%;
+  }
+  .hero-bienes__badge span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .hero-bienes__dot {
+    width: 5px;
+    height: 5px;
+    flex-shrink: 0;
   }
   .hero-bienes__indicators {
     bottom: 12px;
@@ -944,13 +1005,31 @@ img { display: block; max-width: 100%; }
   .hero-bienes__indicator.is-active {
     width: 32px;
   }
+
+  /* Portrét sestupuje z absolutního překryvu (kde kolidoval s CTA tlačítky
+     a statistikami) do vlastní "poličky" pod textem — velká fotka dole
+     uprostřed, přesně jako na referenčním layoutu. Fotokarusel na pozadí a
+     gradient nad ním sahají přes celé hero (viz výše), takže tahle polička
+     plynule navazuje na stejnou fotku, ne na vlastní barevné pozadí. Na
+     tabletu (641–960 px) i na desktopu zůstává beze změny
+     (position: absolute, viz výše). */
   .hero-bienes__portrait-wrap {
-    left: 50%;
+    position: static;
+    left: auto;
     right: auto;
-    transform: translateX(-50%);
-    height: 52%;
-    max-width: 80vw;
-    opacity: 0.4;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    /* Textová zóna nad ní (flex: 0 0 auto) má přednost a bere si přesně
+       tolik místa, kolik potřebuje; portrét dostává zbytek jedné obrazovky
+       — nikdy víc, aby se karta nikdy nezalomila přes výšku displeje. */
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 90px;
+    max-height: 460px;
+    opacity: 1;
+    padding: 20px 20px 0;
   }
   .hero-bienes__h1 {
     font-size: clamp(1.85rem, 6.8vw, 2.35rem);
@@ -959,25 +1038,52 @@ img { display: block; max-width: 100%; }
     font-size: 0.95rem;
     margin-bottom: 18px;
   }
+
+  /* Statistiky jako pevná 3sloupcová mřížka. Bez `min-width: 0` na
+     sloupcích a s `white-space: nowrap` na štítcích se text vůbec nevešel
+     do šířky karty a poslední sloupec byl useknutý mimo viditelnou plochu. */
   .hero-bienes__stats {
-    padding: 12px 16px;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    align-items: center;
+    justify-items: center;
+    gap: 0;
+    padding: 14px 6px;
+  }
+  .hero-bienes__stat-col {
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    gap: 0;
+  }
+  .hero-bienes__stat-col:not(:first-child) {
+    border-left: 1px solid rgba(241, 239, 231, 0.18);
+  }
+  .hero-bienes__stat-sep {
+    display: none;
+  }
+  .hero-bienes__stat {
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
   .hero-bienes__stat-val {
-    font-size: 1.5rem;
+    font-size: 1.05rem;
+    text-align: center;
   }
   .hero-bienes__stat-lbl {
-    font-size: 0.65rem;
-  }
-  .hero-bienes__indicators {
-    top: 20px;
-    right: 20px;
-  }
-  .hero-bienes__indicator {
-    width: 16px;
-  }
-  .hero-bienes__indicator.is-active {
-    width: 28px;
+    white-space: normal;
+    text-align: center;
+    font-size: 0.6rem;
+    line-height: 1.3;
   }
 }
 
@@ -2048,6 +2154,19 @@ img { display: block; max-width: 100%; }
   margin-bottom: 18px;
 }
 
+/* Nejdelší varianty tohoto eyebrow badge ("Transparentní podmínky · Žádné
+   skryté poplatky", "Jak probíhá spolupráce · Servis od A do Z") se na
+   úzkém mobilu zalamovaly na dva řádky. Menší, o něco méně roztažené
+   písmo je udrží na jednom řádku napříč všemi sekcemi, co tuhle třídu sdílí. */
+@media (max-width: 640px) {
+  .listings__badge {
+    gap: 6px;
+    font-size: 0.6rem;
+    letter-spacing: 0.03em;
+    padding: 5px 11px;
+  }
+}
+
 .listings__badge-dot {
   width: 7px;
   height: 7px;
@@ -2560,6 +2679,28 @@ img { display: block; max-width: 100%; }
 
 /* Mobile Responsiveness */
 @media (max-width: 899px) {
+  /* Karty na mobilu spojuje výhradně tečkovaný konektor mezi nimi — žádné
+     další prázdné okraje mezi ním a sousední kartou, jinak čára vizuálně
+     nedosáhne až k další kartě. */
+  .process-zigzag__item {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .process-zigzag__item:first-child {
+    margin-top: 8px;
+  }
+
+  .process-zigzag__item:last-child {
+    margin-bottom: 32px;
+  }
+
+  .process-card {
+    /* Odznak čísla zasahuje do horní výplně karty (top:-12px + výška 46px
+       = 34px), takže bez extra prostoru nahoře splývá se štítkem kroku. */
+    padding-top: 44px;
+  }
+
   .process-card__badge {
     left: 20px !important;
     right: auto !important;
@@ -2572,8 +2713,8 @@ img { display: block; max-width: 100%; }
 
   .process-zigzag__mobile-connector {
     width: 2px;
-    height: 28px;
-    margin: 10px auto 0;
+    height: 40px;
+    margin: 0 auto;
     background: repeating-linear-gradient(
       180deg,
       rgba(217, 164, 65, 0.85) 0,
@@ -2803,10 +2944,19 @@ img { display: block; max-width: 100%; }
 .loc-tile__img {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 4 / 3;
   object-fit: cover;
   border-radius: var(--r-img);
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Na mobilu ať dlaždice tvoří kompaktní čtvercovou mřížku 2×2 místo
+   protáhlých obdélníků (bez `height: auto` výše prohrával aspect-ratio
+   proti height atributu obrázku, takže dlaždice byly zbytečně vysoké). */
+@media (max-width: 900px) {
+  .loc-tile__img {
+    aspect-ratio: 1 / 1;
+  }
 }
 .loc-tile:hover .loc-tile__img {
   transform: scale(1.06);
