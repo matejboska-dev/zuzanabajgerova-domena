@@ -9,6 +9,8 @@ interface ProcessStep {
   tag: string;
   title: string;
   text: string;
+  /** kratky podtext pod nadpisem karty (zatim jen u bodu 2) */
+  sub?: string;
   highlight?: string;
   icon?: string;
 }
@@ -40,7 +42,7 @@ const PROCESS_DATA: Record<Locale, ProcessCopy> = {
         n: '01',
         tag: '1. krok · Online / Telefon',
         title: 'Začneme nezávaznou konzultací zdarma',
-        text: 'Nejprve si zavoláme nebo se spojíme online. Probereme vaši představu, rozpočet, preferovanou lokalitu u moře či v kopcích i účel nákupu — zda hledáte druhý domov, či investici.',
+        text: 'Nejprve si zavoláme nebo se spojíme online. Probereme vaši představu, rozpočet, preferovanou lokalitu u moře či v kopcích i účel nákupu, tedy zda hledáte druhý domov, či investici.',
         highlight: 'První konzultace je zcela zdarma a 100% nezávazná.',
         icon: 'phone',
       },
@@ -49,6 +51,7 @@ const PROCESS_DATA: Record<Locale, ProcessCopy> = {
         tag: 'Aktivní scouting celého trhu',
         title: 'Nehledám jen v nabídce, kterou vidíte na webu',
         text: 'Aktivně pro vás mapuji celý regionální trh. Za více než 20 let v Abruzzu spolupracuji výhradně s prověřenými místními kancelářemi a majiteli s vysokými standardy důvěry.',
+        sub: 'Nehledám jen v nabídce, kterou vidíte na webu, ale i mezi ověřenými realitními agenturami, kolegy a místními. Řada nemovitostí se ke mně dostane přes známé, ještě než se objeví na internetu.',
         highlight: 'Přístup k neveřejným nabídkám a prověřeným partnerům.',
         icon: 'compass',
       },
@@ -401,6 +404,7 @@ export default function ProcessSection({
                   <div className="process-card__body">
                     <span className="process-card__tag">{step.tag}</span>
                     <h3 className="process-card__title">{step.title}</h3>
+                    {step.sub && <p className="process-card__sub">{step.sub}</p>}
                   </div>
                 </div>
 

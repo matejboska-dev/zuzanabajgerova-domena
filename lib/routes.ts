@@ -37,6 +37,7 @@ export const SEGMENTS = {
   cookies: 'cookies',
   mapaStranek: 'mapa-stranek',
   dekujeme: 'dekujeme',
+  dotaznik: 'dotaznik', // neverejna stranka: bez odkazu v menu, noindex, mimo sitemap
 } as const;
 
 export type RouteId = keyof typeof SEGMENTS;
@@ -48,15 +49,39 @@ const DYNAMIC: Partial<Record<RouteId, true>> = {
   clanek: true,
 };
 
+/**
+ * Stranky, ktere zatim existuji jen cesky. sitemap pro ne neuvadi hreflang na /en a /it
+ * a path() na ne i z anglicke a italske verze vede na ceskou adresu (zadny odkaz na 404).
+ */
+export const CS_ONLY: RouteId[] = [
+  'nemovitosti',
+  'nemovitost',
+  'lokality',
+  'lokalita',
+  'kontakt',
+  'konzultace',
+  'sluzby',
+  'jakKoupit',
+  'oMne',
+  'reference',
+  'clanky',
+  'clanek',
+  'mapaStranek',
+  'ochranaUdaju',
+  'cookies',
+];
+
 /** stranky mimo indexaci — nepatri do sitemap.xml */
-export const NOINDEX: RouteId[] = ['dekujeme'];
+// clanky: jen do doby, nez vyjde prvni clanek (prazdny rozcestnik do indexu nepatri)
+export const NOINDEX: RouteId[] = ['dekujeme', 'dotaznik', 'clanky'];
 
 /**
  * Sestavi cestu. path('nemovitost', 'cs', 'byt-tollo-445838') -> /nemovitosti/byt-tollo-445838
  * path('kontakt', 'en') -> /en/kontakt ; path('home', 'cs') -> /
  */
 export function path(id: RouteId, locale: Locale = DEFAULT_LOCALE, slug?: string): string {
-  const parts = [localePrefix(locale), SEGMENTS[id], DYNAMIC[id] ? slug : undefined].filter(
+  const loc = CS_ONLY.includes(id) ? DEFAULT_LOCALE : locale;
+  const parts = [localePrefix(loc), SEGMENTS[id], DYNAMIC[id] ? slug : undefined].filter(
     (x): x is string => Boolean(x),
   );
   return '/' + parts.join('/').replace(/^\/+/, '');

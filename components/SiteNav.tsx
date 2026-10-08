@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { path, type RouteId } from '@/lib/routes';
 import { NAV_TREE, megaMenu } from '@/lib/nav';
-import { LOCALES, LOCALE_NAME, type Locale } from '@/lib/i18n';
+import { LIVE_LOCALES, LOCALE_NAME, type Locale } from '@/lib/i18n';
 
 // Plovoucí pill header (DOMŮ + 6 větví: Nemovitosti, Lokality, Jak koupit v Itálii, Služby, O mně, Kontakt)
 export default function SiteNav({ locale }: { locale: Locale }) {
@@ -60,7 +60,7 @@ export default function SiteNav({ locale }: { locale: Locale }) {
     <header className={cls}>
       <div className="sitehdr__pill">
         {/* DOMŮ [K] — wordmark */}
-        <Link href={home} className="wordmark" aria-label="Bc. Zuzana Bajgerová — domů">
+        <Link href={home} className="wordmark" aria-label="Bc. Zuzana Bajgerová, domů">
           Bajgerová<span className="wordmark__dot">.</span>
         </Link>
 
@@ -208,19 +208,23 @@ export default function SiteNav({ locale }: { locale: Locale }) {
             </div>
           ))}
 
-          <hr className="mobilemenu__sep" />
-          <div className="mobilemenu__lang">
-            {LOCALES.map((l) => (
-              <Link
-                key={l}
-                href={path('home', l)}
-                lang={l}
-                aria-current={l === locale ? 'true' : undefined}
-              >
-                {LOCALE_NAME[l]}
-              </Link>
-            ))}
-          </div>
+          {LIVE_LOCALES.length > 1 && (
+            <>
+              <hr className="mobilemenu__sep" />
+              <div className="mobilemenu__lang">
+                {LIVE_LOCALES.map((l) => (
+                  <Link
+                    key={l}
+                    href={path('home', l)}
+                    lang={l}
+                    aria-current={l === locale ? 'true' : undefined}
+                  >
+                    {LOCALE_NAME[l]}
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
           <Link href={path('konzultace', locale)} className="btn btn--saffron">
             Nezávazná konzultace
           </Link>

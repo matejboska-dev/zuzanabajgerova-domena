@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import type { Property } from '@/lib/types';
 import type { Locale } from '@/lib/i18n';
-import { path } from '@/lib/routes';
-import { LOCALITIES, LOCALITY_SLUGS } from '@/lib/localities';
+import { path, SITE_URL } from '@/lib/routes';
+import { AGENT_ID } from '@/lib/schema';
 import {
   HERO,
   PROOF,
@@ -15,8 +15,14 @@ import {
   FAQ,
   GUIDES,
   QUICK_PICKS,
+  csNum,
+  csPlural,
+  capFirst,
 } from '@/lib/home';
 import LandscapeLine from '@/components/LandscapeLine';
+import Marked from '@/components/Marked';
+import ContactFormCard from '@/components/forms/ContactFormCard';
+import { PHONE_TEL, waLink } from '@/lib/contact';
 import Slider from '@/components/Slider';
 import HeroSection from './HeroSection';
 import ServicesCards from './ServicesCards';
@@ -25,12 +31,14 @@ import ProcessSection from './ProcessSection';
 import GuidesCards from './GuidesCards';
 import TestimonialsCarousel from './TestimonialsCarousel';
 import FaqSection from './FaqSection';
+import WhyAbruzzo from './WhyAbruzzo';
+import CommunitySection from './CommunitySection';
+import RenoSection from './RenoSection';
+import VideoAnswers from './VideoAnswers';
+import AboutSection from './AboutSection';
 
-const WA = 'https://wa.me/420723824348';
-const TEL = 'tel:+420723824348';
-
-// prvni veta z ledu lokality — na dlazdice v sekci 08
-const firstSentence = (s: string) => s.split(/(?<=[.!?])\s/)[0];
+const WA_PREFILLED = waLink();
+const TEL = PHONE_TEL;
 
 /** stridava sekce (layout B): media a text, strany se u dalsi sekce prohodi.
  *  `n` uz se nikde nezobrazuje, slouzi jen jako kotva (id + aria-labelledby). */
@@ -129,10 +137,11 @@ const FEARS_COPY: Record<
   }
 > = {
   cs: {
-    badge: '4 klíčové otázky · Bezpečná koupě',
-    titleLine: 'Znám čtyři otázky, které Vám',
+    // pocet otazek se pocita z dat (FEARS), cislo neni natvrdo
+    badge: `${FEARS.length} ${csPlural(FEARS.length, 'klíčová otázka', 'klíčové otázky', 'klíčových otázek')} · Bezpečná koupě`,
+    titleLine: `Znám ${csNum(FEARS.length)} ${csPlural(FEARS.length, 'otázku', 'otázky', 'otázek')}, které vám`,
     titleAccent: 'teď běží hlavou',
-    lead: 'Odpovím na ně hned. Dokud na ně neodpovím, žádná nemovitost Vás nezajímá.',
+    lead: 'Odpovím na ně hned. Dokud na ně neodpovím, žádná nemovitost vás nezajímá.',
     cta: 'Jak koupit nemovitost v Itálii',
     topBadge: 'Osobní garance',
     mediaImgAlt: 'Bc. Zuzana Bajgerová v Abruzzu u moře',
@@ -153,7 +162,7 @@ const FEARS_COPY: Record<
       },
       {
         q: '“I don’t know what the real extra costs will be.”',
-        a: 'You get a breakdown calculated down to the euro before you sign anything. Count on 10% to 15% on top of the purchase price.',
+        a: 'The price you see online is final. It includes the property price, the transfer taxes, the notary fee and our commission, plus the first year of basic service with my assistants, who also live locally.',
       },
       {
         q: '“I worry about being scammed from afar.”',
@@ -180,7 +189,7 @@ const FEARS_COPY: Record<
       },
       {
         q: '“Temo costi accessori nascosti e imprevisti.”',
-        a: 'Riceverete un quadro economico dettagliato al centesimo prima di firmare qualsiasi atto. Si calcola il 10-15% oltre al prezzo.',
+        a: 'Il prezzo che vedete online è definitivo. Comprende il prezzo dell’immobile, le imposte di trasferimento, l’onorario del notaio e la nostra provvigione, oltre al primo anno di assistenza di base con le mie assistenti, che vivono anch’esse sul posto.',
       },
       {
         q: '“Temo sorprese acquistando a distanza.”',
@@ -200,6 +209,7 @@ const PRICE_COPY: Record<
     badge: string;
     titleLine: string;
     titleAccent: string;
+    intro?: string;
     lead: string;
     colInTitle: string;
     colInPill: string;
@@ -216,13 +226,14 @@ const PRICE_COPY: Record<
 > = {
   cs: {
     badge: 'Transparentní podmínky · Žádné skryté poplatky',
-    titleLine: 'Cena, kterou Vám řeknu,',
+    titleLine: 'Cena, kterou vidíte na internetu,',
     titleAccent: 'je konečná',
-    lead: 'Neúčtuji si víc podle toho, kolik práce nakonec bude. Tohle je v mé odměně vždycky zahrnuto.',
-    colInTitle: 'V mé odměně je vždy',
+    intro: 'Cena je konečná a zahrnuje cenu apartmánu, daň z převodu nemovitosti, odměnu notáře a naši provizi.',
+    lead: 'Neúčtuji si víc podle toho, kolik práce nakonec bude. Tohle je v naší provizi vždycky zahrnuto.',
+    colInTitle: 'V naší provizi je vždy',
     colInPill: 'Zahrnuto',
     itemsIn: PRICE_IN,
-    colOutTitle: 'V ceně není, ale řeknu Vám to předem',
+    colOutTitle: 'V ceně není, ale řeknu vám to předem',
     colOutPill: 'Předem známo',
     itemsOut: PRICE_OUT,
     cta: 'Spočítat přesné náklady koupě',
@@ -306,6 +317,7 @@ export default function HomeSections({
     jakKoupit: path('jakKoupit', locale),
     sluzby: path('sluzby', locale),
     clanky: path('clanky', locale),
+    oMne: path('oMne', locale),
   };
 
   const listingsCopy = LISTINGS_COPY[locale] ?? LISTINGS_COPY.cs;
@@ -316,6 +328,8 @@ export default function HomeSections({
   const agentLd = {
     '@context': 'https://schema.org',
     '@type': 'RealEstateAgent',
+    '@id': AGENT_ID, // stejny uzel jako na podstrankach (lib/schema.ts), Google ho spoji
+    url: SITE_URL,
     name: 'Bc. Zuzana Bajgerová',
     description:
       'Realitní specialistka na nemovitosti v Itálii, region Abruzzo. Kompletní servis pro české a slovenské kupující, celý proces v češtině.',
@@ -423,8 +437,14 @@ export default function HomeSections({
                 <span className="fear__num">0{i + 1}</span>
               </div>
               <div className="fear__content">
-                <h3 className="fear__q">{f.q}</h3>
-                <p className="fear__a">{f.a}</p>
+                <h3 className="fear__q">
+                  <Marked text={f.q} />
+                </h3>
+                {f.a && (
+                  <p className="fear__a">
+                    <Marked text={f.a} />
+                  </p>
+                )}
               </div>
             </li>
           ))}
@@ -462,6 +482,7 @@ export default function HomeSections({
             <h2 id="sec-04" className="home-h2">
               {priceCopy.titleLine} <em>{priceCopy.titleAccent}</em>
             </h2>
+            {priceCopy.intro && <p className="home-lead">{priceCopy.intro}</p>}
             <p className="home-lead">{priceCopy.lead}</p>
           </div>
 
@@ -538,7 +559,7 @@ export default function HomeSections({
               <h3 className="price-sec__transparency-title">{priceCopy.mediaBadgeTitle}</h3>
               <p className="price-sec__transparency-desc">
                 {locale === 'cs'
-                  ? 'Před začátkem spolupráce vždy přesně víte, co je v mé odměně a co už jsou vedlejší náklady. Žádná překvapení.'
+                  ? 'Před začátkem spolupráce vždy přesně víte, co je v naší provizi a co už jsou vedlejší náklady. Žádná překvapení.'
                   : locale === 'it'
                     ? 'Prima di iniziare la collaborazione sapete sempre esattamente cosa è compenso e quali sono i costi aggiuntivi. Nessuna sorpresa.'
                     : 'Before we start working together, you always know exactly what is included in my fee and what are additional costs. No surprises.'}
@@ -658,11 +679,11 @@ export default function HomeSections({
                 <div className="chips">
                   {QUICK_PICKS.map((q, idx) => (
                     <Link
-                      key={q}
-                      href={href.nemovitosti}
+                      key={q.label}
+                      href={q.q ? `${href.nemovitosti}?${q.q}#filtr` : `${href.nemovitosti}#filtr`}
                       className={`chip ${idx === 0 ? 'is-active' : ''}`}
                     >
-                      {q}
+                      {q.label}
                     </Link>
                   ))}
                 </div>
@@ -710,10 +731,11 @@ export default function HomeSections({
         badge="Osobní záruka · Abruzzo, Itálie"
         title={
           <>
-            Čtyři věci, které <em>jinde nedostanete</em>
+            {capFirst(`${csNum(PILLARS.length)} ${csPlural(PILLARS.length, 'věc', 'věci', 'věcí')}`)}, které{' '}
+            <em>jinde nedostanete</em>
           </>
         }
-        lead="Žiji celoročně přímo v Abruzzu a stojím osobně za každým krokem Vaší koupě. Od prvního výběru přes prověření nemovitosti až po notáře a servis po podpisu."
+        lead="Žiji celoročně přímo v Abruzzu a stojím osobně za každým krokem vaší koupě. Od prvního výběru přes prověření nemovitosti až po notáře a servis po podpisu."
         media={<PillarsVideoCard />}
       >
         <ol className="pillars">
@@ -754,51 +776,16 @@ export default function HomeSections({
       {/* 07 — JAK PROBÍHÁ SPOLUPRÁCE (9 KROKŮ OD A DO Z) ----------------------- */}
       <ProcessSection locale={locale} href={href} />
 
-      {/* 08 — LOKALITY ABRUZZA ------------------------------------------------ */}
-      <ZigRow
-        className="zig--localities"
-        n="08"
-        title="Kde v Abruzzu hledat"
-        lead="Abruzzo není jedno místo. Pobřeží, vnitrozemí a hory se liší cenou i tím, pro koho se hodí."
-        media={
-          <div className="loc-grid">
-            {LOCALITY_SLUGS.map((s) => {
-              const loc = LOCALITIES[s];
-              return (
-                <Link key={s} href={path('lokalita', locale, s)} className="loc-tile">
-                  <picture>
-                    <source srcSet={loc.image.webp} type="image/webp" />
-                    <img
-                      src={loc.image.src}
-                      alt={loc.image.alt}
-                      className="loc-tile__img"
-                      width={loc.image.width}
-                      height={loc.image.height}
-                      loading="lazy"
-                    />
-                  </picture>
-                  <span className="loc-tile__name">{loc.title}</span>
-                </Link>
-              );
-            })}
-          </div>
-        }
-      >
-        <ul className="loc-list">
-          {LOCALITY_SLUGS.map((s) => (
-            <li key={s}>
-              <Link href={path('lokalita', locale, s)}>
-                <b>{LOCALITIES[s].title}</b> — {firstSentence(LOCALITIES[s].lead)}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </ZigRow>
+      {/* 08 — PROC PRAVE ABRUZZO (nahradila "Kde v Abruzzu hledat") ---------------- */}
+      <WhyAbruzzo />
 
       <LandscapeLine />
 
       {/* 09 — REFERENCE (horizontální karusel karet) --------------------------- */}
       <TestimonialsCarousel locale={locale} />
+
+      {/* 09A — KOMUNITA (hned pod referencemi) --------------------------------- */}
+      <CommunitySection />
 
       {/* 10 — CO DELAM PO KOUPI ------------------------------------------- */}
       <ZigRow
@@ -834,7 +821,13 @@ export default function HomeSections({
         </Link>
       </ZigRow>
 
+      {/* 10A — REKONSTRUKCE NA KLIC (za sekci "Klici to nekonci", ktera ji zminuje) */}
+      <RenoSection href={href.konzultace} />
+
       <LandscapeLine />
+
+      {/* 10B — PTATE SE, ODPOVIDAM (video odpovedi pred FAQ) -------------------- */}
+      <VideoAnswers />
 
       {/* 11 — FAQ -------------------------------------------------------------- */}
       <FaqSection faq={FAQ} ctaHref={href.jakKoupit} ctaLabel="Všechny časté dotazy" />
@@ -843,6 +836,11 @@ export default function HomeSections({
       <GuidesCards locale={locale} />
 
       <LandscapeLine accent />
+
+      {/* 12A — O MNE (pred kontaktem) ------------------------------------------ */}
+      <AboutSection href={href.oMne} />
+
+      <LandscapeLine />
 
       {/* 13+14 — KONTAKT (sloucene: hlidac nabidek "bar" odstranen, zaverecne CTA
           je uvodni sloupec teto sekce). dvousloupcovy layout: text + kontakty vlevo,
@@ -856,9 +854,9 @@ export default function HomeSections({
                 Zavolejme si
               </h2>
               <p className="home-lead">
-                Nic to nestojí a k ničemu Vás to nezavazuje. Za dvacet minut budete vědět,
-                jestli je koupě v Itálii pro Vás reálná, kolik by přibližně stála a co všechno
-                bych za Vás vyřídila.
+                Nic to nestojí a k ničemu vás to nezavazuje. Za dvacet minut budete vědět,
+                jestli je koupě v Itálii pro vás reálná, kolik by přibližně stála a co všechno
+                bych za vás vyřídila.
               </p>
               <Link href={href.konzultace} className="link-more">
                 Nebo si rovnou vyberte termín hovoru →
@@ -902,44 +900,21 @@ export default function HomeSections({
                     <path d="M4 20l1.5-4A8 8 0 1 1 9 19z" />
                   </svg>
                 </span>
-                <a href={WA}>WhatsApp — nejrychlejší odpověď</a>
+                <a href={WA_PREFILLED}>WhatsApp, nejrychlejší odpověď</a>
               </li>
             </ul>
+
+            <aside className="contact__note" aria-label="Jak mě nejlépe zastihnete">
+              <p>
+                Nejrychleji mě zastihnete přes WhatsApp. Pokud máte vážný zájem a nedovoláte se mi,
+                zavolejte klidně znovu. Kvůli vysokému zájmu se mi občas stane, že mi číslo unikne,
+                když zrovna telefonuji.
+              </p>
+            </aside>
           </div>
 
-          {/* TODO: napojit na Resend + notifikaci na mobil se zdrojem (funkce 03). zatim bez akce. */}
-          <form className="contact__form" aria-label="Kontaktní formulář">
-            <label>
-              <span>Jméno</span>
-              <input type="text" name="name" placeholder="Vaše jméno" autoComplete="name" required />
-            </label>
-            <label>
-              <span>E-mail</span>
-              <input
-                type="email"
-                name="email"
-                placeholder="vas@email.cz"
-                autoComplete="email"
-                required
-              />
-            </label>
-            <label>
-              <span>Telefon</span>
-              <input type="tel" name="phone" placeholder="+420 723 824 348" autoComplete="tel" />
-            </label>
-            <label>
-              <span>Zpráva</span>
-              <textarea
-                name="message"
-                rows={4}
-                placeholder="Co hledáte, jaký máte rozpočet a kdy chcete kupovat"
-              />
-            </label>
-            <button type="submit" className="btn btn--saffron">
-              Odeslat
-            </button>
-            <p className="contact__fine">Ozvu se do 24 hodin. Údaje nikam nepředávám.</p>
-          </form>
+          {/* formular posila poptavky pres /api/lead (lib/forms.ts), po odeslani presmeruje na /dekujeme */}
+          <ContactFormCard source="homepage" />
         </div>
       </section>
 

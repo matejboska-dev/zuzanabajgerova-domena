@@ -3,7 +3,7 @@ import { SERVICES_CARDS } from '@/lib/home';
 
 export default function ServicesCards({ hrefServices }: { hrefServices: string }) {
   return (
-    <section className="services-section" aria-label="Služby — Bc. Zuzana Bajgerová">
+    <section className="services-section" aria-label="Služby: Bc. Zuzana Bajgerová">
       <div className="services-grid">
         {SERVICES_CARDS.map((service) => (
           <Link

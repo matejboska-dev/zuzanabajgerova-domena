@@ -18,7 +18,7 @@ export default function GuidesCards({ locale }: { locale: Locale }) {
           {guides.map((g) => (
             <Link
               key={g.title}
-              href={path(g.route, locale)}
+              href={`${path(g.route, locale)}${g.hash ? `#${g.hash}` : ''}`}
               className="guide-3d"
               aria-label={g.title}
             >

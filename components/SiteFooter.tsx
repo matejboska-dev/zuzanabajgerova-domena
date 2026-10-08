@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { FOOTER_NAV, MAIN_NAV, SEGMENTS, path } from '@/lib/routes';
-import { LOCALES, LOCALE_NAME, type Locale } from '@/lib/i18n';
+import { LIVE_LOCALES, LOCALE_NAME, type Locale } from '@/lib/i18n';
 
 const FOOTER_LABEL: Record<string, string> = {
   [SEGMENTS.ochranaUdaju]: 'Ochrana osobních údajů',
@@ -8,9 +8,9 @@ const FOOTER_LABEL: Record<string, string> = {
   [SEGMENTS.mapaStranek]: 'Mapa stránek',
 };
 
-// TODO: skutecne profily doplni klientka (Instagram pro vertikalni videa — funkce 05).
+// skutecne profily doplni klientka. ikona se zobrazi az se skutecnym odkazem (zadne mrtve '#').
 const SOCIAL = [
-  { label: 'IG', href: '#', title: 'Instagram' },
+  { label: 'IG', href: 'https://www.instagram.com/bc.zuzana_remax/', title: 'Instagram @bc.zuzana_remax' },
   { label: 'YT', href: '#', title: 'YouTube' },
   { label: 'FB', href: '#', title: 'Facebook' },
 ];
@@ -22,15 +22,17 @@ export default function SiteFooter({ locale }: { locale: Locale }) {
         <div className="footer-intro">
           <p>
             Realitní specialistka na nemovitosti v Itálii, region Abruzzo. Kompletní servis pro
-            české a slovenské kupující, celý proces v češtině — od výběru přes notáře až po klíče.
+            české a slovenské kupující, celý proces v češtině, od výběru přes notáře až po klíče.
           </p>
+          {SOCIAL.some((s) => s.href !== '#') && (
           <div className="footer-socials">
-            {SOCIAL.map((s) => (
-              <a key={s.label} href={s.href} aria-label={s.title} title={s.title}>
+            {SOCIAL.filter((s) => s.href !== '#').map((s) => (
+              <a key={s.label} href={s.href} aria-label={s.title} title={s.title} target="_blank" rel="noopener noreferrer">
                 {s.label}
               </a>
             ))}
           </div>
+          )}
         </div>
 
         <div className="footer-cols">
@@ -58,18 +60,20 @@ export default function SiteFooter({ locale }: { locale: Locale }) {
                 {FOOTER_LABEL[SEGMENTS[id]] ?? id}
               </Link>
             ))}
-            <span className="footer-lang">
-              {LOCALES.map((l) => (
-                <Link
-                  key={l}
-                  href={path('home', l)}
-                  lang={l}
-                  aria-current={l === locale ? 'true' : undefined}
-                >
-                  {LOCALE_NAME[l]}
-                </Link>
-              ))}
-            </span>
+            {LIVE_LOCALES.length > 1 && (
+              <span className="footer-lang">
+                {LIVE_LOCALES.map((l) => (
+                  <Link
+                    key={l}
+                    href={path('home', l)}
+                    lang={l}
+                    aria-current={l === locale ? 'true' : undefined}
+                  >
+                    {LOCALE_NAME[l]}
+                  </Link>
+                ))}
+              </span>
+            )}
           </nav>
         </div>
       </div>

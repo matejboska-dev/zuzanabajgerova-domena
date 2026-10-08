@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 import { listProperties } from '@/lib/data.server';
 import { propertySlug } from '@/lib/slug';
 import { LOCALITY_SLUGS } from '@/lib/localities';
-import { HTML_LANG, LOCALES, DEFAULT_LOCALE } from '@/lib/i18n';
-import { NOINDEX, absolute, path, type RouteId } from '@/lib/routes';
+import { HTML_LANG, LIVE_LOCALES, DEFAULT_LOCALE } from '@/lib/i18n';
+import { CS_ONLY, NOINDEX, absolute, path, type RouteId } from '@/lib/routes';
 
 // sitemap se generuje z routes.ts, ne rucne — kdyz pribude stranka, pribude i tady
 
@@ -25,7 +25,9 @@ const STATIC: RouteId[] = [
 
 function alternates(id: RouteId, slug?: string) {
   const languages: Record<string, string> = {};
-  for (const l of LOCALES) languages[HTML_LANG[l]] = absolute(path(id, l, slug));
+  for (const l of CS_ONLY.includes(id) ? [DEFAULT_LOCALE] : LIVE_LOCALES) {
+    languages[HTML_LANG[l]] = absolute(path(id, l, slug));
+  }
   return { languages };
 }
 

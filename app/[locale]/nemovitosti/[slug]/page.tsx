@@ -9,6 +9,26 @@ import { absolute, path } from '@/lib/routes';
 import { pageMetadata } from '@/lib/seo';
 import Gallery from '@/components/Gallery';
 import LandscapeLine from '@/components/LandscapeLine';
+import PropertyCard from '@/components/PropertyCard';
+import LeadForm, { type LeadField } from '@/components/forms/LeadForm';
+import PriceColumns from '@/components/page/PriceColumns';
+import StepCards from '@/components/page/StepCards';
+import { BUY_STEPS } from '@/lib/content/glossary';
+import { waLink } from '@/lib/contact';
+import { LOCALITIES, localityOf } from '@/lib/localities';
+
+const INQUIRY_FIELDS: LeadField[] = [
+  { name: 'jmeno', label: 'Jméno', type: 'text', required: true, autoComplete: 'name', half: true },
+  { name: 'telefon', label: 'Telefon nebo WhatsApp', type: 'tel', autoComplete: 'tel', placeholder: '+420', half: true },
+  { name: 'email', label: 'E-mail', type: 'email', autoComplete: 'email' },
+  {
+    name: 'zprava',
+    label: 'Zpráva',
+    type: 'textarea',
+    rows: 3,
+    placeholder: 'Například: chci videoprohlídku, nebo se ptám na náklady a termín',
+  },
+];
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -100,6 +120,17 @@ export default async function DetailPage({
     .map(([k]) => FEATURE_LABEL[k] || k);
 
   const gps = p.gps ? `${p.gps.lat},${p.gps.lng}` : null;
+  const locSlug = localityOf(p);
+  const loc = locSlug ? LOCALITIES[locSlug] : null;
+  const url = absolute(path('nemovitost', DEFAULT_LOCALE, propertySlug(p)));
+  const waText = `Dobrý den, mám zájem o nemovitost: ${p.title} (${url}). Prosím, ozvěte se mi.`;
+  const all = await listProperties();
+  const similar = all
+    .filter((x) => x.id !== p.id && x.status === 'aktivní')
+    .map((x) => ({ x, score: (localityOf(x) === locSlug ? 2 : 0) + (x.type === p.type ? 1 : 0) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map((r) => r.x);
   const statusTag =
     p.status === 'rezervováno'
       ? 'tag--reserved'
@@ -205,10 +236,10 @@ export default async function DetailPage({
                 <div className="pd-quote__czk">≈ {fmtCzk(p.price_czk)}</div>
               )}
               <div className="pd-quote__note">cena za nemovitost</div>
-              <Link className="btn btn--saffron" href={path('konzultace', locale)}>
+              <a className="btn btn--saffron" href="#poptavka">
                 Mám zájem o prohlídku
-              </Link>
-              <a className="btn btn--ghost" href="https://wa.me/420723824348">
+              </a>
+              <a className="btn btn--ghost" href={waLink(waText)} target="_blank" rel="noopener noreferrer">
                 WhatsApp
               </a>
               <a className="btn btn--ghost" href="tel:+420723824348">
@@ -259,11 +290,74 @@ export default async function DetailPage({
         )}
       </div>
 
-      {/* zbyle sekce blueprintu DETAIL NABIDKY (PROJEKT-BAJGEROVA.md 5), poradi je zavazne:
-          06 video a virtualni prohlidka · 07 co je v cene, rozpad nakladu teto nemovitosti ·
-          08 mapa a okoli: more, letiste, obchody, nemocnice · 09 o lokalite + odkaz ·
-          10 jak koupit prave tuhle nemovitost, 5 kroku · 11 reference klienta ze stejne lokality ·
-          12 FAQ ke koupi · 13 podobne nemovitosti · 14 zaverecny formular */}
+      <section className="pd-inner pd-sec" aria-labelledby="pd-cena">
+        <h2 id="pd-cena" className="pd-h2">Co je v ceně</h2>
+        <p className="pd-lead">
+          Cena, kterou vidíte, je konečná. Zahrnuje cenu nemovitosti, daň z převodu, odměnu notáře i naši provizi a k
+          tomu první rok základního servisu s mými asistentkami.
+        </p>
+        <PriceColumns />
+      </section>
+
+      {loc && locSlug && (
+        <section className="pd-inner pd-sec" aria-labelledby="pd-lokalita">
+          <Link href={path('lokalita', DEFAULT_LOCALE, locSlug)} className="pd-loc media-zoom">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={loc.image.webp} alt={loc.image.alt} width={loc.image.width} height={loc.image.height} loading="lazy" />
+            <span className="pd-loc__body">
+              <span className="pd-loc__kicker">O lokalitě</span>
+              <span id="pd-lokalita" className="pd-loc__t">{loc.title}</span>
+              <span className="pd-loc__d">{loc.lead}</span>
+              <span className="pd-loc__more">Více o lokalitě</span>
+            </span>
+          </Link>
+        </section>
+      )}
+
+      <section className="pd-inner pd-sec" aria-labelledby="pd-postup">
+        <h2 id="pd-postup" className="pd-h2">Jak koupit právě tuhle nemovitost</h2>
+        <StepCards items={BUY_STEPS.slice(3, 7)} cols={4} />
+        <p className="pd-more">
+          <Link href={path('jakKoupit', DEFAULT_LOCALE)}>Celý postup koupě v Itálii krok za krokem</Link>
+        </p>
+      </section>
+
+      <section className="pd-inner pd-sec pd-inquiry" id="poptavka" aria-labelledby="pd-poptavka">
+        <div className="pd-inquiry__text">
+          <h2 id="pd-poptavka" className="pd-h2">Mám zájem o tuto nemovitost</h2>
+          <p className="pd-lead">
+            Napište mi a domluvíme videoprohlídku nebo osobní prohlídku. Ozvu se do 24 hodin, nejrychleji přes WhatsApp.
+          </p>
+          <a className="btn btn--ghost" href={waLink(waText)} target="_blank" rel="noopener noreferrer">
+            Napsat na WhatsApp
+          </a>
+        </div>
+        <LeadForm
+          source="nemovitost"
+          variant="light"
+          ariaLabel={`Poptávka nemovitosti ${p.title}`}
+          fields={INQUIRY_FIELDS}
+          submitLabel="Odeslat poptávku"
+          hidden={{ nemovitost: `${p.title} (ID ${p.id})`, odkaz: url }}
+          fine={
+            <>
+              Údaje použiji jen k odpovědi na vaši poptávku a na webu se neukládají. Více v{' '}
+              <Link href={path('ochranaUdaju', DEFAULT_LOCALE)}>zásadách ochrany osobních údajů</Link>.
+            </>
+          }
+        />
+      </section>
+
+      {similar.length > 0 && (
+        <section className="pd-inner pd-sec" aria-labelledby="pd-podobne">
+          <h2 id="pd-podobne" className="pd-h2">Podobné nemovitosti</h2>
+          <div className="listing-grid pd-similar">
+            {similar.map((x) => (
+              <PropertyCard key={x.id} p={x} locale={DEFAULT_LOCALE} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <LandscapeLine />
 

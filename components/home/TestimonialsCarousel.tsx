@@ -4,65 +4,10 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import type { Locale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
-
-interface Testimonial {
-  name: string;
-  role?: string;
-  text: string;
-  avatar?: string;
-  isVideo?: boolean;
-  videoSrc?: string;
-  videoPoster?: string;
-}
-
-const TESTIMONIALS: Testimonial[] = [
-  {
-    name: '',
-    role: 'Google recenze',
-    text: '',
-    isVideo: true,
-    // .mp4 je prekomprimovana verze puvodniho referencni-video.MOV (73 MB, 4K
-    // portret) na 720x1280 / ~7 MB s +faststart, aby sla prehrat okamzite po
-    // najeti do viewportu. Puvodni .MOV zustava (gitignore) jako zdrojovy soubor.
-    videoSrc: '/video/referencni-video.mp4',
-    videoPoster: '/video/referencni-video-poster.jpg',
-  },
-  {
-    name: 'Lenka R',
-    role: 'Google recenze',
-    text: '„Dokonale pochopila, co hledám, a našla mi přesně to, co jsem si vysnila. Zuzana se postarala opravdu o všechno — od výběru a prohlídek, přes samotný nákup a notáře, až po kompletní servis po podpisu smlouvy. Díky její péči jsem se celým procesem cítila provázená a v naprostém klidu."',
-  },
-  {
-    name: 'Alfredo Spinosi',
-    role: 'Google recenze',
-    text: '„Velice doporučuji tuhle makléřku na region Abruzzo, spolehlivá, rozumí opravdu realitám. Kdo hledá experta na nákup nemovitosti v Itálii."',
-  },
-  {
-    name: 'Petra Chelíková',
-    role: 'Google recenze',
-    text: '„Paní Zuzka nám pomohla splnit si sen. Máme nádherné bydlení u moře. Milujeme to tam. Moc děkujeme za velmi profesionální a lidský přístup. Zuzka je opravdu jednička ve svém oboru."',
-  },
-  {
-    name: 'René Cichý',
-    role: 'Google recenze',
-    text: '„Přání koupit si hezký apartmán u moře v Itálii nám pomohla vyřešit paní Zuzana Bajgerová. Vybrala nám možnosti, udělali jsme prohlídku, my si vybrali a vše ostatní už paní Zuzka zařídila. Vše proběhlo hladce a my máme krásný apartmánek přímo u moře v Montesilvánu."',
-  },
-  {
-    name: 'Tomáš Čepek',
-    role: 'Google recenze',
-    text: '„Spolupráce s touto makléřkou byla naprosto výjimečná. Její znalost italského trhu, spolehlivost a osobní přístup zaručují jistotu i v zahraničním prostředí. Celý proces koupě nemovitosti proběhl hladce, s maximální péčí a důrazem na detail."',
-  },
-  {
-    name: 'Vladimír Penc',
-    role: 'Google recenze',
-    text: '„V červnu tohoto roku jsem na základě inzerátu a následné komunikace s paní Zuzanou Bajgerovou navštívil Montesilváno s úmyslem koupit nemovitost. Celý proces ze strany paní Zuzany proběhl naprosto profesionálně, věcně, efektivně ve všech fázích."',
-  },
-  {
-    name: 'Jakub Štádler',
-    role: 'Google recenze',
-    text: '„Zuzana Bajgerová ve tří krátkých větách: Úžasná. Skvělá. Báječná."',
-  },
-];
+import { REVIEW_PROFILES } from '@/lib/home';
+import { TESTIMONIALS, type Testimonial } from '@/lib/reviews';
+import Zastupny from '@/components/Zastupny';
+import { Doplnit } from '@/components/Marked';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -98,7 +43,7 @@ function GoogleIcon({ className }: { className?: string }) {
 function VideoTestimonialCard({ src, poster }: { src: string; poster?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isInViewport, setIsInViewport] = useState(false);
 
   const togglePlay = () => {
@@ -122,6 +67,7 @@ function VideoTestimonialCard({ src, poster }: { src: string; poster?: string })
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
             // Pokazde od zacatku — i kdyz uzivatel video predtim rozjel, odscrolloval
             // a vratil se zpet, ma zase najet od nulte sekundy.
             video.currentTime = 0;
@@ -133,7 +79,7 @@ function VideoTestimonialCard({ src, poster }: { src: string; poster?: string })
           }
         });
       },
-      { threshold: 0.05 },
+      { threshold: 0.6 },
     );
     observer.observe(video);
 
@@ -166,8 +112,10 @@ function VideoTestimonialCard({ src, poster }: { src: string; poster?: string })
         ref={videoRef}
         src={src}
         poster={poster}
+        muted
+        loop
         playsInline
-        preload="metadata"
+        preload="none"
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
@@ -320,7 +268,15 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
           {TESTIMONIALS.map((t, i) => (
             <article className="test-card" key={i}>
               {t.isVideo && t.videoSrc ? (
-                <VideoTestimonialCard src={t.videoSrc} poster={t.videoPoster} />
+                <VideoTestimonialCard src={t.videoSrc} poster={t.poster} />
+              ) : t.isVideo ? (
+                <Zastupny
+                  kind="video"
+                  label="Videoreference, dodá klientka"
+                  ratio="4 / 5"
+                  spec="1080 × 1350 px (4:5), svislé video z mobilu"
+                  className="zastupny--compact"
+                />
               ) : (
                 <div className="test-card__avatar">
                   <span className="test-card__initials">{getInitials(t.name)}</span>
@@ -333,12 +289,21 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
                 </blockquote>
               )}
 
-              <div className="test-card__footer">
-                <div className="test-card__google-badge">
-                  <GoogleIcon />
-                  <span className="test-card__role">Google recenze</span>
+              {t.isVideo && t.videoSrc && (
+                <div className="test-card__footer test-card__footer--video">
+                  <span className="test-card__vname">{t.name}</span>
+                  <span className="test-card__role">Videoreference</span>
                 </div>
-              </div>
+              )}
+
+              {!t.isVideo && (
+                <div className="test-card__footer">
+                  <div className="test-card__google-badge">
+                    <GoogleIcon />
+                    <span className="test-card__role">Google recenze</span>
+                  </div>
+                </div>
+              )}
             </article>
           ))}
         </div>
@@ -372,6 +337,39 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
               <path d="M9 18l6-6-6-6" />
             </svg>
           </button>
+        </div>
+
+        {/* recenze z Googlu a Firmy.cz — NEVYMYSLET. misto pro napojeni + odkaz na profil */}
+        <div className="revblocks">
+          {REVIEW_PROFILES.map((r) => (
+            <section className="revblock" key={r.id} aria-label={r.title}>
+              <div className="revblock__head">
+                {r.id === 'google' && <GoogleIcon />}
+                <h3 className="revblock__t">{r.title}</h3>
+              </div>
+              <Zastupny
+                kind="recenze"
+                label={r.placeholder}
+                ratio="16 / 7"
+                who="vývoj (napojení), klientka (odkaz na profil)"
+                spec="widget nebo seznam recenzí"
+                className="zastupny--compact"
+              />
+              <div className="revblock__cta">
+                <a
+                  className="btn btn--cobalt"
+                  href={r.url || '#'}
+                  target={r.url ? '_blank' : undefined}
+                  rel={r.url ? 'noopener noreferrer' : undefined}
+                  aria-disabled={r.url ? undefined : true}
+                  onClick={r.url ? undefined : (e) => e.preventDefault()}
+                >
+                  <span>{r.cta}</span>
+                </a>
+                {!r.url && <Doplnit>[DOPLNIT: odkaz na profil]</Doplnit>}
+              </div>
+            </section>
+          ))}
         </div>
       </div>
     </section>

@@ -81,7 +81,7 @@ export default function PillarsVideoCard({
   };
 
   return (
-    <div className="pillars-media-card" aria-label="Video — Bc. Zuzana Bajgerová v Abruzzu">
+    <div className="pillars-media-card" aria-label="Video: Bc. Zuzana Bajgerová v Abruzzu">
       <div className="pillars-media-card__viewport" onClick={() => togglePlay()}>
         <video
           ref={videoRef}

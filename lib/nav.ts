@@ -156,7 +156,7 @@ export const NAV_TREE: NavSection[] = [
     href: (l) => path('sluzby', l),
     children: [
       {
-        label: { cs: 'Servis při koupi A–Z', en: 'A–Z Purchase service', it: 'Servizio acquisto A–Z' },
+        label: { cs: 'Servis při koupi od A do Z', en: 'A–Z Purchase service', it: 'Servizio acquisto A–Z' },
         roleTag: 'K',
         href: (l) => `${path('sluzby', l)}#servis`,
       },

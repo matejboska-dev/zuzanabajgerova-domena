@@ -12,10 +12,15 @@ export default function FaqSection({
   faq,
   ctaHref,
   ctaLabel,
+  heading,
+  id = 'sec-11',
 }: {
   faq: FaqItem[];
-  ctaHref: string;
-  ctaLabel: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+  /** nadpis sekce; default je nadpis z hlavni strany */
+  heading?: React.ReactNode;
+  id?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
   const itemsRef = useRef<(HTMLDetailsElement | null)[]>([]);
@@ -113,11 +118,15 @@ export default function FaqSection({
     <section
       ref={ref}
       className="band band--stone faq-sec"
-      aria-labelledby="sec-11"
+      aria-labelledby={id}
     >
       <div className="wrap wrap--narrow">
-        <h2 id="sec-11" className="home-h2 faq-sec__heading">
-          Otázky, které dostávám <em>nejčastěji</em>
+        <h2 id={id} className="home-h2 faq-sec__heading">
+          {heading ?? (
+            <>
+              Otázky, které dostávám <em>nejčastěji</em>
+            </>
+          )}
         </h2>
 
         <div className="faq">
@@ -150,6 +159,7 @@ export default function FaqSection({
           ))}
         </div>
 
+        {ctaHref && ctaLabel && (
         <div className="faq-sec__cta">
           <Link href={ctaHref} className="btn btn--saffron faq-sec__btn">
             <span>{ctaLabel}</span>
@@ -167,6 +177,7 @@ export default function FaqSection({
             </svg>
           </Link>
         </div>
+        )}
       </div>
     </section>
   );

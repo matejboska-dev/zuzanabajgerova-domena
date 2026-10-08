@@ -33,9 +33,10 @@ export default (phase) => {
     // ne v middlewaru, protoze middleware rewrite na prerenderovane stranky
     // na Netlify spolehlive vracel 404
     async rewrites() {
+      // /en/... a /it/... se NEPREPISUJI (jinak by z nich bylo /cs/en/... a 404)
       return [
         { source: '/', destination: '/cs' },
-        { source: '/:path*', destination: '/cs/:path*' },
+        { source: '/:path((?!en(?:/|$)|it(?:/|$)).*)', destination: '/cs/:path' },
       ];
     },
   };

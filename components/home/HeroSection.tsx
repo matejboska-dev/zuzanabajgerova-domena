@@ -12,34 +12,18 @@ interface HeroSectionProps {
   };
 }
 
-// .webp: predem zmensene a prekomprimovane z puvodnich pexels JPG (5-6k px, 1.2-3.4 MB)
-// na max. sirku 2560 px, quality 76 -> ~500-630 KB/kus. Puvodni .jpg zustavaji v repu
-// jako zdroj, ale uz se z teto sekce nenacitaji.
-const HERO_BACKGROUNDS = [
-  {
-    src: '/hero/backgrounds/pexels-rinoadamo-35052274.webp',
-    title: 'Rocca Calascio · Gran Sasso',
-  },
-  {
-    src: '/hero/backgrounds/pexels-baran-robin-76507255-28377904.webp',
-    title: 'Pobřeží a vily v Itálii',
-  },
-  {
-    src: '/hero/backgrounds/pexels-aul-haque-391107949-14743851.webp',
-    title: 'Historické městečko v Abruzzu',
-  },
-  {
-    src: '/hero/backgrounds/pexels-c1superstar-33386371.webp',
-    title: 'Hory a příroda Abruzza',
-  },
-  {
-    src: '/hero/backgrounds/pexels-lefrancois-38709749.webp',
-    title: 'Italská architektura a slunce',
-  },
-  {
-    src: '/hero/backgrounds/pexels-titouan-jullien-504247666-29142700.webp',
-    title: 'Tyrkysové moře Costa dei Trabocchi',
-  },
+// Pořadí snímků: hlavní sdělení je moře. Snímky 1 až 4 jsou ze Zuzaniných videí (Google Drive),
+// takže ukazují skutečné Abruzzo. Původní stockové fotky z jezer (Como a podobně) a z jiných
+// regionů jsou pryč: web prodává Abruzzo, cizí místo by podkopalo důvěru. Rocca Calascio v Abruzzu je.
+// Vsechny jsou predem zmensene .webp (max. 2560 px), prvni se prednacita jako LCP.
+type HeroBg = { src: string; title: string };
+
+const HERO_BACKGROUNDS: HeroBg[] = [
+  { src: '/hero/backgrounds/abruzzo-montesilvano-plaz.webp', title: 'Pláž v Montesilvanu při západu slunce' },
+  { src: '/hero/backgrounds/abruzzo-pescara-z-letadla.webp', title: 'Pobřeží u Pescary z letadla' },
+  { src: '/hero/backgrounds/abruzzo-olivy-a-more.webp', title: 'Olivový háj a moře' },
+  { src: '/hero/backgrounds/abruzzo-montesilvano-colle.webp', title: 'Výhled na Montesilvano a moře' },
+  { src: '/hero/backgrounds/pexels-rinoadamo-35052274.webp', title: 'Rocca Calascio · Gran Sasso' },
 ];
 
 const LOCALIZED_COPY: Record<
@@ -58,12 +42,12 @@ const LOCALIZED_COPY: Record<
     badge: 'Bc. Zuzana Bajgerová · Realitní specialistka · Abruzzo, Itálie',
     h1Line1: 'Kupte dům v\u00A0Itálii',
     h1Accent: 'bez rizika a\u00A0v\u00A0češtině',
-    lead: 'Žiji celoročně v Abruzzu a provedu Vás celým procesem, od výběru přes notáře až po předání klíčů. Vy neřešíte nic v italštině.',
+    lead: 'Žiji celoročně v Abruzzu a provedu vás celým procesem, od výběru přes notáře až po předání klíčů. Vy neřešíte nic v italštině.',
     ctaPrimary: 'Prohlédnout nabídku',
     ctaSecondary: 'Chci nezávaznou konzultaci',
     stats: [
       { val: 'TOP 10', lbl: 'RE/MAX ČR, 6. místo' },
-      { val: '20+ let', lbl: 'v realitách · Hall of Fame' },
+      { val: '20 let', lbl: 'v Abruzzu · Hall of Fame' },
       { val: '100 %', lbl: 'servis v češtině na místě' },
     ],
   },
@@ -76,7 +60,7 @@ const LOCALIZED_COPY: Record<
     ctaSecondary: 'Free consultation',
     stats: [
       { val: 'TOP 10', lbl: 'RE/MAX Czech Republic' },
-      { val: '20+ yrs', lbl: 'real estate experience' },
+      { val: '20 years', lbl: 'of operating in Abruzzo' },
       { val: '100 %', lbl: 'complete local support' },
     ],
   },
@@ -89,7 +73,7 @@ const LOCALIZED_COPY: Record<
     ctaSecondary: 'Consulenza gratuita',
     stats: [
       { val: 'TOP 10', lbl: 'RE/MAX Rep. Ceca' },
-      { val: '20+ anni', lbl: 'di esperienza' },
+      { val: '20 anni', lbl: 'di attività in Abruzzo' },
       { val: '100 %', lbl: 'servizio completo sul posto' },
     ],
   },

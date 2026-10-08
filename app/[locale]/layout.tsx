@@ -4,6 +4,7 @@ import localFont from 'next/font/local';
 import { HTML_LANG, LOCALES, isLocale } from '@/lib/i18n';
 import SiteNav from '@/components/SiteNav';
 import SiteFooter from '@/components/SiteFooter';
+import Reveal from '@/components/Reveal';
 import '../globals.css';
 
 // Archivo je hlavni rez (nadpisy, text). Playfair na patkove akcenty.
@@ -49,6 +50,7 @@ export default async function LocaleLayout({
         <SiteNav locale={locale} />
         {children}
         <SiteFooter locale={locale} />
+        <Reveal />
       </body>
     </html>
   );

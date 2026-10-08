@@ -8,6 +8,14 @@ export const dynamic = 'force-dynamic';
 let running = false;
 
 export async function POST(req: Request) {
+  // v produkci smi scraper spustit jen ten, kdo zna SCRAPE_TOKEN (hlavicka x-scrape-token).
+  // bez toho by kdokoli z internetu mohl spoustet proces na serveru. nastaveni: DEPLOY.md
+  if (process.env.NODE_ENV === 'production') {
+    const token = process.env.SCRAPE_TOKEN;
+    if (!token || req.headers.get('x-scrape-token') !== token) {
+      return new Response('Not found', { status: 404 });
+    }
+  }
   if (running) {
     return new Response('Scraper už běží, počkejte na dokončení.', { status: 409 });
   }
