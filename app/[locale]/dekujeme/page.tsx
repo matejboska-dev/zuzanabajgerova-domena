@@ -18,7 +18,7 @@ export function generateStaticParams() {
 
 export const metadata: Metadata = {
   title: 'Děkuji za zprávu | Bc. Zuzana Bajgerová',
-  description: 'Vaše zpráva dorazila. Ozvu se vám do 24 hodin.',
+  description: 'Vaše zpráva dorazila. Ozvu se vám osobně.',
   robots: { index: false, follow: false },
 };
 
@@ -74,7 +74,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <StepCards
             items={[
               { title: 'Přečtu si vaši zprávu', text: 'Projdu, co hledáte, jaký máte rozpočet a kdy chcete kupovat.' },
-              { title: 'Ozvu se do 24 hodin', text: 'Telefonem, na WhatsApp nebo e-mailem, podle toho, co vám vyhovuje.' },
+              { title: 'Odpovím vám osobně', text: 'Telefonem, na WhatsApp nebo e-mailem, podle toho, co vám vyhovuje.' },
               { title: 'Probereme, co je reálné', text: 'Zdarma a bez závazků. Řeknu vám, co by koupě v Itálii obnášela.' },
             ]}
           />

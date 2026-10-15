@@ -1,0 +1,331 @@
+/* Service surfaces inherit the approved Abruzzo palette and typefaces. */
+.service-redesign { color: var(--cobalto); background: var(--smalto); }
+.service-redesign :is(h1,h2,h3) { letter-spacing: -.035em; text-wrap: balance; }
+.service-redesign h2 { font-size:var(--type-section); line-height: 1.09; font-weight: 500; }
+.service-redesign h2 em { font-size: .9em; line-height: 1.18; }
+.service-redesign :is(a,button,summary):focus-visible { outline: 2px solid var(--zafferano-ink); outline-offset: 6px; }
+.service-redesign .buy-section { padding-block: clamp(72px,9vw,136px); }
+.service-redesign .buy-heading-row { grid-template-columns: 1.15fr .85fr; gap: clamp(32px,6vw,100px); margin-bottom: 56px; }
+.service-redesign .buy-heading-row > p { font-size:var(--type-lead); line-height: 1.8; }
+.service-redesign .buy-button { min-height: 54px; padding: 12px 14px 12px 24px; font-size:var(--type-small); }
+.service-redesign .buy-text-action { font-size:var(--type-small); gap: 16px; }
+.service-redesign .svc-arrow { width: 30px; height: 30px; flex: 0 0 30px; }
+.service-redesign .buy-actions { gap: 24px; align-items: center; }
+.service-redesign figure { margin: 0; }
+.service-redesign img { display: block; }
+.service-redesign :is(.buy-photo-pair,.buy-community__photos,.editorial-gallery__photos) img,
+.estate-service__photo img,.estate-related img { transition: transform 800ms cubic-bezier(.16,1,.3,1); }
+@media (hover:hover) {
+  .estate-service__photo:hover img,.estate-related a:hover img { transform: scale(1.045); }
+}
+.estate-hero { width: var(--hero-width, calc(100% - 2 * clamp(14px, 1.6vw, 24px))); max-width: none; margin-inline: auto; display: grid; grid-template-columns: minmax(0,.94fr) minmax(0,1.06fr); min-height: min(800px,88svh); position: relative; }
+.estate-hero__copy { padding: clamp(32px,4vw,64px) clamp(32px,4.8vw,80px) 48px var(--page-inset); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.estate-hero .svc-crumbs { font-size:var(--type-caption); line-height: 1.6; margin-bottom: 48px; }
+.estate-hero .svc-crumbs span[aria-current] { color: var(--cobalto); }
+.service-redesign .estate-hero h1 { font-size:var(--type-editorial); font-weight: 500; line-height: 1.04; max-width: 15ch; }
+.service-redesign .estate-hero h1 em { display: block; font-size: .65em; margin-top: 22px; line-height: 1.17; font-weight: 400; color: var(--cobalto); }
+.estate-hero__copy > p { margin-block: 28px 32px; font-size:var(--type-body); line-height: 1.8; max-width: 48ch; }
+.estate-hero__down { display: flex; gap: 16px; align-items: center; font-size:var(--type-caption); min-height: 44px; margin-top: 46px; }
+.estate-hero__down .svc-arrow { transform: rotate(90deg); background: none; color: var(--cobalto); }
+.estate-hero__visual { position: relative; overflow: hidden; min-height: 650px; }
+.estate-hero__visual > img { position: absolute; inset: -6% 0 0; width: 100%; height: 112%; object-fit: cover; object-position: center; }
+.estate-hero--koupe .estate-hero__visual > img { object-position: 48% center; }
+.estate-hero--sprava .estate-hero__visual > img { object-position: 60% center; }
+.estate-hero__person { position: absolute; left: 24px; right: auto; bottom: 24px; display: flex; align-items: center; gap: 18px; background: var(--smalto); padding: 12px 24px 12px 12px; color: var(--cobalto); max-width: calc(100% - 56px); }
+.estate-hero__person > img { width: 64px; height: 76px; object-fit: cover; object-position: center 15%; }
+.estate-hero__person > span { display: grid; gap: 6px; font-size:var(--type-caption); line-height: 1.5; }
+.estate-hero__person strong { font-size:var(--type-small); font-weight: 600; }
+
+/* Use the homepage's shared image, card and shell radii. */
+.service-redesign :is(.estate-service__photo,.estate-journey__grid figure,.estate-related__grid figure,.buy-price__grid > figure) { border-radius: var(--r-img); overflow: hidden; }
+.service-redesign :is(.buy-photo-pair img,.editorial-gallery__photos img,.buy-community__photos img,.estate-contact-portrait,.estate-collection__contact img) { border-radius: var(--r-img); }
+.service-redesign .estate-hero__visual { border-radius: var(--r-shell); }
+.estate-hero__person { border-radius: var(--r-card); }
+.estate-hero__person > img { border-radius: var(--r-sm); }
+.estate-collection__landscape { border-radius: var(--r-shell); }
+.estate-collection__landscape figcaption { border-radius: var(--r-sm); }
+
+/* An editorial pair: a room to explore, and a smaller piece of real evidence. */
+.service-redesign .buy-photo-pair { grid-template-columns: 1.45fr 1fr; align-items: start; gap: 40px; }
+.service-redesign .buy-photo-pair figure { border-radius: var(--r-img); }
+.service-redesign .buy-photo-pair img { height: 530px; object-position: center; }
+.service-redesign .buy-photo-pair figure:last-child { margin-top: 110px; }
+.service-redesign .buy-photo-pair figure:last-child img { height: 420px; object-position: center 22%; }
+.service-redesign .buy-photo-pair figcaption { position: static; padding: 18px 0 0; font-size:var(--type-note); background: none; color: var(--cobalto); }
+.service-redesign .buy-concerns { margin-top: 56px; gap: 36px; border-top: 1px solid var(--line-l); padding-top: 30px; }
+.service-redesign .buy-concerns > div { padding: 0; border: 0; }
+.service-redesign .buy-concerns h3 { font-size:var(--type-card); }
+.service-redesign .buy-concerns p { font-size:var(--type-body); line-height: 1.75; }
+.service-redesign .buy-concerns .svc-arrow { display: none; }
+.service-redesign .editorial-transformation { grid-template-columns: 1.2fr 1fr; gap: 70px; }
+.service-redesign .editorial-transformation .svc-transform { border-radius: var(--r-img); }
+.service-redesign .editorial-transformation .svc-transform img { height: 550px; object-position: center; }
+.service-redesign .editorial-transformation > div:last-child { padding-block: 32px; }
+/* People, place and the local relationship. */
+.service-redesign .buy-presence { background: var(--cobalto-deep); }
+.service-redesign .buy-presence h2 { max-width: 20ch; margin-bottom: 60px; }
+.service-redesign .buy-presence__grid { grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 80px; }
+.service-redesign .buy-presence__landscape { border-radius: var(--r-img); }
+.service-redesign .buy-presence__landscape > img { height: 560px; object-position: center; }
+.service-redesign--rekonstrukce .buy-presence__landscape > img { object-position: center 33%; }
+.service-redesign .buy-presence__note { max-width: 34ch; font-size:var(--type-subheading); line-height: 1.45; margin-top: 30px; }
+.service-redesign .buy-presence__person { padding-top: 80px; }
+.service-redesign .buy-presence__person > img { width: 210px; height: 260px; object-fit: cover; object-position: center 25%; border-radius: var(--r-img); }
+.service-redesign--rekonstrukce .buy-presence__person > img { object-position: center 20%; }
+.service-redesign .buy-presence__person > p { font-size:var(--type-body); line-height: 1.8; max-width: 38ch; }
+.service-redesign .buy-presence__person .svc-signature { font-size:var(--type-editorial); margin-block: 28px 20px; }
+.service-redesign .buy-presence__landscape figcaption { padding: 100px 28px 28px; }
+/* Expandable scope keeps the responsibilities easy to scan. */
+.service-redesign .buy-support__grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 90px; align-items: start; }
+.estate-responsibilities details { border-bottom: 1px solid var(--line-l); }
+.estate-responsibilities details:first-child { border-top: 1px solid var(--line-l); }
+.estate-responsibilities summary { display: flex; gap: 24px; align-items: center; justify-content: space-between; min-height: 84px; padding-block: 20px; cursor: pointer; list-style: none; font-size:var(--type-card); line-height: 1.3; font-weight: 500; transition: color 0.2s ease; }
+.estate-responsibilities summary:hover { color: var(--cobalto); }
+.estate-responsibilities summary::-webkit-details-marker { display: none; }
+.estate-responsibilities p { font-size:var(--type-body); line-height: 1.8; padding: 0 46px 28px 0; }
+.estate-responsibilities details .buy-plus { transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease; }
+.estate-responsibilities details.is-open .buy-plus,
+.estate-responsibilities details[open]:not(.is-closing) .buy-plus { transform: rotate(45deg); background: var(--zafferano); color: var(--cobalto-deep); }
+.estate-responsibilities summary:hover .buy-plus { transform: scale(1.08); box-shadow: 0 4px 14px rgba(18, 43, 78, 0.2); }
+.estate-responsibilities details.is-open summary:hover .buy-plus,
+.estate-responsibilities details[open]:not(.is-closing) summary:hover .buy-plus { transform: rotate(45deg) scale(1.08); }
+.service-redesign .buy-support__visual { position: sticky; top: 125px; height: 600px; min-height: 0; border-radius: var(--r-img); }
+.service-redesign .buy-support__visual > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.service-redesign .buy-support__visual > div { position: absolute; inset: auto 0 0; padding: 120px 32px 32px; background: linear-gradient(transparent,rgba(12,29,54,.94)); text-align: left; }
+.service-redesign .buy-support__visual h3 { font-size:var(--type-section); max-width: 17ch; line-height: 1.2; }
+.estate-journey { background: var(--smalto-2); }
+.estate-journey .buy-heading-row > a { justify-self: end; }
+.estate-journey__grid { display: grid; grid-template-columns: minmax(0,.95fr) minmax(0,1.05fr); gap: 90px; align-items: center; }
+.estate-journey__grid figure { overflow: hidden; }
+.estate-journey__grid figure img { width: 100%; height: 560px; object-fit: cover; }
+.estate-journey ol { list-style: none; padding: 0; margin: 0; }
+.estate-journey li { display: grid; grid-template-columns: 42px minmax(0,1fr) 30px; gap: 20px; padding-block: 26px; border-top: 1px solid var(--line-l); }
+.estate-journey li:last-child { border-bottom: 1px solid var(--line-l); }
+.estate-journey li > span { font-family: var(--f-accent); font-size:var(--type-section); font-variant-numeric: tabular-nums; color: var(--zafferano-ink); line-height: 1; }
+.estate-journey h3 { font-size:var(--type-card); line-height: 1.3; font-weight: 500; }
+.estate-journey p { font-size:var(--type-body); line-height: 1.8; margin-top: 12px; }
+.estate-journey li > .svc-arrow { background: none; color: var(--cobalto); }
+/* Galleries read as photographs, with captions outside the image. */
+.service-redesign .editorial-gallery__photos,.service-redesign .buy-community__photos { grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: start; }
+.service-redesign .editorial-gallery__photos figure,.service-redesign .buy-community__photos figure { border-radius: var(--r-img); }
+.service-redesign .editorial-gallery__photos figure:last-child,.service-redesign .buy-community__photos figure:last-child { margin-top: 95px; }
+.service-redesign .editorial-gallery__photos img,.service-redesign .buy-community__photos img { width: 100%; height: 470px; object-fit: cover; object-position: center; }
+.service-redesign .editorial-gallery__photos figure:last-child img,.service-redesign .buy-community__photos figure:last-child img { height: 370px; }
+.service-redesign .editorial-gallery__photos figcaption,.service-redesign .buy-community__photos figcaption { position: static; padding: 18px 0 0; font-size:var(--type-note); color: var(--cobalto); background: none; }
+.service-redesign .buy-price { padding-top: 100px; }
+.service-redesign .buy-price__heading { justify-content: start; text-align: left; margin-bottom: 50px; }
+.service-redesign .buy-price__heading h2 { max-width: 23ch; }
+.service-redesign .buy-price__grid { grid-template-columns: minmax(0,1fr) minmax(0,.9fr) minmax(0,1fr); gap: 24px; border-radius: var(--r-img); overflow: visible; align-items: stretch; }
+.service-redesign .buy-price__panel { padding: 30px 0; background: none; border-top: 1px solid var(--cobalto); }
+.service-redesign .buy-price__panel h3 { font-size:var(--type-subheading); min-height: 70px; font-weight: 500; }
+.service-redesign .buy-price__panel li { font-size:var(--type-body); padding-block: 18px; }
+.service-redesign .buy-price__grid > figure { margin-inline: 16px; min-height: 500px; }
+.service-redesign .buy-price__note { text-align: left; margin: 32px 0 0; max-width: 76ch; font-size:var(--type-small); }
+.service-redesign .buy-proof { background: var(--cobalto); }
+.service-redesign .buy-proof__grid { grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr); gap: 80px; }
+.service-redesign .buy-proof__video .cvideo { width: min(100%,360px); margin-inline: auto; border-radius: var(--r-img); }
+.service-redesign .buy-proof__invitation h3 { font-family: var(--f-accent); font-weight: 400; font-size:var(--type-section); line-height: 1.18; }
+.service-redesign .buy-proof__invitation li { font-size:var(--type-body); }
+.service-redesign .buy-faq { gap: 90px; grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr); }
+.service-redesign .buy-faq summary { font-size:var(--type-lead); padding-block: 26px; cursor: pointer; transition: color 0.2s ease; }
+.service-redesign .buy-faq summary:hover { color: var(--cobalto); }
+.service-redesign .buy-faq details .buy-plus { transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease; }
+.service-redesign .buy-faq details.is-open .buy-plus,
+.service-redesign .buy-faq details[open]:not(.is-closing) .buy-plus { transform: rotate(45deg); background: var(--zafferano); color: var(--cobalto-deep); }
+.service-redesign .buy-faq summary:hover .buy-plus { transform: scale(1.08); box-shadow: 0 4px 14px rgba(18, 43, 78, 0.2); }
+.service-redesign .buy-faq details.is-open summary:hover .buy-plus,
+.service-redesign .buy-faq details[open]:not(.is-closing) summary:hover .buy-plus { transform: rotate(45deg) scale(1.08); }
+.service-redesign .buy-faq details > p { font-size:var(--type-body); }
+.service-redesign .buy-contact { background: var(--cobalto-deep); }
+.service-redesign .buy-contact__grid { gap: 100px; grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: center; }
+.estate-contact-portrait { width: 86px; height: 110px; object-fit: cover; object-position: center 20%; margin-bottom: 32px; }
+.service-redesign .buy-contact .lf__field input,.service-redesign .buy-contact .lf__field textarea { background: transparent; border-radius: var(--r-md); padding: 16px; }
+.estate-related { padding-block: 100px 120px; }
+.estate-related__grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 32px; }
+.estate-related__grid figure { overflow: hidden; }
+.estate-related__grid img { width: 100%; height: 260px; object-fit: cover; }
+.estate-related__grid a > span { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 80px; font-size:var(--type-title); }
+/* Services are a sequence of distinct scenes, rather than a uniform card grid. */
+.estate-collection__head { padding-block: 34px 65px; }
+.estate-collection__head .svc-crumbs { margin-bottom: 50px; }
+.service-redesign .estate-collection__head h1 { font-size:var(--type-display); line-height: 1.04; font-weight: 500; max-width: 22ch; }
+.estate-collection__head h1 em { display: block; font-family: var(--f-accent); font-weight: 400; margin-top: 8px; }
+.estate-collection__intro { display: flex; justify-content: space-between; align-items: flex-end; gap: 60px; margin-top: 42px; }
+.estate-collection__intro p { font-size:var(--type-lead); line-height: 1.8; max-width: 62ch; }
+.estate-collection__intro a { flex-shrink: 0; }
+.estate-collection__landscape { height: 420px; position: relative; overflow: hidden; }
+.estate-collection__landscape img { height: 100%; width: 100%; object-fit: cover; object-position: center 62%; }
+.estate-collection__landscape figcaption { position: absolute; bottom: 24px; right: max(var(--margin),calc((100vw - var(--wrap))/2)); font-size:var(--type-note); color: var(--smalto); background: var(--cobalto-deep); padding: 10px 16px; }
+.estate-collection__services { padding-block: 120px; }
+.estate-service { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); align-items: center; gap: 100px; scroll-margin-top: 125px; }
+.estate-service + .estate-service { margin-top: 140px; }
+.estate-service:nth-child(even) { grid-template-columns: minmax(0,.85fr) minmax(0,1.15fr); }
+.estate-service:nth-child(even) .estate-service__photo { order: 2; }
+.estate-service__photo { position: relative; overflow: hidden; }
+.estate-service__photo img { width: 100%; height: 570px; object-fit: cover; }
+.estate-service__photo > .svc-arrow { position: absolute; bottom: 24px; right: 24px; background: var(--smalto); color: var(--cobalto); width: 52px; height: 52px; transition: transform 0.5s var(--ease-out, ease), background 0.3s ease, color 0.3s ease; }
+.estate-service__photo:is(:hover, :focus-visible) > .svc-arrow,
+.estate-related__grid a:is(:hover, :focus-visible) .svc-arrow { transform: rotate(-35deg); }
+.service-redesign .estate-service__copy h2 { font-size:var(--type-section); }
+.estate-service__copy h2 em { font-size: .67em; margin-top: 22px; }
+.estate-service__copy p { font-size:var(--type-body); line-height: 1.8; margin-block: 30px; }
+.estate-collection__contact { padding-block: 100px; background: var(--cobalto-deep); color: var(--smalto); }
+.estate-collection__contact > div { display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr); gap: 100px; align-items: center; }
+.estate-collection__contact img { width: 100%; height: 520px; object-fit: cover; object-position: center 25%; }
+.estate-collection__contact p { font-size:var(--type-lead); line-height: 1.8; margin-top: 30px; max-width: 44ch; }
+.estate-collection__contact .svc-signature { font-size:var(--type-signature); margin-block: 28px 36px; }
+.estate-collection__contact .buy-text-action .svc-arrow { background: var(--smalto); color: var(--cobalto); }
+@media (max-width:1100px) {
+  .estate-hero { min-height: 760px; }
+  .estate-hero__copy { padding-right: 32px; }
+  .service-redesign .estate-hero h1 { font-size:var(--type-editorial); }
+  .estate-hero .svc-crumbs { margin-bottom: 30px; }
+  .service-redesign :is(.buy-presence__grid,.buy-support__grid,.estate-journey__grid,.buy-faq,.buy-contact__grid) { gap: 40px; }
+  .estate-service,.estate-collection__contact > div { gap: 50px; }
+  .estate-service__photo img { height: 490px; }
+  .service-redesign .buy-price__grid { grid-template-columns: minmax(0,1fr) minmax(0,.65fr) minmax(0,1fr); gap: 16px; }
+  .service-redesign .buy-price__grid > figure { margin-inline: 0; }
+}
+@media (max-width:760px) {
+  .service-redesign .buy-section { padding-block: 64px; }
+  .service-redesign h2 { font-size:var(--type-mobile-display); }
+  .estate-hero { grid-template-columns: 1fr; min-height: 0; }
+  .estate-hero__copy { padding: 22px var(--margin) 36px; }
+  .estate-hero .svc-crumbs { margin-bottom: 30px; }
+  .service-redesign .estate-hero h1 { font-size:var(--type-mobile-display); max-width: 18ch; }
+  .service-redesign .estate-hero h1 em { font-size: .72em; margin-top: 18px; }
+  .estate-hero__copy > p { font-size:var(--type-body); margin-block: 24px; }
+  .estate-hero__down { margin-top: 24px; }
+  .estate-hero__visual { min-height: 0; height: 440px; }
+  .estate-hero__person { left: 18px; right: auto; bottom: 18px; padding: 10px 16px 10px 10px; max-width: calc(100% - 36px); gap: 12px; }
+  .estate-hero__person > img { width: 50px; height: 62px; }
+  .estate-hero__person strong { font-size:var(--type-note); }
+  .estate-hero__person > span { font-size:var(--type-caption); }
+  .service-redesign .buy-heading-row { grid-template-columns: 1fr; gap: 24px; margin-bottom: 36px; }
+  .service-redesign .buy-heading-row > p { font-size:var(--type-body); }
+  .service-redesign .buy-photo-pair { grid-template-columns: minmax(0,1.25fr) minmax(0,1fr); gap: 16px; }
+  .service-redesign .buy-photo-pair img { height: 350px; }
+  .service-redesign .buy-photo-pair figure:last-child { margin-top: 65px; }
+  .service-redesign .buy-photo-pair figure:last-child img { height: 285px; }
+  .service-redesign .buy-concerns { grid-template-columns: 1fr; gap: 24px; margin-top: 32px; }
+  .service-redesign .buy-concerns > div { border-bottom: 1px solid var(--line-l); padding-bottom: 24px; }
+  .service-redesign .buy-concerns h3 { font-size:var(--type-card); }
+  .service-redesign .buy-concerns > div > div { margin-bottom: 10px; }
+  .service-redesign .editorial-transformation { grid-template-columns: 1fr; gap: 30px; }
+  .service-redesign .editorial-transformation .svc-transform img { height: 440px; }
+  .service-redesign .editorial-transformation > div:last-child { padding: 0; }
+  .service-redesign .buy-presence h2 { margin-bottom: 36px; }
+  .service-redesign .buy-presence__grid { grid-template-columns: 1fr; gap: 40px; }
+  .service-redesign .buy-presence__landscape > img { height: 440px; }
+  .service-redesign .buy-presence__landscape figcaption { padding: 70px 20px 20px; }
+  .service-redesign .buy-presence__note { font-size:var(--type-card); }
+  .service-redesign .buy-presence__person { padding: 0; display: block; }
+  .service-redesign .buy-presence__person > img { width: 160px; height: 210px; }
+  .service-redesign .buy-presence__person > p { font-size:var(--type-body); max-width: 52ch; }
+  .service-redesign .buy-support__grid { grid-template-columns: 1fr; gap: 32px; }
+  .estate-responsibilities summary { min-height: 76px; font-size:var(--type-card); }
+  .estate-responsibilities p { font-size:var(--type-body); }
+  .service-redesign .buy-support__visual { position: relative; top: auto; height: 360px; }
+  .service-redesign .buy-support__visual > div { padding: 100px 24px 24px; }
+  .estate-journey .buy-heading-row > a { justify-self: start; }
+  .estate-journey__grid { grid-template-columns: 1fr; gap: 30px; }
+  .estate-journey__grid figure img { height: 340px; }
+  .estate-journey li { grid-template-columns: 36px minmax(0,1fr); gap: 18px; padding-block: 24px; }
+  .estate-journey li > .svc-arrow { display: none; }
+  .estate-journey h3 { font-size:var(--type-card); }
+  .service-redesign .editorial-gallery__photos,.service-redesign .buy-community__photos { grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: 16px; }
+  .service-redesign .editorial-gallery__photos img,.service-redesign .buy-community__photos img { height: 340px; }
+  .service-redesign .editorial-gallery__photos figure:last-child,.service-redesign .buy-community__photos figure:last-child { margin-top: 65px; }
+  .service-redesign .editorial-gallery__photos figure:last-child img,.service-redesign .buy-community__photos figure:last-child img { height: 275px; }
+  .service-redesign .buy-price__heading { margin-bottom: 36px; }
+  .service-redesign .buy-price__grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 28px; }
+  .service-redesign .buy-price__grid > figure { display: block; grid-column: 1 / -1; grid-row: 1; height: 320px; min-height: 0; }
+  .service-redesign .buy-price__panel { padding: 24px 0 0; }
+  .service-redesign .buy-price__panel h3 { font-size:var(--type-card); min-height: 0; }
+  .service-redesign .buy-proof__grid { grid-template-columns: 1fr; gap: 44px; }
+  .service-redesign .buy-proof__video .cvideo { width: min(100%,320px); }
+  .service-redesign .buy-proof__invitation h3 { font-size:var(--type-section); }
+  .service-redesign .buy-faq,.service-redesign .buy-contact__grid { grid-template-columns: 1fr; gap: 40px; }
+  .service-redesign .buy-faq summary { font-size:var(--type-lead); }
+  .estate-related { padding-block: 64px 90px; }
+  .estate-related__grid { grid-template-columns: 1fr; gap: 28px; }
+  .estate-related__grid a { display: grid; grid-template-columns: 88px minmax(0,1fr); align-items: center; gap: 18px; }
+  .estate-related__grid img { height: 88px; }
+  .estate-related__grid a > span { min-height: 60px; }
+  .estate-collection__head { padding-block: 22px 42px; }
+  .estate-collection__head .svc-crumbs { margin-bottom: 30px; }
+  .service-redesign .estate-collection__head h1 { font-size:var(--type-mobile-display); }
+  .estate-collection__intro { flex-direction: column; align-items: start; gap: 24px; margin-top: 28px; }
+  .estate-collection__intro p { font-size:var(--type-body); }
+  .estate-collection__landscape { height: 300px; }
+  .estate-collection__services { padding-block: 64px; }
+  .estate-service,.estate-service:nth-child(even) { grid-template-columns: 1fr; gap: 30px; }
+  .estate-service:nth-child(even) .estate-service__photo { order: 0; }
+  .estate-service + .estate-service { margin-top: 80px; }
+  .estate-service__photo img { height: 380px; }
+  .service-redesign .estate-service__copy h2 { font-size:var(--type-section); }
+  .estate-service__copy p { margin-block: 24px; font-size:var(--type-body); }
+  .estate-collection__contact { padding-block: 64px; }
+  .estate-collection__contact > div { grid-template-columns: 1fr; gap: 40px; }
+  .estate-collection__contact img { max-width: 400px; height: 400px; }
+  .estate-collection__contact p { font-size:var(--type-body); }
+}
+@media (max-width:420px) {
+  .service-redesign .buy-actions { gap: 12px 20px; align-items: flex-start; }
+  .estate-hero__visual { height: 350px; }
+  .service-redesign .buy-photo-pair,.service-redesign .editorial-gallery__photos,.service-redesign .buy-community__photos { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  .service-redesign .buy-photo-pair figure:last-child,.service-redesign .editorial-gallery__photos figure:last-child,.service-redesign .buy-community__photos figure:last-child { margin-top: 0; }
+  .service-redesign .buy-photo-pair img,.service-redesign .buy-photo-pair figure:last-child img { height: 220px; }
+  .service-redesign .editorial-gallery__photos img,.service-redesign .editorial-gallery__photos figure:last-child img,.service-redesign .buy-community__photos img,.service-redesign .buy-community__photos figure:last-child img { height: 220px; }
+  .service-redesign .buy-presence__landscape > img { height: 360px; }
+  .service-redesign .buy-price__grid { grid-template-columns: 1fr; gap: 36px; }
+  .service-redesign .buy-price__panel ul { margin-top: 20px; }
+  .service-redesign .buy-contact .lf__grid { grid-template-columns: 1fr; }
+  .service-redesign .buy-contact .lf__field { grid-column: 1 / -1; }
+  .estate-service__photo img { height: 330px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .service-redesign *,.service-redesign *::before,.service-redesign *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* On a phone, introduce the place before the longer explanation. */
+@media (max-width:760px) {
+  .estate-hero__copy { display: contents; }
+  .estate-hero .svc-crumbs { order: 0; margin: 22px var(--margin) 28px; }
+  .service-redesign .estate-hero h1 { order: 1; margin-inline: var(--margin); }
+  .estate-hero .buy-actions { order: 2; margin: 26px var(--margin) 32px; }
+  .estate-hero__visual { order: 3; }
+  .estate-hero__copy > p { order: 4; margin: 28px var(--margin) 0; }
+  .estate-hero__down { order: 5; margin: 16px var(--margin) 32px; }
+}
+
+/* The person is real, the service photograph stays the homepage's shared visual. */
+.estate-hero__portrait { position:absolute;right:-12%;bottom:0;width:85%;height:85%;pointer-events:none; }
+.estate-hero__portrait img { width:100%;height:100%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 16px 30px rgba(12,29,54,.22)); }
+.estate-hero__person { z-index:2;padding:16px 22px;box-shadow:0 12px 32px -12px rgba(12,29,54,.2); }
+.estate-collection__landscape { width:var(--hero-width, calc(100% - 2 * clamp(14px, 1.6vw, 24px)))!important;max-width:none!important;margin-inline:auto!important;position:relative; }
+.estate-collection__portrait { position:absolute;right:5%;bottom:0;height:95%;width:48%; }
+.estate-collection__portrait img { width:100%;height:100%;object-fit:contain;object-position:bottom; }
+@media(max-width:760px) {
+  .estate-hero .svc-crumbs,.service-redesign .estate-hero h1,.estate-hero .buy-actions,.estate-hero__copy>p,.estate-hero__down { margin-inline:var(--page-inset); }
+  .estate-hero__copy { padding-inline:var(--page-inset); }
+  .estate-hero__visual { height:420px; }
+  .estate-collection__landscape { height:350px; }
+  .estate-collection__portrait { right:-14%;width:85%; }
+}
+
+.estate-hero__image-note { font-size:var(--type-caption);color:var(--ink-soft); }
+.estate-service__image-note { position:absolute;bottom:24px;left:24px;background:var(--cobalto-deep);color:var(--smalto);padding:7px 12px;border-radius:var(--r-pill);font-size:var(--type-caption);line-height:1.5;max-width:calc(100% - 88px); }
+
+/* Compact service introductions retain the exact homepage title images. */
+.estate-collection__choices { display:flex;flex-wrap:wrap;gap:10px;max-width:540px;margin-top:16px; }
+.estate-hero__person { padding:12px; }
+.estate-hero__person>img { border-radius:var(--r-md); }
+.service-redesign .estate-hero h1 { font-size:var(--type-editorial);max-width:18ch;letter-spacing:-.035em; }
+.service-redesign .estate-hero h1 em { font-size:.56em;line-height:1.3; }
+@media(max-width:760px) {
+ .service-redesign .estate-hero h1 { font-size:var(--type-mobile-display); }
+ .service-redesign .estate-collection__head h1 { font-size:var(--type-mobile-display); }
+ .estate-hero__visual { height:clamp(280px,85vw,380px); }
+ .estate-service__copy h2 { font-size:var(--type-mobile-display); }
+}

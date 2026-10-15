@@ -1,7 +1,7 @@
 // JEDINE misto, odkud odchazeji formulare (kontakt, konzultace, hlavni strana, dotaznik).
 // Posila na /api/lead (app/api/lead/route.ts), tam se rozhoduje o doruceni (e-mail, webhook).
 
-export type LeadSource = 'homepage' | 'kontakt' | 'konzultace' | 'dotaznik' | 'nemovitost' | 'hlidac' | 'nabidka-na-miru';
+export type LeadSource = 'homepage' | 'kontakt' | 'konzultace' | 'dotaznik' | 'nemovitost' | 'hlidac' | 'nabidka-na-miru' | 'sluzba';
 
 export type LeadResult = { ok: boolean; error?: string };
 

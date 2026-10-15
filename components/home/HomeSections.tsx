@@ -7,8 +7,6 @@ import {
   HERO,
   PROOF,
   FEARS,
-  PRICE_IN,
-  PRICE_OUT,
   PILLARS,
   PROCESS,
   AFTER,
@@ -27,6 +25,8 @@ import Slider from '@/components/Slider';
 import HeroSection from './HeroSection';
 import ServicesCards from './ServicesCards';
 import PillarsVideoCard from './PillarsVideoCard';
+import PillarIcon from './PillarIcon';
+import PriceOverview from './PriceOverview';
 import ProcessSection from './ProcessSection';
 import GuidesCards from './GuidesCards';
 import TestimonialsCarousel from './TestimonialsCarousel';
@@ -36,9 +36,19 @@ import CommunitySection from './CommunitySection';
 import RenoSection from './RenoSection';
 import VideoAnswers from './VideoAnswers';
 import AboutSection from './AboutSection';
+import FearsAccordion from './FearsAccordion';
 
 const WA_PREFILLED = waLink();
 const TEL = PHONE_TEL;
+
+const PILLAR_SUMMARIES = [
+  'Jsem na místě a znám lidi, se kterými při koupi spolupracuji.',
+  'Prohlídky, dokumenty i přepisy energií řešíme společně.',
+  'Celou koupí vás provedu srozumitelně v češtině.',
+  'Pomohu vám také s rekonstrukcí, správou a povinnostmi po koupi.',
+  'Spolupracuji s místními realitkami a dalšími prověřenými odborníky.',
+  'Při jednání hájím vaše zájmy a usiluji o dobré podmínky.',
+];
 
 /** stridava sekce (layout B): media a text, strany se u dalsi sekce prohodi.
  *  `n` uz se nikde nezobrazuje, slouzi jen jako kotva (id + aria-labelledby). */
@@ -69,12 +79,6 @@ function ZigRow({
       <div className="wrap zig__grid">
         <div className="zig__media">{media}</div>
         <div className="zig__text">
-          {badge && (
-            <div className="listings__badge">
-              <span className="listings__badge-dot" />
-              <span>{badge}</span>
-            </div>
-          )}
           <h2 id={`sec-${n}`} className="home-h2">
             {title}
           </h2>
@@ -101,27 +105,47 @@ const LISTINGS_COPY: Record<
     badge: 'Aktuální nabídka · Abruzzo, Itálie',
     titleLine: 'Co teď nabízím',
     titleAccent: 'v italském Abruzzu',
-    lead: 'Nabídky se aktualizují automaticky, každý den. Když nabídka zmizí, je prodaná. Ceny uvádím v eurech i v korunách.',
+    lead: 'Výběr nemovitostí z mé nabídky v Abruzzu. Dostupnost a aktuální cenu vám potvrdím před prohlídkou.',
     cta: 'Všechny nabídky nemovitostí',
-    updated: 'Aktualizováno',
+    updated: 'Údaje k',
   },
   en: {
     badge: 'Current Portfolio · Abruzzo, Italy',
     titleLine: 'Current Properties',
     titleAccent: 'in Abruzzo, Italy',
-    lead: 'Listings are updated automatically every day. When a property is sold, it is removed immediately. Prices shown in EUR.',
+    lead: 'A selection of properties in Abruzzo. I will confirm availability and the current price before your viewing.',
     cta: 'View all property listings',
-    updated: 'Updated',
+    updated: 'Data as of',
   },
   it: {
     badge: 'Portfolio attuale · Abruzzo, Italia',
     titleLine: 'Immobili disponibili',
     titleAccent: 'in Abruzzo, Italia',
-    lead: 'Le offerte si aggiornano automaticamente ogni giorno. Quando un immobile scompare, è venduto. Prezzi trasparenti.',
+    lead: 'Una selezione di immobili in Abruzzo. Confermerò disponibilità e prezzo aggiornato prima della visita.',
     cta: 'Tutti gli immobili disponibili',
-    updated: 'Aggiornato',
+    updated: 'Dati al',
   },
 };
+
+const VISIBLE_FEARS = FEARS;
+
+// Na homepage musí odpověď odpovídat zdejší cenové sekci: inzerovaná cena už
+// zahrnuje náklady koupě. Sdílený obsah podstránek tím neměníme.
+const HOME_FAQ = FAQ.map((item) => {
+  if (item.q === 'Kolik zaplatím navíc nad cenu nemovitosti?') {
+    return {
+      q: 'Co zahrnuje cena uvedená v inzerátu?',
+      a: 'U nabídek na tomto webu je v uvedené ceně započítaná nemovitost, daň z převodu, notář i naše provize. Zvlášť počítejte s případnou rekonstrukcí, vybavením a následnými ročními poplatky.',
+    };
+  }
+  if (item.q === 'Můžu nemovitost pronajímat a vydělávat na ní?') {
+    return {
+      q: 'Můžu nemovitost pronajímat?',
+      a: 'Ano. Pomohu s přípravou apartmánu pro krátkodobý nebo sezónní pronájem, úklidem a komunikací s hosty. Konkrétní možnosti a očekávané náklady spolu probereme pro vybranou nemovitost.',
+    };
+  }
+  return item;
+});
 
 const FEARS_COPY: Record<
   Locale,
@@ -137,15 +161,15 @@ const FEARS_COPY: Record<
   }
 > = {
   cs: {
-    // pocet otazek se pocita z dat (FEARS), cislo neni natvrdo
-    badge: `${FEARS.length} ${csPlural(FEARS.length, 'klíčová otázka', 'klíčové otázky', 'klíčových otázek')} · Bezpečná koupě`,
-    titleLine: `Znám ${csNum(FEARS.length)} ${csPlural(FEARS.length, 'otázku', 'otázky', 'otázek')}, které vám`,
+    // Počet odpovídá všem zobrazeným otázkám.
+    badge: `${VISIBLE_FEARS.length} ${csPlural(VISIBLE_FEARS.length, 'klíčová otázka', 'klíčové otázky', 'klíčových otázek')} · Bezpečná koupě`,
+    titleLine: `Znám ${csNum(VISIBLE_FEARS.length)} ${csPlural(VISIBLE_FEARS.length, 'otázku', 'otázky', 'otázek')}, které vám`,
     titleAccent: 'teď běží hlavou',
     lead: 'Odpovím na ně hned. Dokud na ně neodpovím, žádná nemovitost vás nezajímá.',
     cta: 'Jak koupit nemovitost v Itálii',
     topBadge: 'Osobní garance',
-    mediaImgAlt: 'Bc. Zuzana Bajgerová v Abruzzu u moře',
-    items: FEARS,
+    mediaImgAlt: 'Bc. Zuzana Bajgerová – osobní dohled a garance bezpečné koupě',
+    items: VISIBLE_FEARS,
   },
   en: {
     badge: '4 Key Questions · Safe Purchase',
@@ -154,7 +178,7 @@ const FEARS_COPY: Record<
     lead: 'Let me answer them right away. Until they are resolved, no property matters yet.',
     cta: 'How to buy property in Italy',
     topBadge: 'Personal guarantee',
-    mediaImgAlt: 'Bc. Zuzana Bajgerová in Abruzzo by the sea',
+    mediaImgAlt: 'Bc. Zuzana Bajgerová – personal oversight and safe purchase guarantee',
     items: [
       {
         q: '“I don’t understand the language or Italian law.”',
@@ -181,7 +205,7 @@ const FEARS_COPY: Record<
     lead: 'Rispondo subito. Solo dopo aver chiarito ogni aspetto ha senso valutare gli immobili.',
     cta: 'Come acquistare un immobile in Italia',
     topBadge: 'Garanzia diretta',
-    mediaImgAlt: 'Bc. Zuzana Bajgerová in Abruzzo sul mare',
+    mediaImgAlt: 'Bc. Zuzana Bajgerová – supervisione personale e garanzia di acquisto sicuro',
     items: [
       {
         q: '“Non conosco la lingua o il diritto immobiliare locale.”',
@@ -200,105 +224,6 @@ const FEARS_COPY: Record<
         a: 'Volture utenze, imposte, eventuale ristrutturazione, arredo e gestione dell’immobile. Il servizio non si ferma all’atto.',
       },
     ],
-  },
-};
-
-const PRICE_COPY: Record<
-  Locale,
-  {
-    badge: string;
-    titleLine: string;
-    titleAccent: string;
-    intro?: string;
-    lead: string;
-    colInTitle: string;
-    colInPill: string;
-    itemsIn: string[];
-    colOutTitle: string;
-    colOutPill: string;
-    itemsOut: string[];
-    cta: string;
-    topBadge: string;
-    mediaBadgeTitle: string;
-    mediaBadgeSubtitle: string;
-    mediaImgAlt: string;
-  }
-> = {
-  cs: {
-    badge: 'Transparentní podmínky · Žádné skryté poplatky',
-    titleLine: 'Cena, kterou vidíte na internetu,',
-    titleAccent: 'je konečná',
-    intro: 'Cena je konečná a zahrnuje cenu apartmánu, daň z převodu nemovitosti, odměnu notáře a naši provizi.',
-    lead: 'Neúčtuji si víc podle toho, kolik práce nakonec bude. Tohle je v naší provizi vždycky zahrnuto.',
-    colInTitle: 'V naší provizi je vždy',
-    colInPill: 'Zahrnuto',
-    itemsIn: PRICE_IN,
-    colOutTitle: 'V ceně není, ale řeknu vám to předem',
-    colOutPill: 'Předem známo',
-    itemsOut: PRICE_OUT,
-    cta: 'Spočítat přesné náklady koupě',
-    topBadge: 'Férové podmínky',
-    mediaBadgeTitle: '100% transparentní odměna',
-    mediaBadgeSubtitle: 'Žádné skryté provize ani vícenáklady',
-    mediaImgAlt: 'Koupě nemovitosti v Itálii a transparentní předání klíčů s poradcem',
-  },
-  en: {
-    badge: 'Transparent Terms · No Hidden Fees',
-    titleLine: 'The price I quote you',
-    titleAccent: 'is final',
-    lead: 'I do not charge more depending on how much work is ultimately needed. This is always included in my fee.',
-    colInTitle: 'Included in my fee',
-    colInPill: 'Included',
-    itemsIn: [
-      'Property scouting and viewing organisation',
-      'Price negotiation with the seller',
-      'Communication with Italian agencies, notary, lawyer, and surveyor',
-      'Codice fiscale, powers of attorney, translations',
-      'Utility transfers and tax registrations',
-      'Guidance through to key handover',
-    ],
-    colOutTitle: 'Not included, but stated upfront',
-    colOutPill: 'Known upfront',
-    itemsOut: [
-      'Property transfer taxes (to the state)',
-      'Notary fees',
-      'Any renovation and furnishing',
-      'Running costs, specifically IMU and TARI',
-    ],
-    cta: 'Calculate purchase costs',
-    topBadge: 'Fair Terms',
-    mediaBadgeTitle: '100% Transparent Fee',
-    mediaBadgeSubtitle: 'No hidden commissions or surprise costs',
-    mediaImgAlt: 'Property purchase in Italy with transparent guidance and key handover',
-  },
-  it: {
-    badge: 'Condizioni chiare · Zero costi nascosti',
-    titleLine: 'Il compenso concordato',
-    titleAccent: 'è definitivo',
-    lead: 'Nessun aumento in base al lavoro necessario. Tutto questo è sempre compreso nel mio compenso.',
-    colInTitle: 'Compreso nel prezzo',
-    colInPill: 'Incluso',
-    itemsIn: [
-      'Ricerca immobili e organizzazione visite',
-      'Trattativa del prezzo con il venditore',
-      'Contatti con agenzie locali, notaio, legale e geometra',
-      'Codice fiscale, procure, traduzioni',
-      'Volture utenze e pratiche tributarie',
-      'Accompagnamento fino alla consegna chiavi',
-    ],
-    colOutTitle: 'Non incluso, ma comunicato in anticipo',
-    colOutPill: 'Trasparenza',
-    itemsOut: [
-      'Imposte sull’acquisto dell’immobile',
-      'Onorario del notaio',
-      'Eventuale ristrutturazione e arredo',
-      'Costi di gestione ordinaria (IMU e TARI)',
-    ],
-    cta: 'Calcola i costi di acquisto',
-    topBadge: 'Trasparenza',
-    mediaBadgeTitle: 'Compenso trasparente al 100%',
-    mediaBadgeSubtitle: 'Nessuna spesa nascosta o sorpresa finale',
-    mediaImgAlt: 'Acquisto immobiliare in Italia e consegna trasparente delle chiavi',
   },
 };
 
@@ -322,7 +247,6 @@ export default function HomeSections({
 
   const listingsCopy = LISTINGS_COPY[locale] ?? LISTINGS_COPY.cs;
   const fearsCopy = FEARS_COPY[locale] ?? FEARS_COPY.cs;
-  const priceCopy = PRICE_COPY[locale] ?? PRICE_COPY.cs;
 
   // schema.org — bez nej se web neobjevi v bohatych vysledcich ani v AI odpovedich
   const agentLd = {
@@ -354,7 +278,7 @@ export default function HomeSections({
   const faqLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: FAQ.map((f) => ({
+    mainEntity: HOME_FAQ.map((f) => ({
       '@type': 'Question',
       name: f.q,
       acceptedAnswer: { '@type': 'Answer', text: f.a },
@@ -389,7 +313,7 @@ export default function HomeSections({
       </section>
 
       {/* 02B — 4 SLUŽBY (2x2 karty s fotkami na pozadí) ----------------------- */}
-      <ServicesCards hrefServices={href.sluzby} />
+      <ServicesCards locale={locale} />
 
       {/* 03 — CEHO SE KUPUJICI BOJI --------------------------------------- */}
       <ZigRow
@@ -406,13 +330,13 @@ export default function HomeSections({
         media={
           <div className="fears-media__card">
             <picture>
-              <source srcSet="/images/zuzana-abruzzo-more.webp" type="image/webp" />
+              <source srcSet="/images/zuzana-portret-garance.webp" type="image/webp" />
               <img
-                src="/images/zuzana-abruzzo-more.png"
+                src="/images/zuzana-portret-garance.png"
                 alt={fearsCopy.mediaImgAlt}
                 className="fears-media__img"
-                width={800}
-                height={1067}
+                width={576}
+                height={1024}
                 loading="lazy"
               />
             </picture>
@@ -430,39 +354,23 @@ export default function HomeSections({
           </div>
         }
       >
-        <ul className="fears">
-          {fearsCopy.items.map((f, i) => (
-            <li className="fear" key={i}>
-              <div className="fear__num-col">
-                <span className="fear__num">0{i + 1}</span>
-              </div>
-              <div className="fear__content">
-                <h3 className="fear__q">
-                  <Marked text={f.q} />
-                </h3>
-                {f.a && (
-                  <p className="fear__a">
-                    <Marked text={f.a} />
-                  </p>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
+        <FearsAccordion items={fearsCopy.items} />
 
         <div className="fears-sec__cta">
           <Link href={href.jakKoupit} className="btn btn--saffron fears-sec__btn">
             <span>{fearsCopy.cta}</span>
             <svg
-              viewBox="0 0 20 20"
-              fill="currentColor"
+              viewBox="0 0 24 24"
+              fill="none"
               className="fears-sec__btn-arrow"
               aria-hidden="true"
             >
               <path
-                fillRule="evenodd"
-                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
+                d="M5 12h14m-6-6 6 6-6 6"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           </Link>
@@ -471,202 +379,14 @@ export default function HomeSections({
 
       <LandscapeLine />
 
-      {/* 04 — CENA JE KONECNA ------------------------------------------------ */}
-      <section className="price-sec" aria-labelledby="sec-04">
-        <div className="wrap">
-          <div className="price-sec__head">
-            <div className="listings__badge">
-              <span className="listings__badge-dot" />
-              <span>{priceCopy.badge}</span>
-            </div>
-            <h2 id="sec-04" className="home-h2">
-              {priceCopy.titleLine} <em>{priceCopy.titleAccent}</em>
-            </h2>
-            {priceCopy.intro && <p className="home-lead">{priceCopy.intro}</p>}
-            <p className="home-lead">{priceCopy.lead}</p>
-          </div>
-
-          <div className="price-sec__grid">
-            <div className="price-sec__left">
-              <div className="pricecols">
-              <div className="pricecol pricecol--included">
-                <div className="pricecol__head">
-                  <h3 className="pricecol__h">{priceCopy.colInTitle}</h3>
-                  <span className="pricecol__badge pricecol__badge--in">{priceCopy.colInPill}</span>
-                </div>
-                <ul className="pricecol__list">
-                  {priceCopy.itemsIn.map((x) => (
-                    <li key={x} className="pricecol__item">
-                      <span className="pricecol__icon pricecol__icon--check" aria-hidden="true">
-                        <svg
-                          viewBox="0 0 16 16"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2.2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M3.5 8.5l3 3 6-6" />
-                        </svg>
-                      </span>
-                      <span className="pricecol__text">{x}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="pricecol pricecol--excluded">
-                <div className="pricecol__head">
-                  <h3 className="pricecol__h">{priceCopy.colOutTitle}</h3>
-                  <span className="pricecol__badge pricecol__badge--out">{priceCopy.colOutPill}</span>
-                </div>
-                <ul className="pricecol__list">
-                  {priceCopy.itemsOut.map((x) => (
-                    <li key={x} className="pricecol__item">
-                      <span className="pricecol__icon pricecol__icon--info" aria-hidden="true">
-                        <svg viewBox="0 0 16 16" fill="currentColor">
-                          <circle cx="8" cy="8" r="3" />
-                        </svg>
-                      </span>
-                      <span className="pricecol__text">{x}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="price-sec__cta">
-              <Link href={href.jakKoupit} className="btn btn--saffron price-sec__btn">
-                <span>{priceCopy.cta}</span>
-                <svg
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="price-sec__btn-arrow"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Link>
-            </div>
-          </div>
-
-          <div className="price-sec__right">
-            <div className="price-sec__transparency">
-              <span className="price-sec__transparency-label">{priceCopy.topBadge}</span>
-              <h3 className="price-sec__transparency-title">{priceCopy.mediaBadgeTitle}</h3>
-              <p className="price-sec__transparency-desc">
-                {locale === 'cs'
-                  ? 'Před začátkem spolupráce vždy přesně víte, co je v naší provizi a co už jsou vedlejší náklady. Žádná překvapení.'
-                  : locale === 'it'
-                    ? 'Prima di iniziare la collaborazione sapete sempre esattamente cosa è compenso e quali sono i costi aggiuntivi. Nessuna sorpresa.'
-                    : 'Before we start working together, you always know exactly what is included in my fee and what are additional costs. No surprises.'}
-              </p>
-              <div className="price-sec__features">
-                <div className="price-sec__feature">
-                  <span className="price-sec__feature-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                      <line x1="16" y1="13" x2="8" y2="13" />
-                      <line x1="16" y1="17" x2="8" y2="17" />
-                      <polyline points="10 9 9 9 8 9" />
-                    </svg>
-                  </span>
-                  <div className="price-sec__feature-text">
-                    <span className="price-sec__feature-title">
-                      {locale === 'cs' ? 'Písemné shrnutí' : locale === 'it' ? 'Riepilogo scritto' : 'Written summary'}
-                    </span>
-                    <span className="price-sec__feature-desc">
-                      {locale === 'cs'
-                        ? 'Vše podstatné máte vždy černé na bílém.'
-                        : locale === 'it'
-                          ? 'Tutto ciò che conta è sempre per iscritto.'
-                          : 'Everything important is always in writing.'}
-                    </span>
-                  </div>
-                </div>
-                <div className="price-sec__feature">
-                  <span className="price-sec__feature-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    </svg>
-                  </span>
-                  <div className="price-sec__feature-text">
-                    <span className="price-sec__feature-title">
-                      {locale === 'cs' ? 'Otevřená komunikace' : locale === 'it' ? 'Comunicazione aperta' : 'Open communication'}
-                    </span>
-                    <span className="price-sec__feature-desc">
-                      {locale === 'cs'
-                        ? 'Na všechny otázky dostanete jasnou odpověď.'
-                        : locale === 'it'
-                          ? 'A tutte le domande riceverete una risposta chiara.'
-                          : 'You will get a clear answer to all questions.'}
-                    </span>
-                  </div>
-                </div>
-                <div className="price-sec__feature">
-                  <span className="price-sec__feature-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                  </span>
-                  <div className="price-sec__feature-text">
-                    <span className="price-sec__feature-title">
-                      {locale === 'cs' ? 'Žádná překvapení' : locale === 'it' ? 'Nessuna sorpresa' : 'No surprises'}
-                    </span>
-                    <span className="price-sec__feature-desc">
-                      {locale === 'cs'
-                        ? 'Cenu znáte předem a už se nemění.'
-                        : locale === 'it'
-                          ? 'Il prezzo lo sapete in anticipo e non cambia.'
-                          : 'You know the price in advance and it does not change.'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="price-sec__bottom">
-          <div className="price-sec__trust">
-            <span className="price-sec__trust-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-              {locale === 'cs' ? 'Férový přístup' : locale === 'it' ? 'Approccio leale' : 'Fair approach'}
-            </span>
-            <span className="price-sec__trust-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              {locale === 'cs' ? 'Místní zkušenosti' : locale === 'it' ? 'Esperienza locale' : 'Local experience'}
-            </span>
-            <span className="price-sec__trust-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              {locale === 'cs' ? 'Osobní péče od začátku do konce' : locale === 'it' ? 'Cura personale dall\'inizio alla fine' : 'Personal care from start to finish'}
-            </span>
-          </div>
-        </div>
-      </div>
-    </section>
+      {/* 04 — NABÍDKOVÁ CENA ---------------------------------------------- */}
+      <PriceOverview locale={locale} guideHref={href.jakKoupit} />
 
       {/* 05 — VYBER NEMOVITOSTI -------------------------------------------- */}
       <section className="listings" aria-labelledby="sec-05">
         <div className="wrap">
           <div className="listings__head">
             <div className="listings__text">
-              <div className="listings__badge">
-                <span className="listings__badge-dot" />
-                <span>{listingsCopy.badge}</span>
-              </div>
 
               <h2 id="sec-05" className="listings__title">
                 {listingsCopy.titleLine} <br className="hidden sm:inline" />
@@ -705,18 +425,20 @@ export default function HomeSections({
           properties={featured}
           locale={locale}
           cta={
-            <Link href={href.nemovitosti} className="btn btn--saffron listings__btn">
+            <Link key="all-listings" href={href.nemovitosti} className="btn btn--saffron listings__btn">
               <span>{listingsCopy.cta}</span>
               <svg
-                viewBox="0 0 20 20"
-                fill="currentColor"
+                viewBox="0 0 24 24"
+                fill="none"
                 className="listings__btn-arrow"
                 aria-hidden="true"
               >
                 <path
-                  fillRule="evenodd"
-                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
+                  d="M5 12h14m-6-6 6 6-6 6"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </Link>
@@ -724,52 +446,44 @@ export default function HomeSections({
         />
       </section>
 
-      {/* 06 — PROC JA: 4 PILIRE ------------------------------------------- */}
-      <ZigRow
-        n="06"
-        className="zig--pillars"
-        badge="Osobní záruka · Abruzzo, Itálie"
-        title={
-          <>
-            {capFirst(`${csNum(PILLARS.length)} ${csPlural(PILLARS.length, 'věc', 'věci', 'věcí')}`)}, které{' '}
-            <em>jinde nedostanete</em>
-          </>
-        }
-        lead="Žiji celoročně přímo v Abruzzu a stojím osobně za každým krokem vaší koupě. Od prvního výběru přes prověření nemovitosti až po notáře a servis po podpisu."
-        media={<PillarsVideoCard />}
-      >
-        <ol className="pillars">
-          {PILLARS.map((p) => (
-            <li className="pillar" key={p.roman}>
-              <span className="pillar__r">{p.roman}</span>
-              <div className="pillar__content">
-                <p className="pillar__t">{p.title}</p>
-                <p className="pillar__d">{p.text}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
+      {/* 06 — PROC JA ------------------------------------------------------ */}
+      <section className="reasons-section" aria-labelledby="sec-06">
+        <div className="wrap">
+          <div className="reasons-section__head">
+            <h2 id="sec-06" className="home-h2">
+              {capFirst(`${csNum(PILLARS.length)} ${csPlural(PILLARS.length, 'věc', 'věci', 'věcí')}`)}, které{' '}
+              <em>jinde nedostanete</em>
+            </h2>
+            <p className="home-lead">Žiji v Abruzzu a osobně vás provedu výběrem, koupí i péčí o nemovitost po podpisu.</p>
+          </div>
 
-        <div className="pillars__cta">
-          <Link href={href.konzultace} className="btn btn--saffron">
-            <span>Domluvit nezávaznou konzultaci</span>
-            <svg
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M3 8h10M9 4l4 4-4 4" />
-            </svg>
-          </Link>
-          <Link href={href.sluzby} className="btn btn--ghost">
-            <span>Více o mých službách</span>
-          </Link>
+          <div className="reasons-section__layout">
+            <div className="reasons-section__media"><PillarsVideoCard /></div>
+            <ol className="reasons-grid">
+              {PILLARS.map((p, index) => (
+                <li className="reason-card" key={p.roman}>
+                  <div className="reason-card__top">
+                    <span className="reason-card__icon"><PillarIcon index={index} /></span>
+                    <span className="reason-card__number">{p.roman}</span>
+                  </div>
+                  <h3 className="reason-card__title">{p.title}</h3>
+                  <p className="reason-card__description">{PILLAR_SUMMARIES[index]}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="reasons-section__cta">
+            <Link href={href.konzultace} className="btn btn--saffron">
+              <span>Domluvit nezávaznou konzultaci</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M5 12h14m-6-6 6 6-6 6" />
+              </svg>
+            </Link>
+            <Link href={href.sluzby} className="btn btn--ghost"><span>Více o mých službách</span></Link>
+          </div>
         </div>
-      </ZigRow>
+      </section>
 
       <LandscapeLine accent />
 
@@ -788,38 +502,45 @@ export default function HomeSections({
       <CommunitySection />
 
       {/* 10 — CO DELAM PO KOUPI ------------------------------------------- */}
-      <ZigRow
-        n="10"
-        title="Klíči to nekončí"
-        lead="Většina mých klientů v Itálii nebydlí celoročně. Tohle je důvod, proč se ke mně vracejí."
-        media={
-          <div className="zig__video">
-            <video
-              src="/video/garsonka-prohlidka-web.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-            />
+      <section className="aftercare-summary" aria-labelledby="sec-10">
+        <div className="wrap">
+          <h2 id="sec-10" className="home-h2">Klíči to <em>nekončí</em></h2>
+          <p className="home-lead">První rok základního asistenčního servisu máte v naší provizi. A když potřebujete víc, náš tým zůstává na místě.</p>
+          <div className="aftercare-summary__links">
+            {AFTER.map((a, i) => {
+              const serviceId = a.serviceId ?? (['rekonstrukce', 'sprava', 'pronajem'] as const)[i];
+              return (
+                <Link
+                  key={a.title}
+                  href={path(serviceId, locale)}
+                  className="aftercare-card"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={a.image}
+                    alt=""
+                    className="aftercare-card__bg"
+                    loading="lazy"
+                    decoding="async"
+                    width="960"
+                    height="1200"
+                  />
+                  <div className="aftercare-card__overlay" aria-hidden="true" />
+                  <span className="aftercare-card__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <div className="aftercare-card__content">
+                    <h3>{a.title}</h3>
+                    <p>{a.text}</p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
-        }
-      >
-        <ul className="after">
-          {AFTER.map((a) => (
-            <li key={a.title}>
-              <p className="after__t">{a.title}</p>
-              <p className="after__d">{a.text}</p>
-            </li>
-          ))}
-        </ul>
-        <Link href={href.sluzby} className="btn btn--saffron">
-          Služby po koupi
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16" aria-hidden="true">
-            <path d="M3 8h10M9 4l4 4-4 4" />
-          </svg>
-        </Link>
-      </ZigRow>
+        </div>
+      </section>
 
       {/* 10A — REKONSTRUKCE NA KLIC (za sekci "Klici to nekonci", ktera ji zminuje) */}
       <RenoSection href={href.konzultace} />
@@ -830,7 +551,7 @@ export default function HomeSections({
       <VideoAnswers />
 
       {/* 11 — FAQ -------------------------------------------------------------- */}
-      <FaqSection faq={FAQ} ctaHref={href.jakKoupit} ctaLabel="Všechny časté dotazy" />
+      <FaqSection faq={HOME_FAQ} ctaHref={href.jakKoupit} ctaLabel="Všechny časté dotazy" />
 
       {/* 12 — PRŮVODCI A ČLÁNKY — 3 clean 3D karty --------------------------- */}
       <GuidesCards locale={locale} />
@@ -849,17 +570,15 @@ export default function HomeSections({
         <div className="wrap contact">
           <div className="contact__intro">
             <div>
-              <p className="eyebrow eyebrow--dot">Kontakt</p>
               <h2 id="sec-13" className="home-h2">
                 Zavolejme si
               </h2>
               <p className="home-lead">
-                Nic to nestojí a k ničemu vás to nezavazuje. Za dvacet minut budete vědět,
-                jestli je koupě v Itálii pro vás reálná, kolik by přibližně stála a co všechno
-                bych za vás vyřídila.
+                Napište mi, co hledáte, jaký máte rozpočet a kdy byste chtěli kupovat.
+                Společně probereme možnosti v Abruzzu. Úvodní konzultace je zdarma a nezávazná.
               </p>
               <Link href={href.konzultace} className="link-more">
-                Nebo si rovnou vyberte termín hovoru →
+                Nebo navrhněte termín hovoru →
               </Link>
             </div>
 
@@ -874,7 +593,7 @@ export default function HomeSections({
                 <span>
                   RE/MAX Černá perla, Slavíkova 6068/18
                   <br />
-                  708 00 Ostrava-Poruba · v sezóně přímo v Abruzzu
+                  708 00 Ostrava-Poruba · celoročně v Abruzzu
                 </span>
               </li>
               <li>

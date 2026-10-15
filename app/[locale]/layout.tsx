@@ -5,7 +5,11 @@ import { HTML_LANG, LOCALES, isLocale } from '@/lib/i18n';
 import SiteNav from '@/components/SiteNav';
 import SiteFooter from '@/components/SiteFooter';
 import Reveal from '@/components/Reveal';
+import PageLoader from '@/components/PageLoader';
+import ScrollToTop from '@/components/ScrollToTop';
+import SmoothInteractions from '@/components/SmoothInteractions';
 import '../globals.css';
+import '../site-finish.css';
 
 // Archivo je hlavni rez (nadpisy, text). Playfair na patkove akcenty.
 // Priestacy je elegantni kaligraficky podpisovy font pro logo/wordmark (navbar, footer).
@@ -47,6 +51,9 @@ export default async function LocaleLayout({
   return (
     <html lang={HTML_LANG[locale]} className={`${display.variable} ${body.variable} ${cursive.variable}`}>
       <body>
+        <ScrollToTop />
+        <SmoothInteractions />
+        <PageLoader />
         <SiteNav locale={locale} />
         {children}
         <SiteFooter locale={locale} />

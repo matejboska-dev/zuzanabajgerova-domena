@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import Marked from '@/components/Marked';
-import Zastupny from '@/components/Zastupny';
 import Crumbs from '@/components/page/Crumbs';
 import CtaBand from '@/components/page/CtaBand';
 import ClickVideo from '@/components/page/ClickVideo';
 import JsonLd from '@/components/page/JsonLd';
 import MobileCtaBar from '@/components/page/MobileCtaBar';
 import ReviewQuotes from '@/components/page/ReviewQuotes';
+import FirmyReviewsSection from '@/components/page/FirmyReviewsSection';
 import SecHead from '@/components/page/SecHead';
+import BeforeAfter from '@/components/page/BeforeAfter';
 import SubHero from '@/components/page/SubHero';
+import ReferenceVideoCarousel, { DRIVE_REFERENCE_SLIDES } from '@/components/page/ReferenceVideoCarousel';
 import { COMMUNITY_MEDIA, RENO_PAIRS } from '@/lib/home';
 import { waLink } from '@/lib/contact';
 import { DEFAULT_LOCALE } from '@/lib/i18n';
@@ -64,14 +65,20 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         title="Reference"
         accent="od klientů"
         lead="Skutečné příběhy lidí, kteří se mnou koupili nemovitost v Abruzzu. Na videu, slovy z Googlu a na fotkách z našich společných akcí."
-        bg={{ src: '/media/why-pocasi.webp', width: 1200, height: 800 }}
-        bgPosition="center 60%"
-        photo={{ src: '/media/kom-obed.webp', alt: 'Klienti u společného oběda v restauraci u moře', width: 800, height: 1000 }}
+        bg={{ src: '/media/hero-abruzzo-4k.webp', width: 4080, height: 2296 }}
+        bgPosition="center 50%"
+        photos={[
+          { src: '/media/kom-obed.webp', alt: 'Klienti u společného oběda v restauraci u moře', width: 800, height: 1000 },
+          { src: '/media/kom-scanno.webp', alt: 'Společný výlet klientů nad jezero Scanno v Abruzzu', width: 800, height: 1000 },
+          { src: '/media/kom-oslava.webp', alt: 'Oslava s klienty v Abruzzu', width: 800, height: 1000 },
+          { src: '/media/kom-velikonoce.webp', alt: 'Velikonoce s klienty v Abruzzu', width: 800, height: 1000 },
+          { src: '/media/kom-notar.webp', alt: 'Klienti s klíči při setkání v notářské kanceláři', width: 720, height: 1000 },
+        ]}
         ctas={[
           { href: path('konzultace', DEFAULT_LOCALE), label: 'Domluvit konzultaci' },
           { href: waLink(), label: 'Napsat na WhatsApp', variant: 'glass', external: true },
         ]}
-        chips={['5,0 z 15 recenzí na Googlu', `${VIDEO_REFS.length} videoreferencí`, 'Komunita v Abruzzu']}
+        chips={['5,0 z 15 recenzí na Googlu', `${DRIVE_REFERENCE_SLIDES.length} videoreferencí a momentů`, 'Komunita v Abruzzu']}
       />
 
       <Crumbs
@@ -88,18 +95,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             badge="Videoreference"
             title="Řeknou vám to"
             accent="sami"
-            lead="Klienti vlastními slovy. Video se načte, až na něj kliknete."
+            lead="Klienti vlastními slovy. Kliknutím na fotku nebo tlačítko spustíte video."
           />
-          <ul className="vrefs">
-            {VIDEO_REFS.map((v) => (
-              <li className="vref" key={v.src}>
-                <ClickVideo src={v.src} poster={v.poster} label={`Videoreference: ${v.name}`} ratio="9 / 16" />
-                <p className="vref__name">{v.name}</p>
-                <p className="vref__note">{v.note}</p>
-              </li>
-            ))}
-          </ul>
         </div>
+        <ReferenceVideoCarousel />
       </section>
 
       <section className="sec sec--soft" id="recenze" aria-labelledby="ref-recenze">
@@ -111,88 +110,93 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             accent="na Googlu"
             lead="Citace jsou přepsané beze změn."
           />
-          <ReviewQuotes names={reviewNames} />
-          <p className="ref__profile">
-            <Marked text="[DOPLNIT: odkaz na profil s recenzemi na Googlu a Firmy.cz]" />
-          </p>
+          <ReviewQuotes names={reviewNames} carousel />
+
         </div>
       </section>
 
-      <section className="sec" id="pripadova-studie" aria-labelledby="ref-case">
+      <FirmyReviewsSection />
+
+      <section className="sec case2-sec" id="pripadova-studie" aria-labelledby="ref-case">
         <div className="wrap">
-          <SecHead
-            id="ref-case"
-            badge="Případová studie"
-            title="Od klíčů"
-            accent="po hotový byt"
-            lead="Jedna koupě od začátku do konce: situace, co jsem udělala a jaký byl výsledek."
-          />
-          <article className="case">
-            <div className="case__media">
+          <article className="case2">
+            <header className="case2__head">
+              <p className="case2__eyebrow">
+                <span>01</span> Případová studie · Ostrava
+              </p>
+              <h2 id="ref-case" className="case2__h">
+                Od klíčů <em>po hotový byt</em>
+              </h2>
+              <p className="case2__lead">
+                Skutečná proměna bytu klienta z Ostravy. Fotografie a video ukazují původní stav i dokončený interiér.
+              </p>
+            </header>
+
+            <div className="case2__stage">
               {ostrava.before && ostrava.after && (
-                <div className="case__pair">
-                  <figure className="media-zoom">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={ostrava.before.src} alt={ostrava.before.alt} loading="lazy" />
-                    <figcaption className="media-chip">Před</figcaption>
-                  </figure>
-                  <figure className="media-zoom">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={ostrava.after.src} alt={ostrava.after.alt} loading="lazy" />
-                    <figcaption className="media-chip media-chip--gold">Po</figcaption>
-                  </figure>
+                <div className="case2__slider">
+                  <BeforeAfter before={ostrava.before} after={ostrava.after} />
+                  <p className="case2__hint">Posuňte dělítko a porovnejte kuchyň před a po</p>
                 </div>
               )}
-              <div className="case__video">
-                <ClickVideo src="/media/reno-ostrava.mp4" poster="/media/reno-ostrava.webp" label="Celá proměna bytu klienta z Ostravy" ratio="9 / 16" />
+              <div className="case2__video">
+                <ClickVideo
+                  src="/media/reno-ostrava.mp4"
+                  poster="/media/reno-ostrava.webp"
+                  label="Celá proměna bytu klienta z Ostravy"
+                  ratio="9 / 16"
+                />
+                <p className="case2__vcap">Celá proměna ve videu</p>
               </div>
             </div>
-            <div className="case__body">
-              <h3 className="case__t">Byt klienta z Ostravy</h3>
-              <dl className="case__dl">
-                <div>
-                  <dt>Situace</dt>
-                  <dd>
-                    <Marked text="[DOPLNIT: co klient hledal, rozpočet a výchozí stav bytu]" />
-                  </dd>
-                </div>
-                <div>
-                  <dt>Co jsme udělali</dt>
-                  <dd>
-                    Byt prošel rekonstrukcí na klíč: nová kuchyň, koupelna i obývací pokoj. Celou proměnu ukazuje video.{' '}
-                    <Marked text="[DOPLNIT: délka prací a co dalšího jsem pro klienta zařídila]" />
-                  </dd>
-                </div>
-                <div>
-                  <dt>Výsledek</dt>
-                  <dd>
-                    <Marked text="[DOPLNIT: výsledek, například pronájem nebo vlastní bydlení, a slova klienta]" />
-                  </dd>
-                </div>
-              </dl>
-              <Link className="btn btn--ghost" href={`${path('sluzby', DEFAULT_LOCALE)}#rekonstrukce`}>
-                Rekonstrukce na klíč
+
+            <ul className="case2__facts" aria-label="Rozsah rekonstrukce">
+              <li>
+                <strong>Na klíč</strong>
+                <span>Od plánu po předání</span>
+              </li>
+              <li>
+                <strong>3 prostory</strong>
+                <span>Kuchyň · koupelna · obývací pokoj</span>
+              </li>
+              <li>
+                <strong>Ostrava</strong>
+                <span>Byt klienta</span>
+              </li>
+            </ul>
+
+            <dl className="case2__dl">
+              <div>
+                <dt>Situace</dt>
+                <dd>Původní podobu bytu zachycují fotografie před rekonstrukcí. Srovnání ukazuje různé pohledy na prostor.</dd>
+              </div>
+              <div>
+                <dt>Co jsme udělali</dt>
+                <dd>Byt prošel rekonstrukcí na klíč: nová kuchyň, koupelna i obývací pokoj. Celou proměnu ukazuje video.</dd>
+              </div>
+              <div>
+                <dt>Výsledek</dt>
+                <dd>Dokončený a vybavený interiér si můžete projít ve videu. Rozsah každé další rekonstrukce domlouváme individuálně.</dd>
+              </div>
+            </dl>
+
+            <div className="case2__cta">
+              <Link className="btn btn--saffron" href={path('rekonstrukce', DEFAULT_LOCALE)}>
+                <span>Rekonstrukce na klíč</span>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14m-6-6 6 6-6 6" />
+                </svg>
               </Link>
             </div>
           </article>
-          <div className="case case--ph">
-            <Zastupny
-              label="Další případová studie: situace, co jsem udělala, výsledek a fotky"
-              ratio="16 / 3"
-              spec="2 až 4 fotky (4:5) a krátký text od klientky"
-              className="zastupny--compact"
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="sec sec--tight" aria-labelledby="ref-overeni">
-        <div className="wrap">
-          <SecHead id="ref-overeni" badge="Ověřená hodnocení" title="Hodnocení" accent="na profilech" />
-          <div className="ref__shots">
-            <Zastupny kind="recenze" label="Screenshot hodnocení na Googlu" ratio="16 / 7" spec="screenshot profilu, šířka 1600 px" className="zastupny--compact" />
-            <Zastupny kind="recenze" label="Screenshot hodnocení na Firmy.cz" ratio="16 / 7" spec="screenshot profilu, šířka 1600 px" className="zastupny--compact" />
-          </div>
         </div>
       </section>
 

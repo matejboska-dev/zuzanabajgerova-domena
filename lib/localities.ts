@@ -24,11 +24,11 @@ export const LOCALITIES: Record<string, Locality> = {
       'Nejdražší část regionu a zároveň nejsnáze dostupná z Česka.',
     matches: ['Pescara', 'Montesilvano', 'Francavilla al Mare', "Città Sant'Angelo", 'Citta Sant Angelo'],
     image: {
-      src: '/images/localities/pescara-a-pobrezi.jpg',
-      webp: '/images/localities/pescara-a-pobrezi.webp',
-      alt: 'Pobřeží a přístav v Pescaře s mostem Ponte del Mare a pohořím v pozadí',
-      width: 1200,
-      height: 900,
+      src: '/hero/backgrounds/abruzzo-pescara-z-letadla.webp',
+      webp: '/hero/backgrounds/abruzzo-pescara-z-letadla.webp',
+      alt: 'Pobřeží u Pescary z letadla, z fotografií Zuzany Bajgerové',
+      width: 1920,
+      height: 1080,
     },
   },
   'costa-dei-trabocchi': {

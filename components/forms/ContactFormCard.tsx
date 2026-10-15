@@ -61,7 +61,7 @@ export default function ContactFormCard({
       ariaLabel="Kontaktní formulář"
       fine={
         <>
-          Ozvu se do 24 hodin. Údaje použiji jen k odpovědi na vaši poptávku a na webu se neukládají. Více v{' '}
+          Ozvu se vám osobně. Údaje použiji jen k odpovědi na vaši poptávku a na webu se neukládají. Více v{' '}
           <Link href={path('ochranaUdaju', DEFAULT_LOCALE)}>zásadách ochrany osobních údajů</Link>.
         </>
       }

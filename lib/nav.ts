@@ -42,12 +42,7 @@ export const NAV_TREE: NavSection[] = [
     href: (l) => path('nemovitosti', l),
     children: [
       {
-        label: { cs: 'Detail nabídky (šablona)', en: 'Property detail', it: 'Dettaglio immobile' },
-        roleTag: 'A',
-        href: (l) => path('nemovitosti', l),
-      },
-      {
-        label: { cs: 'Filtrované výpisy (6 ks)', en: 'Filtered listings (6)', it: 'Annunci filtrati (6)' },
+        label: { cs: 'Vybrat nemovitost', en: 'Find a property', it: 'Trova un immobile' },
         roleTag: 'V',
         href: (l) => `${path('nemovitosti', l)}#filtr`,
       },
@@ -100,12 +95,12 @@ export const NAV_TREE: NavSection[] = [
       {
         label: { cs: 'Náklady a daně', en: 'Costs & taxes', it: 'Costi e imposte' },
         roleTag: 'V',
-        href: (l) => `${path('jakKoupit', l)}#naklady`,
+        href: (l) => `${path('koupePrakticky', l)}#naklady`,
       },
       {
         label: { cs: 'Kalkulačka nákladů', en: 'Cost calculator', it: 'Calcolatore costi' },
         roleTag: 'K',
-        href: (l) => `${path('jakKoupit', l)}#kalkulacka`,
+        href: (l) => `${path('koupePrakticky', l)}#kalkulacka`,
       },
       {
         label: { cs: 'Codice fiscale pro Čechy', en: 'Codice fiscale for buyers', it: 'Codice fiscale per stranieri' },
@@ -115,10 +110,10 @@ export const NAV_TREE: NavSection[] = [
       {
         label: { cs: 'Domy za 1 euro: pravda', en: '1-Euro houses: truth', it: 'Case a 1 euro: la verità' },
         roleTag: 'V',
-        href: (l) => `${path('jakKoupit', l)}#domy-za-1-euro`,
+        href: (l) => `${path('koupePrakticky', l)}#domy-za-1-euro`,
       },
       {
-        label: { cs: 'Cesta do Abruzza (lety)', en: 'Travel to Abruzzo (flights)', it: 'Voli per l’Abruzzo' },
+        label: { cs: 'Příjezd a prohlídky', en: 'Arrival & viewings', it: 'Arrivo e visite' },
         roleTag: 'V',
         href: (l) => `${path('jakKoupit', l)}#cesta`,
       },
@@ -130,20 +125,15 @@ export const NAV_TREE: NavSection[] = [
       {
         label: { cs: 'Slovníček pojmů', en: 'Glossary of terms', it: 'Glossario immobiliare' },
         roleTag: 'V',
-        href: (l) => `${path('jakKoupit', l)}#slovnicek`,
+        href: (l) => `${path('koupePrakticky', l)}#slovnicek`,
       },
       {
-        label: { cs: 'Články (rozcestník)', en: 'Articles hub', it: 'Articoli' },
+        label: { cs: 'Rady a průvodci', en: 'Advice and guides', it: 'Consigli e guide' },
         roleTag: 'V',
         href: (l) => path('clanky', l),
       },
       {
-        label: { cs: 'Detail článku (šablona)', en: 'Article detail template', it: 'Dettaglio articolo' },
-        roleTag: 'V',
-        href: (l) => path('clanky', l),
-      },
-      {
-        label: { cs: 'Průvodce ke stažení', en: 'Download buyer’s guide', it: 'Guida scaricabile' },
+        label: { cs: 'Postup koupě krok za krokem', en: 'The buying process', it: 'Le fasi dell’acquisto' },
         roleTag: 'K',
         href: (l) => `${path('jakKoupit', l)}#pruvodce`,
       },
@@ -158,22 +148,22 @@ export const NAV_TREE: NavSection[] = [
       {
         label: { cs: 'Servis při koupi od A do Z', en: 'A–Z Purchase service', it: 'Servizio acquisto A–Z' },
         roleTag: 'K',
-        href: (l) => `${path('sluzby', l)}#servis`,
+        href: (l) => path('koupe', l),
       },
       {
         label: { cs: 'Rekonstrukce a vybavení', en: 'Renovation & furnishing', it: 'Ristrutturazione e arredo' },
         roleTag: 'K',
-        href: (l) => `${path('sluzby', l)}#rekonstrukce`,
+        href: (l) => path('rekonstrukce', l),
       },
       {
-        label: { cs: 'Správa a pronájem', en: 'Property management & rental', it: 'Gestione e locazione' },
+        label: { cs: 'Správa nemovitosti', en: 'Property management', it: 'Gestione immobiliare' },
         roleTag: 'K',
-        href: (l) => `${path('sluzby', l)}#sprava`,
+        href: (l) => path('sprava', l),
       },
       {
-        label: { cs: 'Investice do nemovitosti', en: 'Real estate investment', it: 'Investimenti immobiliari' },
+        label: { cs: 'Krátkodobý pronájem', en: 'Holiday rental management', it: 'Gestione affitti brevi' },
         roleTag: 'K',
-        href: (l) => `${path('sluzby', l)}#investice`,
+        href: (l) => path('pronajem', l),
       },
     ],
   },
@@ -189,7 +179,7 @@ export const NAV_TREE: NavSection[] = [
         href: (l) => path('reference', l),
       },
       {
-        label: { cs: 'Případová studie (šablona)', en: 'Case study template', it: 'Casi studio' },
+        label: { cs: 'Proměna bytu', en: 'Apartment renovation', it: 'La trasformazione di un appartamento' },
         roleTag: 'D',
         href: (l) => `${path('reference', l)}#pripadova-studie`,
       },
@@ -202,14 +192,9 @@ export const NAV_TREE: NavSection[] = [
     href: (l) => path('kontakt', l),
     children: [
       {
-        label: { cs: 'Rezervace hovoru', en: 'Book a call', it: 'Prenota una chiamata' },
+        label: { cs: 'Domluvit hovor', en: 'Arrange a call', it: 'Concorda una chiamata' },
         roleTag: 'K',
         href: (l) => path('konzultace', l),
-      },
-      {
-        label: { cs: 'Děkujeme (bez indexace)', en: 'Thank you (noindex)', it: 'Grazie (noindex)' },
-        roleTag: 'T',
-        href: (l) => path('dekujeme', l),
       },
     ],
   },

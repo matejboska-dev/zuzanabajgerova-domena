@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic';
 
 const SOURCES: Record<string, string> = {
   homepage: 'hlavní strana',
+  sluzba: 'poptávka služby',
   kontakt: 'kontakt',
   konzultace: 'rezervace hovoru',
   dotaznik: 'dotazník pro vážné zájemce',
@@ -21,6 +22,8 @@ const SOURCES: Record<string, string> = {
 
 const LABELS: Record<string, string> = {
   jmeno: 'Jméno',
+  sluzba: 'Služba',
+  jazyk: 'Jazyk stránky',
   email: 'E-mail',
   telefon: 'Telefon nebo WhatsApp',
   ucel: 'Účel koupě',
@@ -181,10 +184,6 @@ export async function POST(req: Request) {
   }
 
   if (jobs.length === 0) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[lead] doruceni neni nastavene, poptavka jen do logu:\n' + text);
-      return NextResponse.json({ ok: true, dev: true });
-    }
     console.error('[lead] doruceni neni nastavene (RESEND_API_KEY + LEAD_TO_EMAIL nebo LEAD_WEBHOOK_URL)');
     return fail(503, 'not_configured');
   }

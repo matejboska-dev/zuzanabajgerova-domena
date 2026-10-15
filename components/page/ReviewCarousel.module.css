@@ -1,0 +1,47 @@
+.carousel { min-width: 0; }
+.track.track {
+  display: flex;
+  gap: clamp(16px, 2vw, 28px);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  width: var(--rail-width, 100%);
+  scrollbar-width: none;
+  padding: 12px 2px 24px;
+  cursor: grab;
+  justify-content: flex-start;
+  /* Soft fade into the background on the left; width is set by scroll position. */
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--rail-fade, 0px));
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--rail-fade, 0px));
+}
+.track::-webkit-scrollbar { display: none; }
+.track:active { cursor: grabbing; }
+.track > li {
+  flex: 0 0 calc((var(--rail-content-width, 100%) - 56px) / 2.35);
+  translate: var(--rail-fraction, 0px) 0 0;
+  min-width: 0;
+  border: 0;
+  padding: clamp(26px, 3vw, 40px);
+  box-shadow: 0 8px 22px rgba(18, 43, 78, .045);
+  gap: 36px;
+  user-select: none;
+}
+.track > li blockquote { margin: 0; }
+.track > li blockquote p { font-size: clamp(1.06rem, 1.3vw, 1.22rem); line-height: 1.75; margin: 0; }
+.track > li footer { margin-top: auto; padding-top: 22px; }
+.controls { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--pietra-dim); padding-top: 20px; margin-top: 6px; gap: 16px; }
+.position { font-size: .85rem; font-variant-numeric: tabular-nums; color: var(--ink-soft); display: flex; gap: 12px; }
+.position b { color: var(--cobalto); font-weight: 500; }
+.buttons { display: flex; align-items: center; gap: 10px; }
+.buttons button { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--pietra); background: transparent; color: var(--cobalto); cursor: pointer; transition: background-color 180ms, color 180ms, border-color 180ms; }
+.buttons button svg { width: 21px; height: 21px; }
+.buttons .pause { margin-right: 12px; border-color: transparent; }
+.buttons button:disabled { opacity: .3; cursor: default; }
+.buttons button:focus-visible, .track:focus-visible { outline: 2px solid var(--cobalto); outline-offset: 4px; }
+@media (hover: hover) { .buttons button:hover:not(:disabled) { background: var(--cobalto); border-color: var(--cobalto); color: var(--surface); } }
+@media (max-width: 900px) { .track > li { flex-basis: calc(var(--rail-content-width, 100%) * .64); } }
+@media (max-width: 600px) {
+  .track > li { flex-basis: calc(var(--rail-content-width, 100%) * .88); padding: 26px 24px; gap: 28px; }
+  .track > li blockquote p { font-size: 1.06rem; line-height: 1.65; }
+  .controls { padding-top: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .buttons button { transition: none; } }

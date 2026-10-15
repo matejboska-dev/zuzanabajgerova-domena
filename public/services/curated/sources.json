@@ -1,0 +1,92 @@
+[
+  {
+    "file": "web/public/services/curated/renovation-living.webp",
+    "source": "https://drive.google.com/file/d/1JNEWs142L2xQIn8eqIGd8bfWJ6hjQMf6/view",
+    "timeSeconds": 32.87,
+    "note": "Cropped original letterbox to the actual interior. No generative alterations."
+  },
+  {
+    "file": "web/public/services/curated/renovation-detail.webp",
+    "source": "https://drive.google.com/file/d/1JNEWs142L2xQIn8eqIGd8bfWJ6hjQMf6/view",
+    "timeSeconds": 14.94,
+    "note": "Cropped original letterbox."
+  },
+  {
+    "file": "web/public/services/curated/renovation-table.webp",
+    "source": "https://drive.google.com/file/d/1JNEWs142L2xQIn8eqIGd8bfWJ6hjQMf6/view",
+    "timeSeconds": 20.92,
+    "note": "Cropped original letterbox and embedded captions outside picture."
+  },
+  {
+    "file": "web/public/services/curated/architect-handover.webp",
+    "source": "https://drive.google.com/file/d/1I4y232uOhh1OnyjJGrJZfdhouuT-J00H/view",
+    "timeSeconds": 10.43,
+    "note": "Original 4K video still."
+  },
+  {
+    "file": "web/public/services/curated/renovation-fireplace.webp",
+    "source": "https://drive.google.com/file/d/1I4y232uOhh1OnyjJGrJZfdhouuT-J00H/view",
+    "timeSeconds": 16.39,
+    "note": "Original 4K video still."
+  },
+  {
+    "file": "web/public/services/curated/rental-bedroom.webp",
+    "source": "https://drive.google.com/file/d/1hwU5eJoADj7d6PwfDyqVh2J1dwLy_tr4/view",
+    "timeSeconds": 2.63,
+    "note": "Original 4K video still, rental studio."
+  },
+  {
+    "file": "web/public/services/curated/rental-kitchen.webp",
+    "source": "https://drive.google.com/file/d/1hwU5eJoADj7d6PwfDyqVh2J1dwLy_tr4/view",
+    "timeSeconds": 13.17,
+    "note": "Original 4K video still, rental studio."
+  },
+  {
+    "file": "web/public/services/curated/rental-balcony.webp",
+    "source": "https://drive.google.com/file/d/1hwU5eJoADj7d6PwfDyqVh2J1dwLy_tr4/view",
+    "timeSeconds": 23.71,
+    "note": "Original 4K video still, rental studio."
+  },
+  {
+    "file": "web/public/services/curated/home-terrace.webp",
+    "source": "https://drive.google.com/file/d/1z0YKfkychWRRmLnvugKEaWTQ0E-3uJUN/view",
+    "timeSeconds": 7.72,
+    "note": "Original 4K video still, viewing day."
+  },
+  {
+    "file": "web/public/services/curated/home-shutters.webp",
+    "source": "https://drive.google.com/file/d/1z0YKfkychWRRmLnvugKEaWTQ0E-3uJUN/view",
+    "timeSeconds": 16.98,
+    "note": "Original 4K video still, viewing day."
+  },
+  {
+    "file": "web/public/services/curated/home-olive-sea.webp",
+    "source": "https://drive.google.com/file/d/1z0YKfkychWRRmLnvugKEaWTQ0E-3uJUN/view",
+    "timeSeconds": 13.9,
+    "note": "Landscape crop from original 4K video. No generative alterations."
+  },
+  {
+    "file": "web/public/services/curated/zuzana-office.webp",
+    "source": "https://drive.google.com/file/d/1qd-t-4Ee_LhH98uB77zWCZMNTdEf8Z1o/view",
+    "timeSeconds": null,
+    "note": "Original supplied portrait in white jacket. Resized and WebP encoded only."
+  },
+  {
+    "file": "web/public/services/curated/rental-home-living.webp",
+    "source": "https://drive.google.com/file/d/1wndNw5NmtBZi5s-tfjgkf-fBhYxraP1V/view",
+    "timeSeconds": 0.6,
+    "note": "Original 4K tour of apartment at Le Dune. No rental performance or renovation claim."
+  },
+  {
+    "file": "web/public/services/curated/rental-home-garden.webp",
+    "source": "https://drive.google.com/file/d/1wndNw5NmtBZi5s-tfjgkf-fBhYxraP1V/view",
+    "timeSeconds": 34,
+    "note": "Original 4K tour of apartment at Le Dune. No rental performance or renovation claim."
+  },
+  {
+    "file": "web/public/services/curated/zuzana-standing.webp",
+    "source": "https://drive.google.com/file/d/1VV_7CYobUcQQvqCB33FmeH5ULjpkrLhN/view",
+    "timeSeconds": null,
+    "note": "Original supplied full-body portrait in white jacket. WebP encoding only."
+  }
+]

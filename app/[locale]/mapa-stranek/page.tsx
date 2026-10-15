@@ -33,6 +33,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   const here = L('mapaStranek');
   const count = (await listProperties()).length;
   const guide = L('jakKoupit');
+  const practical = L('koupePrakticky');
 
   const cols: { h: string; links: { href: string; label: string }[] }[] = [
     {
@@ -41,6 +42,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         { href: '/', label: 'Domů' },
         { href: L('nemovitosti'), label: `Nemovitosti (${count})` },
         { href: L('sluzby'), label: 'Služby' },
+        { href: L('koupe'), label: 'Servis při koupi' },
+        { href: L('rekonstrukce'), label: 'Rekonstrukce a vybavení' },
+        { href: L('sprava'), label: 'Správa nemovitosti' },
+        { href: L('pronajem'), label: 'Krátkodobý pronájem' },
         { href: L('oMne'), label: 'O mně' },
         { href: L('reference'), label: 'Reference' },
         { href: L('kontakt'), label: 'Kontakt' },
@@ -58,11 +63,12 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       h: 'Jak koupit v Itálii',
       links: [
         { href: guide, label: 'Průvodce koupí krok za krokem' },
-        { href: `${guide}#naklady`, label: 'Náklady a daně' },
-        { href: `${guide}#kalkulacka`, label: 'Kalkulačka nákladů' },
+        { href: practical, label: 'Praktické informace ke koupi' },
+        { href: `${practical}#naklady`, label: 'Náklady a daně' },
+        { href: `${practical}#kalkulacka`, label: 'Kalkulačka nákladů' },
         { href: `${guide}#codice-fiscale`, label: 'Codice fiscale' },
-        { href: `${guide}#domy-za-1-euro`, label: 'Domy za 1 euro' },
-        { href: `${guide}#slovnicek`, label: 'Slovníček pojmů' },
+        { href: `${practical}#domy-za-1-euro`, label: 'Domy za 1 euro' },
+        { href: `${practical}#slovnicek`, label: 'Slovníček pojmů' },
         { href: L('clanky'), label: 'Články' },
       ],
     },
@@ -89,7 +95,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <Crumbs items={[{ name: TITLE, href: here }]} />
       <header className="legal__head">
         <div className="wrap">
-          <p className="page__role">Přehled</p>
+
           <h1 className="page__title">{TITLE}</h1>
           <p className="page__lead">{DESC}</p>
         </div>

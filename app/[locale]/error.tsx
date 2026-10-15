@@ -17,10 +17,10 @@ export default function LocaleError({
 
   return (
     <div className="wrap" style={{ padding: '6rem 1.5rem', textAlign: 'center' }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '1rem', fontFamily: 'var(--font-display, serif)' }}>
+      <h1 style={{ fontSize: 'var(--t-4xl)', marginBottom: '1rem', fontFamily: 'var(--font-display, serif)' }}>
         Něco se nepovedlo
       </h1>
-      <p style={{ maxWidth: '540px', margin: '0 auto 2rem', color: '#555', lineHeight: 1.6 }}>
+      <p style={{ maxWidth: '540px', margin: '0 auto 2rem', color: 'var(--ink-soft)', lineHeight: 1.6 }}>
         Omlouváme se, při načítání stránky došlo k chybě. Zkuste to prosím znovu nebo se vraťte na úvodní stránku.
       </p>
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>

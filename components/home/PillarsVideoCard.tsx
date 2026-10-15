@@ -13,7 +13,7 @@ export default function PillarsVideoCard({
   posterSrc = '/video/poster.jpg',
 }: PillarsVideoCardProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function PillarsVideoCard({
       observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
+            if (entry.isIntersecting && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
               const playPromise = video.play();
               if (playPromise !== undefined) {
                 playPromise.catch(() => setIsPlaying(false));
@@ -87,7 +87,8 @@ export default function PillarsVideoCard({
           ref={videoRef}
           src={videoSrc}
           poster={posterSrc}
-          preload="auto"
+          preload="metadata"
+          muted
           loop
           playsInline
           className="pillars-media-card__video"

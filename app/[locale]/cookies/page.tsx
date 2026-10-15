@@ -40,7 +40,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       title={TITLE}
       lead={LEAD}
       description={DESC}
-      updated="Poslední aktualizace: [DOPLNIT: datum]"
+      updated="Pracovní verze k revizi: 14. 10. 2026"
       toc={[
         { id: 'co-jsou', label: 'Co jsou cookies' },
         { id: 'nezbytne', label: 'Nezbytné cookies' },

@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import Marked from '@/components/Marked';
-import Zastupny from '@/components/Zastupny';
 import PropertyCard from '@/components/PropertyCard';
 import Crumbs from '@/components/page/Crumbs';
 import CtaBand from '@/components/page/CtaBand';
@@ -71,6 +69,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         title={loc.title}
         lead={loc.lead}
         bg={{ src: loc.image.webp, width: loc.image.width, height: loc.image.height }}
+        bgPosition={slug === 'pescara-a-pobrezi' ? '80% center' : undefined}
         ctas={[
           { href: '#nabidky', label: st.count ? `Nabídky v oblasti (${st.count})` : 'Nabídky v oblasti' },
           { href: path('konzultace', DEFAULT_LOCALE), label: 'Poradit se', variant: 'glass' },
@@ -105,10 +104,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
               <span className="lok-fact__k">Střední cena za m²</span>
               <span className="lok-fact__v">{st.medianPerM2 ? eur(st.medianPerM2) : 'málo nabídek'}</span>
             </div>
-            <div className="lok-fact lok-fact--todo">
+            <div className="lok-fact">
               <span className="lok-fact__k">Letiště, moře, sezónnost</span>
               <span className="lok-fact__v lok-fact__v--sm">
-                <Marked text="[DOPLNIT: vzdálenost k letišti a k moři, sezónnost]" />
+                Podle konkrétní adresy
               </span>
             </div>
           </div>
@@ -119,15 +118,15 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <section className="sec" aria-labelledby="lok-pro-koho">
         <div className="wrap lok-who">
           <div className="lok-who__col">
-            <h2 id="lok-pro-koho" className="lok-who__h">Pro koho se hodí</h2>
+            <h2 id="lok-pro-koho" className="lok-who__h">Jak tu chcete bydlet?</h2>
             <p>
-              <Marked text="[DOPLNIT: pro koho se oblast hodí, podle zkušenosti klientky]" />
+              Hledáte místo pro dovolenou, delší pobyty nebo stěhování? Napište mi, jak chcete nemovitost využívat. Podle toho budeme vybírat obec, okolí i samotný byt.
             </p>
           </div>
           <div className="lok-who__col lok-who__col--no">
-            <h2 className="lok-who__h">Pro koho ne</h2>
+            <h2 className="lok-who__h">Co je pro vás důležité?</h2>
             <p>
-              <Marked text="[DOPLNIT: pro koho se oblast nehodí]" />
+              Cesta pěšky k moři, parkování, klid nebo služby v okolí? Vaše priority nám pomohou porovnat konkrétní nabídky a připravit prohlídky.
             </p>
           </div>
         </div>
@@ -158,7 +157,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      <section className="sec sec--soft" aria-labelledby="lok-galerie">
+      {(media.photos.length > 0 || media.video) && <section className="sec sec--soft" aria-labelledby="lok-galerie">
         <div className="wrap">
           <SecHead id="lok-galerie" badge="Fotky a video" title="Jak to tu" accent="vypadá" />
           <div className="lok-gallery">
@@ -174,24 +173,17 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                 <figcaption className="media-chip">{m.label}</figcaption>
               </figure>
             ))}
-            {media.photos.length < 2 && (
-              <Zastupny
-                label={`Fotky a video z oblasti ${loc.title}`}
-                ratio="4 / 3"
-                spec="3 až 6 fotek (4:5 nebo 3:2) a krátké video"
-                className="zastupny--compact lok-gallery__ph"
-              />
-            )}
+
           </div>
         </div>
-      </section>
+      </section>}
 
       <section className="sec" aria-labelledby="lok-zivot">
         <div className="wrap lok-life">
           <div>
             <SecHead id="lok-zivot" badge="Život tady" title="Doprava, obchody," accent="zdravotnictví" left />
             <p className="lok-life__p">
-              <Marked text="[DOPLNIT: doprava, vybavenost a zdravotnictví v oblasti]" />
+              Před výběrem konkrétního domu si ujasníme, jak se sem budete dopravovat a které služby potřebujete v okolí. Dostupnost obchodů, dopravy a dalších služeb posuzujte podle adresy a období, ve kterém tu chcete pobývat.
             </p>
           </div>
           <div className="lok-life__box">
@@ -202,18 +194,12 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      <section className="sec sec--tight" aria-labelledby="lok-ref">
+      {media.quotes.length > 0 && <section className="sec sec--tight" aria-labelledby="lok-ref">
         <div className="wrap">
           <SecHead id="lok-ref" badge="Reference" title="Klienti," accent="kteří tu koupili" />
-          {media.quotes.length > 0 ? (
-            <ReviewQuotes names={media.quotes} href={path('reference', DEFAULT_LOCALE)} />
-          ) : (
-            <p className="lok-note">
-              <Marked text="[DOPLNIT: reference klienta, který v oblasti koupil]" />
-            </p>
-          )}
+          <ReviewQuotes names={media.quotes} href={path('reference', DEFAULT_LOCALE)} />
         </div>
-      </section>
+      </section>}
 
       <section className="sec sec--tight" aria-labelledby="lok-sousede">
         <div className="wrap">

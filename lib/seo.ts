@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { HTML_LANG, LIVE_LOCALES, DEFAULT_LOCALE, type Locale } from './i18n';
-import { absolute, path, type RouteId } from './routes';
+import { HTML_LANG, DEFAULT_LOCALE, type Locale } from './i18n';
+import { absolute, path, publishedLocales, type RouteId } from './routes';
 
 const SITE_NAME = 'Bc. Zuzana Bajgerová';
 
@@ -27,7 +27,8 @@ export function pageMetadata(opts: {
   const canonical = absolute(path(id, locale, slug));
 
   const languages: Record<string, string> = {};
-  for (const l of opts.onlyCs ? [DEFAULT_LOCALE] : LIVE_LOCALES) {
+  const readyLocales = opts.onlyCs ? [DEFAULT_LOCALE] : publishedLocales(id);
+  for (const l of readyLocales) {
     languages[HTML_LANG[l]] = absolute(path(id, l, slug));
   }
   languages['x-default'] = absolute(path(id, DEFAULT_LOCALE, slug));
@@ -37,7 +38,7 @@ export function pageMetadata(opts: {
     description,
     alternates: { canonical, languages },
     // jazykova verze, ktera jeste neni hotova (LIVE_LOCALES), nesmi do indexu
-    ...(LIVE_LOCALES.includes(locale) ? {} : { robots: { index: false, follow: true } }),
+    robots: { index: readyLocales.includes(locale), follow: true },
     openGraph: {
       title,
       description,

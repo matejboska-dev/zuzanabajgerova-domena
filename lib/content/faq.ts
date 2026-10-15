@@ -28,7 +28,7 @@ export const KONTAKT_FAQ: Item[] = [
   },
   {
     q: 'Jak rychle se mi ozvete?',
-    a: 'Ozvu se vám do 24 hodin. Nejrychleji mě zastihnete přes WhatsApp.',
+    a: 'Ozvu se vám osobně. Nejrychleji mě zastihnete přes WhatsApp.',
   },
   { ...NO_ITALIAN, q: 'V jakém jazyce spolupráce probíhá?' },
   {
@@ -57,7 +57,7 @@ export const KONZULTACE_FAQ: Item[] = [
   },
   {
     q: 'Co když mi vybraný termín nevyjde?',
-    a: 'Termín vám potvrdím do 24 hodin. Pokud vám vybraný čas nevyhovuje, domluvíme jiný, klidně přes WhatsApp.',
+    a: 'Termín vám osobně potvrdím. Pokud vám vybraný čas nevyhovuje, domluvíme jiný, klidně přes WhatsApp.',
   },
 ];
 
@@ -82,7 +82,7 @@ export const JAK_KOUPIT_FAQ: Item[] = [
   fromHome('Co jsou IMU a TARI a kolik činí?'),
   {
     q: 'Jak se do Abruzza dostanu?',
-    a: 'Z Krakova do Pescary se létá celoročně, z Prahy v sezóně přímo za 1 hodinu 20 minut, v zimě s přestupem. Autem z Česka je to zhruba 1300 km. Z letiště se dostanete trolejbusem za 1,50 až 2 eura, taxi nepotřebujete.',
+    a: 'Letecky se dostanete do Pescary, kde je letiště blízko pobřeží. Přímé linky a časy se mění podle sezóny, proto si před cestou ověřte konkrétní spoj. Při cestě autem záleží na vašem výchozím místě a cíli. S plánováním návštěvy vám pomůžu.',
   },
   {
     q: 'Co se děje po koupi?',

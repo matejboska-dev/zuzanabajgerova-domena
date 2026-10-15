@@ -1,3 +1,5 @@
+import { SERVICE_IMAGES } from './service-images';
+
 // obsah domovske stranky. drzeny zvlast, aby se copy dal upravovat bez zasahu do
 // rozvrzeni (blueprint PROJEKT-BAJGEROVA.md sekce 5, layout B — stridavy zig-zag).
 // texty jsou navrh ke schvaleni klientkou, ne finalni zneni. fakta o klientce
@@ -32,7 +34,7 @@ export const PROOF: { value: string; label: string }[] = [
 
 // sekce 03 — ctyri obavy kupujiciho (PROJEKT-BAJGEROVA.md 2). formulace v uvozovkach
 // je zamerna, navstevnik ma poznat vlastni myslenku.
-export const FEARS: { q: string; a: string; placeholder?: boolean }[] = [
+export const FEARS: { q: string; a: string }[] = [
   {
     q: '„Nerozumím jazyku ani italskému právu.“',
     a: 'Celý proces vedu v češtině. S italskou stranou jednám já a vám posílám shrnutí, kterému rozumíte.',
@@ -49,12 +51,17 @@ export const FEARS: { q: string; a: string; placeholder?: boolean }[] = [
     q: '„Nevím, co bude po koupi.“',
     a: 'Registrace k daním, rekonstrukce, vybavení, správa i pronájem. Vztah nekončí u notáře.',
   },
-  // dalsi dve otazky posle klientka. po doplneni smazat priznak placeholder.
-  { q: '[DOPLNIT: otázka a odpověď od klientky]', a: '', placeholder: true },
-  { q: '[DOPLNIT: otázka a odpověď od klientky]', a: '', placeholder: true },
+  {
+    q: '„Nemůžu jezdit do Itálie na každou prohlídku.“',
+    a: 'Nemusíte. Nemovitosti vám nejdřív ukážu na videu a osobní prohlídky pak naplánuji na jeden den, abyste necestovali zbytečně.',
+  },
+  {
+    q: '„Co když bude byt potřebovat rekonstrukci?“',
+    a: 'Spolupracuji s místní architektkou a ověřenými řemeslníky. Domluvím práce, pohlídám jejich průběh a pošlu vám fotky, i když jste v Česku.',
+  },
 ];
 
-// sekce 04 — co je a co neni v cene. pravy sloupec je dulezitejsi nez levy.
+// Sekce 04 a průvodce koupí — servis v provizi a náklady mimo nabídkovou cenu.
 export const PRICE_IN: string[] = [
   'Vyhledání nemovitosti a organizace prohlídek',
   'Vyjednání ceny s prodávajícím',
@@ -62,7 +69,7 @@ export const PRICE_IN: string[] = [
   'Codice fiscale, plné moci, překlady',
   'Přepisy energií a registrace k daním',
   'Doprovod až k předání klíčů',
-  'První rok základního post-servisu s mými asistentkami',
+  'První rok základního servisu s mými asistentkami v Abruzzu',
 ];
 export const PRICE_OUT: string[] = [
   'Případná rekonstrukce a vybavení bytu',
@@ -125,16 +132,32 @@ export const PROCESS: { n: string; title: string; text: string }[] = [
 ];
 
 // sekce 10 — co dela po koupi. obchodne nejcennejsi sekce, dela z prodeje vztah.
-export const AFTER: { title: string; text: string }[] = [
+export type AftercareItem = {
+  serviceId: 'rekonstrukce' | 'sprava' | 'pronajem';
+  title: string;
+  text: string;
+  image: string;
+};
+
+export const AFTER: AftercareItem[] = [
   {
+    serviceId: 'rekonstrukce',
     title: 'Rekonstrukce a vybavení',
-    text: 'Seženu řemeslníky, ohlídám rozpočet i termíny a posílám fotky z průběhu.',
+    text: 'S naším týmem řemeslníků zajistíme práce, ohlídám rozpočet i termíny a posílám fotky z průběhu.',
+    image: SERVICE_IMAGES.rekonstrukce.src,
   },
   {
+    serviceId: 'sprava',
     title: 'Správa nemovitosti',
     text: 'Kontroly, úklid, platby, komunikace se sousedy i se správou domu.',
+    image: SERVICE_IMAGES.sprava.src,
   },
-  { title: 'Pronájem', text: 'Krátkodobý i sezónní. Dům vám vydělává, i když v něm zrovna nejste.' },
+  {
+    serviceId: 'pronajem',
+    title: 'Pronájem',
+    text: 'Pomohu s krátkodobým i sezónním pronájmem, od přípravy apartmánu po péči o hosty.',
+    image: SERVICE_IMAGES.pronajem.src,
+  },
 ];
 
 // sekce 11 — nejcastejsi otazky. odpovedi jsou v HTML i zavrene (kvuli Googlu)
@@ -147,7 +170,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Kolik zaplatím navíc nad cenu nemovitosti?',
-    a: 'Zpravidla 10 až 15 % kupní ceny: daň z převodu, odměna notáře a poplatky.',
+    a: 'U našich nabídek je cena konečná: zahrnuje nemovitost, daň z převodu, notáře i naši provizi s prvním rokem základního servisu. Rekonstrukce, vybavení a průběžné roční náklady se řeší zvlášť.',
   },
   {
     q: 'Musím do Itálie letět na podpis smlouvy?',
@@ -163,7 +186,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Zvládnete i rekonstrukci na dálku?',
-    a: 'Ano. Seženu místní řemeslníky, ohlídám rozpočet i termíny a posílám průběžné fotky z prací. Nemusíte tam být osobně.',
+    a: 'Ano. S naší paní architektkou a místním týmem zajistíme práce, ohlídám rozpočet i termíny a posílám průběžné fotky z prací. Nemusíte tam být osobně.',
   },
   {
     q: 'Co jsou IMU a TARI a kolik činí?',
@@ -171,7 +194,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Můžu nemovitost pronajímat a vydělávat na ní?',
-    a: 'Ano. Zařídím krátkodobý i sezónní pronájem: od přípravy apartmánu přes úklid až po komunikaci s hosty. Dům vám vydělává, i když v něm zrovna nejste.',
+    a: 'Ano. Zařídím krátkodobý i sezónní pronájem: od přípravy apartmánu přes úklid až po komunikaci s hosty. Výsledek závisí na nemovitosti, sezóně, obsazenosti a provozních nákladech.',
   },
 ];
 
@@ -242,44 +265,46 @@ export type ServiceCardItem = {
   anchor: string;
 };
 
+// Ilustrační AI fotografie pro karty služeb; nezobrazují konkrétní klientské zakázky.
 export const SERVICES_CARDS: ServiceCardItem[] = [
   {
     title: 'Chci koupit',
     lead: 'Provedu vás celým nákupem, prověřím smlouvy a pohlídám každý krok.',
-    image: '/media/kom-notar.webp', // noví majitelé u notáře (materiál klientky)
+    image: SERVICE_IMAGES.koupe.src,
     anchor: '#servis',
   },
   {
     title: 'Chci rekonstrukci',
-    lead: 'Zajistím spolehlivé místní řemeslníky, architekta i dohled nad rozpočtem.',
-    image: '/media/reno-real-1.webp', // hotová rekonstrukce (materiál klientky)
+    lead: 'S naší architektkou a místním týmem zajistíme rekonstrukci na klíč i vybavení.',
+    image: SERVICE_IMAGES.rekonstrukce.src,
     anchor: '#rekonstrukce',
   },
   {
     title: 'Chci správu',
-    // OVĚŘIT: IMU (přepis hovoru tu nebyl jednoznačný)
     lead: 'Postaráme se o energie, IMU a pravidelnou kontrolu nemovitosti s mými asistentkami, zatímco jste v Česku.',
-    image: '/services/sprava.webp',
+    image: SERVICE_IMAGES.sprava.src,
     anchor: '#sprava',
   },
   {
     title: 'Chci pronajímat',
-    lead: 'Připravíme apartmán pro turisty a zajistíme provoz, úklid i stabilní výnos.',
-    image: '/media/reno-real-3.webp', // garsonka pro krátkodobé pronájmy (materiál klientky)
+    lead: 'Připravíme apartmán pro turisty a zajistíme provoz, úklid i péči o hosty.',
+    image: SERVICE_IMAGES.pronajem.src,
     anchor: '#investice',
   },
 ];
 
 
 // sekce 08 — "Proč právě Abruzzo" (nahradila "Kde v Abruzzu hledat").
-// fakta jsou od klientky, nic nepridavat. kazda karta ma zastupny box na fotku.
-/** fotka na karte. bez src = zastupny box s popiskem, co tam patri */
-export type MediaSlot = { label: string; src?: string; alt?: string };
+// Texty jsou od klientky; dopravni karty pouzivaji ilustračně generovane snimky.
+export type MediaSlot = { label: string; src: string; alt: string };
 
 export type WhyCard = {
   title: string;
   text: string;
-  /** 1 nebo 2 fotky na kartu. snimky jsou z materialu klientky (Google Drive, public/media) */
+  photo: string;
+  photoAlt: string;
+  caption: string;
+  /** 1 nebo 2 fotky na kartu; dopravní fotografie jsou ilustrační. */
   photos: MediaSlot[];
 };
 
@@ -287,68 +312,68 @@ export const WHY_ABRUZZO: WhyCard[] = [
   {
     title: 'Hory a moře zároveň',
     text: 'Ráno na sjezdovce, odpoledne na pláži. Tahle kombinace je v Evropě vzácná.',
+    photo: '/media/why-hory-a-more.webp',
+    photoAlt: 'Horský masiv Gran Sasso zrcadlící se v jezeře v Abruzzu',
+    caption: 'Gran Sasso · hory i pobřeží na dosah',
     photos: [
-      { label: 'Hory', src: '/media/why-scanno.webp', alt: 'Jezero Scanno obklopené horami ve vnitrozemí Abruzza' },
+      { label: 'Hory', src: '/media/why-hory-a-more.webp', alt: 'Horský masiv Gran Sasso zrcadlící se v jezeře v Abruzzu' },
       { label: 'Moře', src: '/media/why-more.webp', alt: 'Pláž v Montesilvanu s kamennými vlnolamy' },
     ],
   },
   {
     title: 'Letiště na dosah',
-    text: 'Z Krakova do Pescary se létá celoročně. Z Prahy v sezóně přímo za 1 hodinu 20 minut, v zimě s přestupem.',
+    text: 'Letiště Pescara je blízko pobřeží. Přímé spoje z Prahy a Krakova i jejich sezónní provoz ověřte před cestou.',
+    photo: '/media/why-letiste-pescara.webp',
+    photoAlt: 'Letecký pohled na mezinárodní letiště v Pescaře a pobřeží',
+    caption: 'Letiště Pescara · přímé lety z Prahy i Krakova',
     photos: [
-      { label: 'Letiště Pescara', src: '/media/why-letiste.webp', alt: 'Pohled z letadla na pobřeží a přístav u Pescary' },
+      { label: 'Letiště Pescara', src: '/media/why-letiste-pescara.webp', alt: 'Letecký pohled na mezinárodní letiště v Pescaře a pobřeží' },
     ],
   },
   {
-    title: 'Všechno do 15 km od letiště',
-    text: 'Na letiště se dostanete trolejbusem za 1,50 až 2 eura. Taxi nepotřebujete.',
-    photos: [{ label: 'Trolejbus nebo cesta z letiště k moři' }],
+    title: 'Po příletu do města',
+    text: 'Letiště u Pescary má spojení veřejnou dopravou. Konkrétní spoj a jízdné si ověřte podle termínu cesty.',
+    photo: '/media/why-po-priletu-mesto.webp',
+    photoAlt: 'Pobřežní promenáda a pláže v Pescaře a Montesilvanu',
+    caption: 'Pobřeží v Pescaře · život pár minut od letiště',
+    photos: [{ label: 'Doprava od letiště', src: '/media/why-po-priletu-mesto.webp', alt: 'Pobřežní promenáda a pláže v Pescaře a Montesilvanu' }],
   },
   {
     title: 'Autem z Česka',
-    text: 'Do Abruzza se dá dojet i autem. Z Česka je to zhruba 1300 km.',
-    photos: [{ label: 'Silnice do Abruzza nebo auto u moře' }],
+    text: 'Do Abruzza se dá dojet i autem. Vzdálenost i dobu cesty si naplánujte podle místa odjezdu a cílové lokality.',
+    photo: '/media/why-autem-z-ceska.webp',
+    photoAlt: 'Cesta autem směrem k italskému pobřeží při západu slunce',
+    caption: 'Cesta autem · pohodlná trasa z ČR',
+    photos: [{ label: 'Cesta autem', src: '/media/why-autem-z-ceska.webp', alt: 'Cesta autem směrem k italskému pobřeží při západu slunce' }],
   },
   {
-    title: 'Nejstabilnější počasí',
-    text: 'Abruzzo leží ve středu Itálie, a proto je tu počasí nejstabilnější.',
+    title: 'Přímořské klima',
+    text: 'U pobřeží si užijete dlouhé teplé léto. Když zatoužíte po změně, horské oblasti Abruzza jsou na dosah.',
+    photo: '/media/why-primorske-klima.webp',
+    photoAlt: 'Panoramatický výhled na pobřeží Abruzza a azurové moře',
+    caption: 'Pobřeží Abruzza · 300 slunečných dní v roce',
     photos: [
-      { label: 'Moře za slunečného dne', src: '/media/why-pocasi.webp', alt: 'Olivový háj a moře z terasy nemovitosti při prohlídce' },
+      { label: 'Moře za slunečného dne', src: '/media/why-primorske-klima.webp', alt: 'Panoramatický výhled na pobřeží Abruzza a azurové moře' },
     ],
   },
   {
     title: 'Příroda a místa',
-    text: 'Costa dei Trabocchi, národní parky Gran Sasso a Majella. UNESCO: [OVĚŘIT: co přesně patří do UNESCO]. [DOPLNIT: další zajímavá místa od klientky]',
-    photos: [{ label: 'Costa dei Trabocchi' }, { label: 'Národní park Gran Sasso nebo Majella' }],
+    text: 'Od rybářských domků na Costa dei Trabocchi přes jezero Scanno až po hory Gran Sasso a Majella. Majella je geoparkem UNESCO.',
+    photo: '/media/why-priroda-scanno.webp',
+    photoAlt: 'Smaragdové jezero Scanno ve tvaru srdce v horách Abruzza',
+    caption: 'Jezero Scanno · smaragdové srdce Abruzza',
+    photos: [
+      { label: 'Jezero Scanno', src: '/media/why-priroda-scanno.webp', alt: 'Smaragdové jezero Scanno ve tvaru srdce v horách Abruzza' },
+    ],
   },
 ];
 
-// sekce 09 — reference: videa a profily s recenzemi.
-// recenze nevymyslet. dokud neni url, tlacitko ukaze znacku [DOPLNIT: odkaz na profil].
-export const REVIEW_PROFILES = [
-  {
-    id: 'google',
-    title: 'Recenze z Googlu',
-    placeholder: 'Sem napojit recenze z Google profilu',
-    cta: 'Všechny recenze na Googlu',
-    url: '', // [DOPLNIT: odkaz na profil]
-  },
-  {
-    id: 'firmy',
-    title: 'Recenze z Firmy.cz',
-    placeholder: 'Sem napojit recenze z Firmy.cz',
-    cta: 'Všechny recenze na Firmy.cz',
-    url: '', // [DOPLNIT: odkaz na profil]
-  },
-];
-
-// sekce 09A — komunita. kazda polozka = jeden zastupny box (foto), prvni je video.
-// az prijdou materialy, nahradi se box za <img>/<video>.
+// sekce 09A — komunita. Fotky a krátká videa z dodaných materiálů.
 export type CommunityItem = {
   kind: 'foto' | 'video' | 'loop';
   label: string;
-  /** fotka nebo poster videa. bez src = zastupny box */
-  src?: string;
+  /** fotka nebo poster videa */
+  src: string;
   video?: string;
   alt?: string;
 };
@@ -380,14 +405,14 @@ export const COMMUNITY_MEDIA: CommunityItem[] = [
   { kind: 'foto', label: 'Výlet s klienty k jezeru Scanno', src: '/media/kom-scanno.webp', alt: 'Výlet s klientkami na vyhlídku nad jezerem Scanno' },
   { kind: 'foto', label: 'Oslava léta, Ferragosto', src: '/media/kom-ferragosto.webp', alt: 'Letní večírek na pláži v santovských čepicích' },
   { kind: 'foto', label: 'Oslava narozenin klientky', src: '/media/kom-oslava.webp', alt: 'Narozeninový dort s prskavkami na oslavě klientky' },
-  { kind: 'foto', label: 'Lyžování v Apeninách' },
+  { kind: 'loop', label: 'Dojatá klientka', src: '/media/loop-dojata-klientka.webp', video: '/media/loop-dojata-klientka.mp4', alt: 'Dojatá klientka v bytě' },
 ];
 
-// sekce 10A — rekonstrukce na klic: tri pary pred a po + misto na Reels
+// sekce 10A — skutecny par pred a po, hotove realizace a video klientky
 export type RenoPair = {
   title: string;
-  before?: { src: string; alt: string };
-  after?: { src: string; alt: string };
+  before: { src: string; alt: string };
+  after: { src: string; alt: string };
 };
 
 export const RENO_PAIRS: RenoPair[] = [
@@ -396,8 +421,6 @@ export const RENO_PAIRS: RenoPair[] = [
     before: { src: '/media/reno-ostrava-pred.webp', alt: 'Původní kuchyň bytu před rekonstrukcí' },
     after: { src: '/media/reno-ostrava-po.webp', alt: 'Nová kuchyň s jídelním stolem po rekonstrukci' },
   },
-  // dalsi pary pred a po doda klientka (stejny uhel pohledu na obou fotkach)
-  { title: 'Další rekonstrukce' },
 ];
 
 /** hotove realizace (snimky z videi klientky ze slozky Rekonstrukce) */
@@ -408,21 +431,60 @@ export const RENO_DONE: { src: string; alt: string; label: string }[] = [
   { src: '/media/reno-real-4.webp', alt: 'Ložnice s čalouněným čelem postele v podkroví', label: 'Ložnice' },
 ];
 
-// sekce 10B — "Ptáte se, odpovídám". PRIDANI VIDEA = jedna polozka s src (a pripadne poster).
-// bez src se vykresli zastupny box s pracovnim nazvem tematu.
-export const VIDEO_ODPOVEDI: { title: string; src?: string; poster?: string }[] = [
-  { title: 'Proč kupovat na investici' },
-  { title: 'Kolik vynáší pronájem garsonky' },
-  { title: 'Proč právě Abruzzo', src: '/media/proc-abruzzo.mp4', poster: '/media/proc-abruzzo.webp' },
+// sekce 10B — výběr ze skutečných videí dodaných z Instagramu klientky.
+export const INSTAGRAM_REELS: { title: string; theme: string; src: string; poster: string }[] = [
+  {
+    title: 'Moje začátky',
+    theme: 'Z mé cesty',
+    src: '/media/instagram-moje-zacatky.mp4',
+    poster: '/media/instagram-moje-zacatky.webp',
+  },
+  {
+    title: 'Nahlédněte do bytu v Itálii',
+    theme: 'Nemovitosti',
+    src: '/media/instagram-byt-v-italii.mp4',
+    poster: '/media/instagram-byt-v-italii.webp',
+  },
+  {
+    title: 'Zákulisí RE/MAX Convention',
+    theme: 'Z mé práce',
+    src: '/media/instagram-remax-convention.mp4',
+    poster: '/media/instagram-remax-convention.webp',
+  },
+  {
+    title: 'Investujte i do sebe',
+    theme: 'Život u moře',
+    src: '/media/instagram-investujte-do-sebe.mp4',
+    poster: '/media/instagram-investujte-do-sebe.webp',
+  },
+  {
+    title: 'Garsonka s výhledem na moře',
+    theme: 'Nemovitosti',
+    src: '/media/prohlidka-garsonka.mp4',
+    poster: '/media/prohlidka-garsonka.webp',
+  },
+  {
+    title: 'Rekonstrukce na klíč',
+    theme: 'Z mé práce',
+    src: '/media/reno-na-klic.mp4',
+    poster: '/media/reno-na-klic.webp',
+  },
+  {
+    title: 'Proč právě Abruzzo',
+    theme: 'Život v Abruzzu',
+    src: '/media/proc-abruzzo.mp4',
+    poster: '/media/proc-abruzzo.webp',
+  },
 ];
 
-// sekce 12A — "O mně". text a seznam oceneni dodá klientka.
+// sekce 12A — "O mně". Jen doložené údaje z podkladů klientky a projektu.
 export const ABOUT = {
-  text: '[DOPLNIT: text od klientky o jejím přístupu k realitám a o tom, proč Itálie]',
+  text: 'V Abruzzu žiji už dvacet let. Díky místním kontaktům hledám pro české klienty nemovitosti i mimo veřejné nabídky a osobně je provázím koupí v češtině. Spolupracuji s ověřenými italskými partnery a po předání klíčů pomáhám také s rekonstrukcí, správou a pronájmem.',
   photo: { src: '/media/about-zuzana.webp', alt: 'Bc. Zuzana Bajgerová na terase u moře v Abruzzu', width: 1000, height: 1250 },
   awards: [
     'Nejúspěšnější makléř měsíce realitní sítě RE/MAX ČR, 1. místo (červenec 2025)',
     '6. místo v Top 10 RE/MAX ČR (2025)',
-    '[DOPLNIT: kompletní seznam ocenění]',
+    'Platinum · RE/MAX',
+    'Hall of Fame · RE/MAX',
   ],
 };

@@ -1,109 +1,112 @@
 import Link from 'next/link';
-import Zastupny from '@/components/Zastupny';
+import BeforeAfter from '@/components/page/BeforeAfter';
 import ClickVideo from '@/components/page/ClickVideo';
-import AutoLoop from '@/components/media/AutoLoop';
-import { RENO_DONE, RENO_PAIRS } from '@/lib/home';
+import { RENO_PAIRS } from '@/lib/home';
+import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { path } from '@/lib/routes';
 
-// sekce 10A — rekonstrukce na klic. skutecny par pred a po, hotove realizace a reel klientky.
-// vse je z jejich videi (slozka Rekonstrukce). dalsi pary pred a po doda klientka.
-export default function RenoSection({ href }: { href: string }) {
+// sekce 10A — rekonstrukce na klíč / případová studie Ostrava.
+// Stejná prémiová karta s BeforeAfter sliderem a videem jako na /reference.
+export default function RenoSection({ href }: { href?: string }) {
+  const ostrava = RENO_PAIRS[0];
+
   return (
-    <section className="sec reno" aria-labelledby="sec-10a">
+    <section className="sec case2-sec reno" id="rekonstrukce" aria-labelledby="sec-10a">
       <div className="wrap">
-        <div className="sec__head sec__head--left">
-          <div className="listings__badge">
-            <span className="listings__badge-dot" />
-            <span>Rekonstrukce na klíč · Abruzzo</span>
-          </div>
-          <h2 id="sec-10a" className="home-h2">
-            Rekonstrukce <em>na klíč</em>
-          </h2>
-          <p className="home-lead">
-            S naší paní architektkou a vlastním týmem ověřených řemeslníků vám byt zrekonstruujeme
-            na klíč. Ohlídám rozpočet i termíny a během prací vám posílám fotky.
-          </p>
-        </div>
+        <article className="case2">
+          <header className="case2__head">
+            <p className="case2__eyebrow">
+              <span>01</span> Případová studie · Ostrava
+            </p>
+            <h2 id="sec-10a" className="case2__h">
+              Od klíčů <em>po hotový byt</em>
+            </h2>
+            <p className="case2__lead">
+              Skutečná proměna bytu klienta z Ostravy. Fotografie a video ukazují původní stav i dokončený interiér.
+            </p>
+          </header>
 
-        <div className="reno__grid">
-          <div className="reno__main">
-            {RENO_PAIRS.map((pair) => (
-              <article className="reno-pair" key={pair.title}>
-                <h3 className="reno-pair__t">{pair.title}</h3>
-                <div className="reno-pair__row">
-                  {pair.before && pair.after ? (
-                    <>
-                      <figure className="reno-pair__img media-zoom">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={pair.before.src} alt={pair.before.alt} loading="lazy" decoding="async" />
-                        <figcaption className="media-chip">Před</figcaption>
-                      </figure>
-                      <figure className="reno-pair__img media-zoom">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={pair.after.src} alt={pair.after.alt} loading="lazy" decoding="async" />
-                        <figcaption className="media-chip media-chip--gold">Po</figcaption>
-                      </figure>
-                    </>
-                  ) : (
-                    <Zastupny
-                      label={`${pair.title}: dvojice fotek před a po`}
-                      ratio="16 / 5"
-                      spec="2× 1600 × 2000 px (4:5), stejný úhel pohledu před i po"
-                      className="zastupny--compact reno-pair__ph"
-                    />
-                  )}
-                </div>
-              </article>
-            ))}
-
-            <div className="reno__done">
-              <p className="reno__done-h">Hotové realizace</p>
-              <div className="reno__tiles">
-                {RENO_DONE.map((r) => (
-                  <figure className="reno__tile media-tile" key={r.src}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={r.src} alt={r.alt} loading="lazy" decoding="async" />
-                    <figcaption className="media-chip">{r.label}</figcaption>
-                  </figure>
-                ))}
-                <figure className="reno__tile media-tile">
-                  <AutoLoop
-                    src="/media/loop-dojata-klientka.mp4"
-                    poster="/media/loop-dojata-klientka.webp"
-                    label="Dojatá klientka v hotovém bytě"
-                  />
-                  <figcaption className="media-chip">Dojatá klientka</figcaption>
-                </figure>
+          <div className="case2__stage">
+            {ostrava?.before && ostrava?.after && (
+              <div className="case2__slider">
+                <BeforeAfter before={ostrava.before} after={ostrava.after} />
+                <p className="case2__hint">Posuňte dělítko a porovnejte kuchyň před a po</p>
               </div>
+            )}
+            <div className="case2__video">
+              <ClickVideo
+                src="/media/reno-ostrava.mp4"
+                poster="/media/reno-ostrava.webp"
+                label="Celá proměna bytu klienta z Ostravy"
+                ratio="9 / 16"
+              />
+              <p className="case2__vcap">Celá proměna ve videu</p>
             </div>
           </div>
 
-          <div className="reno__reels">
-            <ClickVideo
-              src="/media/reno-ostrava.mp4"
-              poster="/media/reno-ostrava.webp"
-              label="Celá proměna bytu klienta z Ostravy, video"
-              ratio="9 / 16"
-            />
-            <p className="reno__reels-cap">Celá proměna bytu klienta z Ostravy</p>
-          </div>
-        </div>
+          <ul className="case2__facts" aria-label="Rozsah rekonstrukce">
+            <li>
+              <strong>Na klíč</strong>
+              <span>Od plánu po předání</span>
+            </li>
+            <li>
+              <strong>3 prostory</strong>
+              <span>Kuchyň · koupelna · obývací pokoj</span>
+            </li>
+            <li>
+              <strong>Ostrava</strong>
+              <span>Byt klienta</span>
+            </li>
+          </ul>
 
-        <div className="reno__cta">
-          <Link href={href} className="btn btn--saffron">
-            <span>Domluvit nezávaznou konzultaci</span>
-            <svg
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M3 8h10M9 4l4 4-4 4" />
-            </svg>
-          </Link>
-        </div>
+          <dl className="case2__dl">
+            <div>
+              <dt>Situace</dt>
+              <dd>Původní podobu bytu zachycují fotografie před rekonstrukcí. Srovnání ukazuje různé pohledy na prostor.</dd>
+            </div>
+            <div>
+              <dt>Co jsme udělali</dt>
+              <dd>Byt prošel rekonstrukcí na klíč: nová kuchyň, koupelna i obývací pokoj. Celou proměnu ukazuje video.</dd>
+            </div>
+            <div>
+              <dt>Výsledek</dt>
+              <dd>Dokončený a vybavený interiér si můžete projít ve videu. Rozsah každé další rekonstrukce domlouváme individuálně.</dd>
+            </div>
+          </dl>
+
+          <div className="case2__cta">
+            <Link className="btn btn--saffron" href={path('rekonstrukce', DEFAULT_LOCALE)}>
+              <span>Rekonstrukce na klíč</span>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14m-6-6 6 6-6 6" />
+              </svg>
+            </Link>
+            {href && (
+              <Link className="btn btn--glass" href={href}>
+                <span>Domluvit nezávaznou konzultaci</span>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14m-6-6 6 6-6 6" />
+                </svg>
+              </Link>
+            )}
+          </div>
+        </article>
       </div>
     </section>
   );

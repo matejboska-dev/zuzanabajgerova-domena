@@ -27,7 +27,7 @@ export function generateStaticParams() {
 
 const TITLE = 'Kontakt a rezervace hovoru';
 const DESC =
-  'Napište mi, zavolejte nebo si vyberte termín hovoru. Ozvu se do 24 hodin, konzultace o koupi nemovitosti v Abruzzu je nezávazná a zdarma.';
+  'Napište mi, zavolejte nebo si vyberte termín hovoru. Ozvu se vám osobně, konzultace o koupi nemovitosti v Abruzzu je nezávazná a zdarma.';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -59,16 +59,11 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         id="kontakt-h1"
         badge="Kontakt · Abruzzo a Ostrava"
         title="Řekněte mi, co hledáte."
-        accent="Ozvu se do 24 hodin."
+        accent="Ozvu se vám osobně."
         lead="Konzultace je nezávazná a zdarma. Za dvacet minut budete vědět, jestli je koupě v Itálii pro vás reálná, kolik by přibližně stála a co všechno bych za vás vyřídila."
         bg={{ src: '/images/abruzzo-costa-trabocchi.jpg', width: 1400, height: 1866 }}
         bgPosition="center 62%"
-        photo={{
-          src: '/images/zuzana-abruzzo-more.webp',
-          alt: 'Bc. Zuzana Bajgerová na terase u moře v Abruzzu',
-          width: 1086,
-          height: 1448,
-        }}
+        portrait={{ src: '/hero/portret-4k.webp', alt: 'Bc. Zuzana Bajgerová' }}
         ctas={[
           { href: waLink(), label: 'Napsat na WhatsApp', external: true },
           { href: '#kalendar', label: 'Vybrat termín hovoru', variant: 'glass' },
@@ -90,7 +85,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <StepCards
             items={[
               { title: 'Napíšete mi', text: 'Vyplníte krátký formulář, napíšete na WhatsApp nebo mi zavoláte. Stačí pár údajů, nic dalšího nepotřebuji.' },
-              { title: 'Ozvu se do 24 hodin', text: 'Odpovím vám osobně telefonem, na WhatsApp nebo e-mailem, podle toho, co vám vyhovuje.' },
+              { title: 'Odpovím vám osobně', text: 'Odpovím vám osobně telefonem, na WhatsApp nebo e-mailem, podle toho, co vám vyhovuje.' },
               { title: 'Projdeme, co je reálné', text: 'Řekneme si, co hledáte, jaký máte rozpočet a kolik by koupě přibližně stála. K ničemu vás to nezavazuje.' },
             ]}
           />
@@ -117,7 +112,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             badge="Rezervace hovoru"
             title="Vyberte si termín,"
             accent="který vám vyhovuje"
-            lead="Navrhněte den a část dne, termín vám potvrdím do 24 hodin."
+            lead="Navrhněte den a část dne, termín vám osobně potvrdím."
           />
           <CallBooking />
         </div>

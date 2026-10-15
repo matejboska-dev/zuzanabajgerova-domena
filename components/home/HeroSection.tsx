@@ -12,18 +12,21 @@ interface HeroSectionProps {
   };
 }
 
-// Pořadí snímků: hlavní sdělení je moře. Snímky 1 až 4 jsou ze Zuzaniných videí (Google Drive),
-// takže ukazují skutečné Abruzzo. Původní stockové fotky z jezer (Como a podobně) a z jiných
-// regionů jsou pryč: web prodává Abruzzo, cizí místo by podkopalo důvěru. Rocca Calascio v Abruzzu je.
-// Vsechny jsou predem zmensene .webp (max. 2560 px), prvni se prednacita jako LCP.
+// Pořadí snímků na pozadí úvodního hrdiny (Abruzzo):
+// 1. Písečná pláž při západu slunce
+// 2. Přístav a azurové moře
+// 3. Jezero Lago di Barrea a historické horské městečko
+// 4. Hrad Rocca Calascio · Gran Sasso
+// 5. Panoramatický výhled na abruzzské hory a údolí
+// Všechny jsou předem zmenšené .webp (max. 2560 px), první se přednačítá jako LCP.
 type HeroBg = { src: string; title: string };
 
 const HERO_BACKGROUNDS: HeroBg[] = [
-  { src: '/hero/backgrounds/abruzzo-montesilvano-plaz.webp', title: 'Pláž v Montesilvanu při západu slunce' },
-  { src: '/hero/backgrounds/abruzzo-pescara-z-letadla.webp', title: 'Pobřeží u Pescary z letadla' },
-  { src: '/hero/backgrounds/abruzzo-olivy-a-more.webp', title: 'Olivový háj a moře' },
-  { src: '/hero/backgrounds/abruzzo-montesilvano-colle.webp', title: 'Výhled na Montesilvano a moře' },
-  { src: '/hero/backgrounds/pexels-rinoadamo-35052274.webp', title: 'Rocca Calascio · Gran Sasso' },
+  { src: '/hero/backgrounds/hero-bg-1-abruzzo-plaz-zapad.webp', title: 'Písečná pláž při západu slunce' },
+  { src: '/hero/backgrounds/hero-bg-2-abruzzo-pristav-more.webp', title: 'Přístav a azurové moře' },
+  { src: '/hero/backgrounds/hero-bg-3-abruzzo-jezero-barrea.webp', title: 'Lago di Barrea a horské městečko' },
+  { src: '/hero/backgrounds/hero-bg-4-abruzzo-rocca-calascio.webp', title: 'Hrad Rocca Calascio · Gran Sasso' },
+  { src: '/hero/backgrounds/hero-bg-5-abruzzo-panoramaticke-udoli.webp', title: 'Panoráma abruzzských hor a údolí' },
 ];
 
 const LOCALIZED_COPY: Record<
@@ -60,7 +63,7 @@ const LOCALIZED_COPY: Record<
     ctaSecondary: 'Free consultation',
     stats: [
       { val: 'TOP 10', lbl: 'RE/MAX Czech Republic' },
-      { val: '20 years', lbl: 'of operating in Abruzzo' },
+      { val: '20 years', lbl: 'living in Abruzzo' },
       { val: '100 %', lbl: 'complete local support' },
     ],
   },
@@ -73,7 +76,7 @@ const LOCALIZED_COPY: Record<
     ctaSecondary: 'Consulenza gratuita',
     stats: [
       { val: 'TOP 10', lbl: 'RE/MAX Rep. Ceca' },
-      { val: '20 anni', lbl: 'di attività in Abruzzo' },
+      { val: '20 anni', lbl: 'di vita in Abruzzo' },
       { val: '100 %', lbl: 'servizio completo sul posto' },
     ],
   },
@@ -81,14 +84,17 @@ const LOCALIZED_COPY: Record<
 
 export default function HeroSection({ locale, href }: HeroSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
   const copy = LOCALIZED_COPY[locale] ?? LOCALIZED_COPY.cs;
 
   useEffect(() => {
+    if (paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const timer = setInterval(() => {
+      if (document.hidden) return;
       setCurrentIndex((prev) => (prev + 1) % HERO_BACKGROUNDS.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [paused]);
 
   return (
     <section className="hero-bienes" aria-label="Úvodní představení">
@@ -129,8 +135,9 @@ export default function HeroSection({ locale, href }: HeroSectionProps) {
               key={bg.src}
               type="button"
               className={`hero-bienes__indicator ${idx === currentIndex ? 'is-active' : ''}`}
-              onClick={() => setCurrentIndex(idx)}
+              onClick={() => { setCurrentIndex(idx); setPaused(true); }}
               aria-label={`Fotografie ${idx + 1}: ${bg.title}`}
+              aria-pressed={idx === currentIndex}
             />
           ))}
         </div>
@@ -138,11 +145,6 @@ export default function HeroSection({ locale, href }: HeroSectionProps) {
         {/* 4) Obsahová vrstva podle vzoru Bienes: text vlevo, statistiky vpravo */}
         <div className="hero-bienes__content">
           <div className="hero-bienes__left">
-            <div className="hero-bienes__badge">
-              <span className="hero-bienes__dot" />
-              <span>{copy.badge}</span>
-            </div>
-
             <h1 className="hero-bienes__h1">
               {copy.h1Line1} <br />
               <em>{copy.h1Accent}</em>
@@ -160,16 +162,9 @@ export default function HeroSection({ locale, href }: HeroSectionProps) {
             </div>
           </div>
 
-          <div className="hero-bienes__stats">
-            {copy.stats.map((item, idx) => (
-              <div key={item.val} className="hero-bienes__stat-col">
-                {idx > 0 && <div className="hero-bienes__stat-sep" aria-hidden="true" />}
-                <div className="hero-bienes__stat">
-                  <span className="hero-bienes__stat-val">{item.val}</span>
-                  <span className="hero-bienes__stat-lbl">{item.lbl}</span>
-                </div>
-              </div>
-            ))}
+          <div className="hero-bienes__identity">
+            <span className="hero-bienes__signature">Zuzana Bajgerová</span>
+            <span>{{cs: 'Vaše realitní specialistka v Abruzzu', en: 'Your property specialist in Abruzzo', it: 'La vostra specialista immobiliare in Abruzzo'}[locale]}</span>
           </div>
         </div>
       </div>

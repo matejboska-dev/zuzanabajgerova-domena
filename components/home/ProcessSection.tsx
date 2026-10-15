@@ -1,7 +1,5 @@
-'use client';
-
-import { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { waLink } from '@/lib/contact';
 import type { Locale } from '@/lib/i18n';
 
 interface ProcessStep {
@@ -36,7 +34,7 @@ const PROCESS_DATA: Record<Locale, ProcessCopy> = {
     titleLead: 'Vy si přijedete splnit svůj italský sen.',
     titleAccent: 'O starosti kolem koupě se postaráme my.',
     lead:
-      'Koupě nemovitosti v Itálii má být radost, ne starost s úřady a papírováním. V Abruzzu působím přes 20 let a se svým týmem pro vás zajistím kompletní servis od A do Z.',
+      'Koupě nemovitosti v Itálii má být radost, ne starost s úřady a papírováním. V Abruzzu žiji přes 20 let a se svým týmem pro vás zajistím kompletní servis od A do Z.',
     steps: [
       {
         n: '01',
@@ -50,7 +48,7 @@ const PROCESS_DATA: Record<Locale, ProcessCopy> = {
         n: '02',
         tag: 'Aktivní scouting celého trhu',
         title: 'Nehledám jen v nabídce, kterou vidíte na webu',
-        text: 'Aktivně pro vás mapuji celý regionální trh. Za více než 20 let v Abruzzu spolupracuji výhradně s prověřenými místními kancelářemi a majiteli s vysokými standardy důvěry.',
+        text: 'Aktivně pro vás mapuji celý regionální trh. Díky více než 20 letům života v Abruzzu znám místní prostředí. Spolupracuji s prověřenými místními kancelářemi a majiteli s vysokými standardy důvěry.',
         sub: 'Nehledám jen v nabídce, kterou vidíte na webu, ale i mezi ověřenými realitními agenturami, kolegy a místními. Řada nemovitostí se ke mně dostane přes známé, ještě než se objeví na internetu.',
         highlight: 'Přístup k neveřejným nabídkám a prověřeným partnerům.',
         icon: 'compass',
@@ -58,7 +56,7 @@ const PROCESS_DATA: Record<Locale, ProcessCopy> = {
       {
         n: '03',
         tag: 'Rezervační záloha 200 €',
-        title: 'Rezervace termínu a individuální příprava',
+        title: 'Příprava prohlídek a záloha 200 €',
         text: 'Po potvrzení termínu vašeho příjezdu sestavíme přesný harmonogram prohlídek. Záloha 200 € kryje intenzivní přípravu a plně se odečítá z naší konečné provize při koupi.',
         highlight: '100% odečitatelné z konečné provize · Žádný náklad navíc.',
         icon: 'calendar',
@@ -67,7 +65,7 @@ const PROCESS_DATA: Record<Locale, ProcessCopy> = {
         n: '04',
         tag: 'Právní & technická garance',
         title: 'Nechci, abyste koupili „zajíce v pytli“',
-        text: 'Vědět, co nekoupit, je často důležitější. Spolupracuji s notářem Tommasem Trifonem, geodety a právníky. Pokud existuje skrytá vada či právní břemeno, ihned vás varuji.',
+        text: 'Vědět, co nekoupit, je často důležitější. Spolupracuji s notářem Tommasem Trifonem, geodety a právníky. Pokud při prověřování narazíme na problém, upozorním vás na něj.',
         highlight: 'Osobní prověření s notářem & garance bezpečnosti.',
         icon: 'shield',
       },
@@ -309,83 +307,29 @@ export default function ProcessSection({
   href: { konzultace: string; jakKoupit: string; sluzby: string };
 }) {
   const copy = PROCESS_DATA[locale] ?? PROCESS_DATA.cs;
-  const listRef = useRef<HTMLOListElement>(null);
-
-  useEffect(() => {
-    const list = listRef.current;
-    if (!list) return;
-
-    if (
-      typeof IntersectionObserver === 'undefined' ||
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    ) {
-      list.querySelectorAll('.process-zigzag__item').forEach((item) => {
-        item.classList.add('is-drawn');
-      });
-      return;
-    }
-
-    const items = list.querySelectorAll<HTMLElement>('.process-zigzag__item');
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-drawn');
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        rootMargin: '0px 0px -10% 0px',
-        threshold: 0.15,
-      }
-    );
-
-    items.forEach((item) => io.observe(item));
-
-    return () => io.disconnect();
-  }, []);
+  const heading = {
+    cs: ['Od první představy', 'k vlastním klíčům'],
+    en: ['From your first idea', 'to your own keys'],
+    it: ['Dalla prima idea', 'alle chiavi di casa'],
+  }[locale];
 
   return (
-    <section id="sec-07" className="process-sec" aria-labelledby="process-title">
-      {/* Shared Pure Gold Gradient for Connecting Lines */}
-      <svg className="sr-only" aria-hidden="true">
-        <defs>
-          <linearGradient id="zigzagGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#d9a441" stopOpacity="0.85" />
-            <stop offset="50%" stopColor="#e8c480" stopOpacity="1" />
-            <stop offset="100%" stopColor="#d9a441" stopOpacity="0.85" />
-          </linearGradient>
-          <linearGradient id="zigzagDashedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#d9a441" stopOpacity="0.85" />
-            <stop offset="50%" stopColor="#e8c480" stopOpacity="1" />
-            <stop offset="100%" stopColor="#d9a441" stopOpacity="0.85" />
-          </linearGradient>
-        </defs>
-      </svg>
-
+    <section id="sec-07" className="process-editorial process-section" aria-labelledby="process-title">
       <div className="wrap">
-        {/* Section Header */}
-        <div className="process-head">
-          <div className="listings__badge process-head__badge">
-            <span className="listings__badge-dot" />
-            <span>{copy.badge}</span>
-          </div>
-
-          <h2 id="process-title" className="process-head__title">
-            <span className="process-head__title-lead">{copy.titleLead}</span>
-            <em className="process-head__title-accent">{copy.titleAccent}</em>
+        {/* Centered Heading & Lead */}
+        <div className="process-editorial__head">
+          <h2 id="process-title" className="home-h2">
+            {heading[0]} <em>{heading[1]}</em>
           </h2>
-
-          <p className="process-head__lead">{copy.lead}</p>
+          <p className="home-lead">{copy.lead}</p>
         </div>
 
-        {/* Minimalist Zigzag Process Timeline */}
-        <ol ref={listRef} className="process-zigzag" aria-label={copy.badge}>
-          {copy.steps.map((step, idx) => {
-            const isLeft = idx % 2 === 0;
-            const stepNum = `${idx + 1}.`;
-            const isLast = idx === copy.steps.length - 1;
+        {/* Zig-Zag Timeline Cards */}
+        <ol className="process-zigzag" aria-label={heading.join(' ')}>
+          {copy.steps.map((step, index) => {
+            const isLeft = index % 2 === 0;
+            const isLast = index === copy.steps.length - 1;
+            const stepNum = `${index + 1}.`;
 
             return (
               <li
@@ -402,13 +346,12 @@ export default function ProcessSection({
 
                   {/* Card Content */}
                   <div className="process-card__body">
-                    <span className="process-card__tag">{step.tag}</span>
                     <h3 className="process-card__title">{step.title}</h3>
-                    {step.sub && <p className="process-card__sub">{step.sub}</p>}
+                    <p className="process-card__text">{step.text}</p>
                   </div>
                 </div>
 
-                {/* S-Curve Gold Connector (Desktop) */}
+                {/* Dashed S-Curve Connector (Desktop) */}
                 {!isLast && (
                   <>
                     <div
@@ -419,40 +362,22 @@ export default function ProcessSection({
                       }`}
                       aria-hidden="true"
                     >
-                      <svg viewBox="0 0 100 110" fill="none" preserveAspectRatio="none">
-                        <defs>
-                          <mask id={`zigzag-mask-${idx}`} maskUnits="userSpaceOnUse">
-                            <path
-                              d={
-                                isLeft
-                                  ? 'M 0 15 C 50 15, 50 95, 100 95'
-                                  : 'M 100 15 C 50 15, 50 95, 0 95'
-                              }
-                              fill="none"
-                              stroke="#ffffff"
-                              strokeWidth="8"
-                              strokeLinecap="round"
-                              pathLength="140"
-                              className="process-zigzag__mask-path"
-                            />
-                          </mask>
-                        </defs>
+                      <svg viewBox="0 0 88 110" fill="none" preserveAspectRatio="none">
                         <path
                           d={
                             isLeft
-                              ? 'M 0 15 C 50 15, 50 95, 100 95'
-                              : 'M 100 15 C 50 15, 50 95, 0 95'
+                              ? 'M 0 15 C 44 15, 44 95, 88 95'
+                              : 'M 88 15 C 44 15, 44 95, 0 95'
                           }
-                          stroke="url(#zigzagGoldGrad)"
+                          stroke="var(--cobalto)"
                           strokeWidth="2.5"
                           strokeDasharray="6 6"
                           strokeLinecap="round"
-                          mask={`url(#zigzag-mask-${idx})`}
                         />
                       </svg>
                     </div>
 
-                    {/* Mobile subtle vertical connector */}
+                    {/* Mobile vertical dashed connector */}
                     <div className="process-zigzag__mobile-connector" aria-hidden="true" />
                   </>
                 )}
@@ -461,78 +386,44 @@ export default function ProcessSection({
           })}
         </ol>
 
-        {/* Climax Visual Banner: Quote over big photo + authentic closing CTA */}
-        <div className="process-climax">
-          <picture className="process-climax__picture">
-            <source srcSet="/images/abruzzo-zivot-komunita.webp" type="image/webp" />
+        {/* Centered Actions & Author Signature */}
+        <div className="process-editorial__footer">
+          <figure className="process-editorial__portrait process-zigzag__trust">
             <img
-              src="/hero/backgrounds/pexels-titouan-jullien-504247666-29142700.jpg"
-              alt="Život v Abruzzu u moře a komunita"
-              className="process-climax__img"
-              width={1600}
-              height={1069}
+              src="/images/zuzana-notar.webp"
+              alt={locale === 'cs' ? 'Zuzana Bajgerová při podpisu u notáře' : 'Zuzana Bajgerová signing at the notary'}
+              width={120}
+              height={120}
+              className="process-zigzag__avatar"
               loading="lazy"
             />
-          </picture>
+            <figcaption className="process-zigzag__trust-text">
+              <span className="process-zigzag__trust-name">{copy.authorName}</span>
+              <span className="process-zigzag__trust-role">
+                {locale === 'cs'
+                  ? 'Realitní specialistka v Abruzzu · 20+ let na místě'
+                  : locale === 'en'
+                  ? 'Italian Property Specialist · 20+ years in Abruzzo'
+                  : 'Specialista immobiliare in Abruzzo · 20+ anni sul posto'}
+              </span>
+            </figcaption>
+          </figure>
 
-          <div className="process-climax__overlay" aria-hidden="true" />
-
-          <div className="process-climax__content">
-            <div className="process-climax__badge">
-              <span className="process-climax__badge-icon">🇮🇹</span>
-              <span>Život v Itálii</span>
-            </div>
-
-            <blockquote className="process-climax__quote">
-              <p className="process-climax__quote-main">{copy.climaxQuote}</p>
-              <p className="process-climax__quote-sub">{copy.climaxText}</p>
-            </blockquote>
-
-            <div className="process-climax__photo-wrap">
-              <picture>
-                <source srcSet="/images/zuzana-climax.webp" type="image/webp" />
-                <img
-                  src="/images/zuzana-climax.png"
-                  alt={copy.authorName}
-                  className="process-climax__photo"
-                  width={400}
-                  height={400}
-                  loading="lazy"
-                />
-              </picture>
-            </div>
-
-            <div className="process-climax__actions">
-              <Link href={href.konzultace} className="btn btn--saffron process-climax__btn">
-                <span>{copy.ctaConsultation}</span>
-                <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path
-                    fillRule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Link>
-
-              <Link href={href.jakKoupit} className="btn btn--glass process-climax__btn-ghost">
-                <span>{copy.ctaGuide}</span>
-              </Link>
-            </div>
-
-            <p className="process-climax__subtext">
-              <a
-                href="https://wa.me/420723824348"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="process-climax__wa"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width={16} height={16}>
-                  <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z" />
-                </svg>
-                <span>{copy.whatsAppText}</span>
-              </a>
-            </p>
+          <div className="process-editorial__actions">
+            <a href={waLink()} className="btn btn--saffron">
+              <span>{locale === 'cs' ? 'Proberme váš záměr' : locale === 'en' ? 'Tell me your plans' : 'Parliamo del tuo progetto'}</span>
+            </a>
+            <Link href={href.jakKoupit} className="btn btn--ghost">
+              <span>{copy.ctaGuide}</span>
+            </Link>
           </div>
+          <p className="process-zigzag__microcopy">
+            {locale === 'cs'
+              ? 'Nejrychleji mě zastihnete na WhatsAppu.'
+              : locale === 'en'
+              ? 'WhatsApp is the quickest way to reach me.'
+              : 'WhatsApp è il modo più rapido per contattarmi.'}
+          </p>
         </div>
       </div>
     </section>

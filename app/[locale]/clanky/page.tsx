@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import Marked from '@/components/Marked';
-import Zastupny from '@/components/Zastupny';
 import Crumbs from '@/components/page/Crumbs';
 import CtaBand from '@/components/page/CtaBand';
 import JsonLd from '@/components/page/JsonLd';
@@ -41,9 +39,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
   const cats = [
     { t: 'Koupě', d: 'Postup od první konzultace po klíče.', href: `${guide}#pruvodce`, img: '/media/kom-notar.webp' },
-    { t: 'Náklady', d: 'Co všechno zaplatíte a jak spočítat rozpočet.', href: `${guide}#naklady`, img: '/media/lok-pescara-colle.webp' },
+    { t: 'Náklady', d: 'Co všechno zaplatíte a jak spočítat rozpočet.', href: `${path('koupePrakticky', DEFAULT_LOCALE)}#naklady`, img: '/media/lok-pescara-colle.webp' },
     { t: 'Lokality', d: 'Čtyři oblasti Abruzza a pro koho se hodí.', href: path('lokality', DEFAULT_LOCALE), img: '/media/why-more.webp' },
-    { t: 'Investice', d: 'Pronájem, rekonstrukce a provoz na dálku.', href: `${path('sluzby', DEFAULT_LOCALE)}#investice`, img: '/media/reno-real-3.webp' },
+    { t: 'Investice', d: 'Pronájem, rekonstrukce a provoz na dálku.', href: path('pronajem', DEFAULT_LOCALE), img: '/media/reno-real-3.webp' },
     { t: 'Život v Itálii', d: 'Jak se v Abruzzu žije a slaví.', href: `${path('oMne', DEFAULT_LOCALE)}#fotky`, img: '/media/kom-ferragosto.webp' },
   ];
 
@@ -77,7 +75,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/media/jak-notar.webp" alt="Podpis dokumentů při koupi nemovitosti" loading="lazy" />
             <span className="pillar__body">
-              <span className="pillar__kicker">Pilířový průvodce</span>
+
               <span id="clanky-pilir" className="pillar__t">Jak koupit nemovitost v Itálii, krok za krokem</span>
               <span className="pillar__d">8 kroků, náklady s kalkulačkou, plná moc, 7 chyb a slovníček italských pojmů.</span>
               <span className="pillar__more">Číst průvodce</span>
@@ -103,26 +101,6 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
               </li>
             ))}
           </ul>
-        </div>
-      </section>
-
-      <section className="sec" aria-labelledby="clanky-nove">
-        <div className="wrap">
-          <SecHead id="clanky-nove" badge="Připravujeme" title="Nejnovější" accent="články" />
-          <div className="soon">
-            {[1, 2, 3].map((i) => (
-              <Zastupny
-                key={i}
-                label={`Článek ${i}: titulek, perex a úvodní fotka`}
-                ratio="4 / 3"
-                spec="téma vybere klientka, fotka 1600 × 1200 px"
-                className="zastupny--compact"
-              />
-            ))}
-          </div>
-          <p className="lok-note">
-            <Marked text="[DOPLNIT: témata prvních článků. Dokud nevyjde první, stránka není v indexu.]" />
-          </p>
         </div>
       </section>
 

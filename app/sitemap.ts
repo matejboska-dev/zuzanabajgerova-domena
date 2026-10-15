@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 import { listProperties } from '@/lib/data.server';
 import { propertySlug } from '@/lib/slug';
 import { LOCALITY_SLUGS } from '@/lib/localities';
-import { HTML_LANG, LIVE_LOCALES, DEFAULT_LOCALE } from '@/lib/i18n';
-import { CS_ONLY, NOINDEX, absolute, path, type RouteId } from '@/lib/routes';
+import { HTML_LANG, DEFAULT_LOCALE } from '@/lib/i18n';
+import { NOINDEX, SERVICE_IDS, publishedLocales, absolute, path, type RouteId } from '@/lib/routes';
 
 // sitemap se generuje z routes.ts, ne rucne — kdyz pribude stranka, pribude i tady
 
@@ -12,7 +12,9 @@ const STATIC: RouteId[] = [
   'nemovitosti',
   'lokality',
   'jakKoupit',
+  'koupePrakticky',
   'sluzby',
+  ...SERVICE_IDS,
   'oMne',
   'reference',
   'kontakt',
@@ -25,7 +27,7 @@ const STATIC: RouteId[] = [
 
 function alternates(id: RouteId, slug?: string) {
   const languages: Record<string, string> = {};
-  for (const l of CS_ONLY.includes(id) ? [DEFAULT_LOCALE] : LIVE_LOCALES) {
+  for (const l of publishedLocales(id)) {
     languages[HTML_LANG[l]] = absolute(path(id, l, slug));
   }
   return { languages };
@@ -36,8 +38,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   for (const id of STATIC) {
     if (NOINDEX.includes(id)) continue;
-    entries.push({
-      url: absolute(path(id, DEFAULT_LOCALE)),
+    for (const locale of publishedLocales(id)) entries.push({
+      url: absolute(path(id, locale)),
       changeFrequency: id === 'home' || id === 'nemovitosti' ? 'daily' : 'monthly',
       priority: id === 'home' ? 1 : 0.7,
       alternates: alternates(id),

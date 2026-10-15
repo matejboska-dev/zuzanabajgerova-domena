@@ -67,3 +67,211 @@ export const TESTIMONIALS: Testimonial[] = [
     text: '„Zuzana Bajgerová ve tří krátkých větách: Úžasná. Skvělá. Báječná."',
   },
 ];
+
+export interface FirmyReview {
+  id: string;
+  author: string;
+  initials: string;
+  bankIdVerified?: boolean;
+  role?: string;
+  rating: number;
+  date: string;
+  text: string;
+  reply?: string;
+  photos?: string[];
+  likes?: number;
+}
+
+export const FIRMY_SUMMARY = {
+  rating: '5,0',
+  label: 'Fantastické',
+  count: 15,
+  date: '10. 7. 2026',
+  url: 'https://www.firmy.cz/detail/13787177-reality-bc-zuzana-bajgerova-havirov-podlesi.html',
+  summaryText:
+    'Z recenzí vyplývá, že spolupráce s touto realitní makléřkou je vysoce profesionální a efektivní. Klienti oceňují její znalost místního trhu, komplexní servis a osobní přístup.',
+};
+
+export const FIRMY_REVIEWS: FirmyReview[] = [
+  {
+    id: 'firmy-1',
+    author: 'Luděk Vlk',
+    initials: 'LV',
+    bankIdVerified: true,
+    rating: 5,
+    date: '24. června 2026',
+    text: 'Za mě můžu Zuzanu jen doporučit. Při koupi nemovitosti v Silvi Marina nám pomohla úplně se vším od začátku až do konce. Nejdříve s námi prošla jednotlivé lokality, vysvětlila výhody i nevýhody oblastí a pomohla vybrat náš apartmán.\n\nVelmi oceňuji, že Zuzana v Itálii skutečně žije X let a zná místní prostředí, úřady i způsob, jak tam věci fungují. Díky tomu jsme měli po celou dobu pocit, že se máme na koho obrátit a že vše probíhá správně.\n\nPlus je, že nám zařídila veškeré náležitosti spojené s převodem nemovitosti, pomohla s přepisem energií, plynu, elektřiny, vyřízením condominia a další administrativou, která by pro člověka bez znalosti italštiny byla velmi složitá.\n\nDalší výhoda co se mi líbí je, že je u Zuzany možnost sehnání řemeslníků, správce, či budoucí pronájem a běžné věci jako daňové přiznání, různé pochůzky po úřadech když budou potřeba. Zatím jsme sice ještě nevyužili, ale jsem rád že na to nebudeme sami.\n\nPokud někdo uvažuje o koupi nemovitosti v Itálii, tak doporučuji kontaktovat Zuzanu. Jsme moc rádi, že jsme si pro tento krok vybrali právě ji. 👍🏻',
+    reply: 'Moc děkuji za milá slova 🙂',
+    photos: [
+      'https://d34-a.sdn.cz/d_34/c_img_qC_A/kQMlcCt5zmC5zFHKShHBdyKf/5f21.mpo?fl=res,600,600,3',
+      'https://d34-a.sdn.cz/d_34/c_img_qC_A/kQMlcCt5zmEA35RKVVHBd2FD/10ea.jpeg?fl=res,600,600,3',
+      'https://d34-a.sdn.cz/d_34/c_img_qC_A/nO2CysqjGrDPliFQgRHBd2Fk/c9fe.jpeg?fl=res,600,600,3',
+    ],
+    likes: 1,
+  },
+  {
+    id: 'firmy-2',
+    author: 'Libor Masopust',
+    initials: 'LM',
+    bankIdVerified: false,
+    rating: 5,
+    date: '12. března 2026',
+    text: 'Rád bych doporučil skutečného profesionála na nemovitosti v Itálii, konkrétně v regionu Abruzzo. S paní Zuzanou Bajgerovou jsem již koupil několik nemovitostí a vždy vše proběhlo naprosto profesionálně.\n\nVelkou výhodou je, že Zuzana působí přímo v Itálii a zajišťuje kompletní servis…',
+    photos: [
+      'https://d34-a.sdn.cz/d_34/c_img_p9_A/kcHp2YdDtBwNESEKYGCbYCh/3792.jpeg?fl=res,600,600,3',
+    ],
+    likes: 1,
+  },
+  {
+    id: 'firmy-3',
+    author: 'Tsutsekovanenka 2',
+    initials: 'T2',
+    bankIdVerified: false,
+    role: 'Kolegyně z realitního oboru',
+    rating: 5,
+    date: '25. června 2026',
+    text: 'Se Zuzanou spolupracuji už delší dobu a jako kolegyně z oboru mohu říct, že je jednou z nejprofesionálnějších realitních makléřek, které znám.\n\nVelkou výhodou je, že přímo žije v Abruzzu, dokonale zná místní trh a má kolem sebe vybudovaný spolehlivý tým lidí. Dokáže klientům zajistit…',
+    photos: [
+      'https://d34-a.sdn.cz/d_34/c_img_qC_A/nO2CysqjGrCe62NP3QHB0Hqi/632d.jpeg?fl=res,600,600,3',
+    ],
+    likes: 1,
+  },
+  {
+    id: 'firmy-4',
+    author: 'Tomáš Cepek',
+    initials: 'TC',
+    bankIdVerified: true,
+    rating: 5,
+    date: '9. října 2025',
+    text: 'Spolupráce s touto makléřkou byla naprosto výjimečná. Její znalost italského trhu, spolehlivost a osobní přístup zaručují jistotu i v zahraničním prostředí. Celý proces koupě nemovitosti proběhl hladce, s maximální péčí a důrazem na detail. Velice doporučuji.',
+    likes: 1,
+  },
+  {
+    id: 'firmy-5',
+    author: 'Skachova Marketa',
+    initials: 'SM',
+    bankIdVerified: false,
+    rating: 5,
+    date: '3. července 2026',
+    text: 'Se Zuzanou Bajgerovou jsme spolupracovali při koupi nemovitosti v Itálii. Oceňuji především její znalost místního prostředí a skutečnost, že žije přímo v Itálii, takže dokáže poradit i s praktickými záležitostmi, které s koupí nemovitosti souvisejí. Velkou výhodou je také její tým…',
+    reply: 'Moc děkuji Market 🌹',
+    likes: 0,
+  },
+  {
+    id: 'firmy-6',
+    author: 'Petra Chelíková',
+    initials: 'PC',
+    bankIdVerified: false,
+    rating: 5,
+    date: '4. listopadu 2025',
+    text: 'Paní Zuzka nám pomohla splnit si sen. 💯 Máme nádherné bydlení u moře. Milujeme to tam ❤️ Zuzka je velká profesionálka a špička ve svém oboru 💯 Moc děkujeme ❤️ a doporučujeme….',
+    photos: [
+      'https://d34-a.sdn.cz/d_34/c_img_of_A/kPSgqAbxVYCL2HIBInEzmQo9/23d4.mpo?fl=rot,270,0%7Cres,600,600,3',
+      'https://d34-a.sdn.cz/d_34/c_img_of_A/kPSgqAbxVYDxpu4BHkEzmTF1/3d33.mpo?fl=rot,270,0%7Cres,600,600,3',
+    ],
+    likes: 1,
+  },
+  {
+    id: 'firmy-7',
+    author: 'René Cichy',
+    initials: 'RC',
+    bankIdVerified: false,
+    rating: 5,
+    date: '2. listopadu 2025',
+    text: '„Velké díky za skvělou spolupráci při koupi apartmánu v Itálii 🇮🇹✨ Vše probíhalo hladce, profesionálně a s úsměvem. Sen se stal skutečností!“',
+    photos: [
+      'https://d34-a.sdn.cz/d_34/c_img_of_A/nO1Ur3YPjBBN9bPB0OEynQJk/ec11.jpeg?fl=res,600,600,3',
+    ],
+    likes: 1,
+  },
+  {
+    id: 'firmy-8',
+    author: 'Michaela Koktová',
+    initials: 'MK',
+    bankIdVerified: false,
+    rating: 5,
+    date: '15. září 2025',
+    text: 'Koupit nemovitost v Itálii není jen tak. S nákupem mi pomohla Zuzana Bajgerová. Zajistila nejen prohlídky, ale i veškerou dokumentaci, překlady, notáře. Podpisem kupní smlouvy ale servis nekončí. Zařídila přepis energií, internet, máme vlastního Fantozziho (účetního), který zařizuje…',
+    photos: [
+      'https://d34-a.sdn.cz/d_34/c_img_od_A/nPXN5fAIwLBcsvaBgHEWhoj3/ab6e.jpeg?fl=res,600,600,3',
+      'https://d34-a.sdn.cz/d_34/c_img_od_A/nPXN5fAIwLCD5MPBfEEWhokM/6385.jpeg?fl=res,600,600,3',
+    ],
+    likes: 2,
+  },
+  {
+    id: 'firmy-9',
+    author: 'Lenka Romanová',
+    initials: 'LR',
+    bankIdVerified: false,
+    rating: 5,
+    date: '16. září 2025',
+    text: 'Měla jsem to obrovské štěstí poznat se se skvělou realitní makléřkou Zuzanou, která mi pomohla splnit můj velký sen – pořídit si byt u moře v Montesilvanu v Itálii. Od prvního kontaktu byla neuvěřitelně profesionální, milá a ochotná. Dokonale pochopila, co hledám, našla mi přesně to, co jsem si vysnila…',
+    photos: [
+      'https://d34-a.sdn.cz/d_34/c_img_od_A/nPXN5fAIwLDn4JsBqfEW3z1f/3048.jpeg?fl=res,600,600,3',
+    ],
+    likes: 1,
+  },
+  {
+    id: 'firmy-10',
+    author: 'Dominik Novák',
+    initials: 'DN',
+    bankIdVerified: false,
+    rating: 5,
+    date: '12. září 2025',
+    text: 'Pokud zvažujete koupi bytu v regionu Abruzzo, tak Zuzana je ta, kterou hledáte. Komunikace s ní je naprosto nadstandardní, se vším pomůže a poradí, a nic není problém. Na termín naší návštěvy připravila prohlídku několika bytů, v dohodnuté cenové relaci. Ke každému bytu nám vše vysvětlila…',
+    photos: [
+      'https://d34-a.sdn.cz/d_34/c_img_od_A/kOy0N9usHcDoCA1iNEUjQVZ/a229.jpeg?fl=res,600,600,3',
+    ],
+    likes: 1,
+  },
+  {
+    id: 'firmy-11',
+    author: 'Lucie Pejčochová',
+    initials: 'LP',
+    bankIdVerified: false,
+    rating: 5,
+    date: '28. října 2025',
+    text: 'Paní Zuzana Bajgerová je nejlepší agent.\nKupovali jsme byt v Italii ted na podzim a profesionalita, lidskost a pomoc při nákupu nemovitosti byla obrovská. Paní Zuzana nás trpělivě provázela celou dobu a to už od prvního telefonátu. Celkový prodej a následný postprodej je neuvěřitelný…',
+    likes: 1,
+  },
+  {
+    id: 'firmy-12',
+    author: 'Vladimír Penc',
+    initials: 'VP',
+    bankIdVerified: false,
+    rating: 5,
+    date: '28. října 2025',
+    text: 'V červnu tohoto roku jsem na základě inzerátu a následné komunikace s paní Zuzanou Bajgerovou navštívil Montesilváno s úmyslem koupit nemovitost. Celý proces ze strany paní Zuzany proběhl naprosto profesionálně, věcně, efektivně a komplexně ve všech fázích. I následný servis při sjednávání…',
+    likes: 1,
+  },
+  {
+    id: 'firmy-13',
+    author: 'Dětské středisko Chabry',
+    initials: 'DSC',
+    bankIdVerified: false,
+    rating: 5,
+    date: '17. září 2025',
+    text: 'Zuzana Bajgerová ve 3 krátkých větách? Úžasná. Skvělá. Báječná!',
+    likes: 1,
+  },
+  {
+    id: 'firmy-14',
+    author: 'Jaroslav Fiala',
+    initials: 'JF',
+    bankIdVerified: false,
+    rating: 4.5,
+    date: '3. listopadu 2025',
+    text: 'V krátkosti popíšu, jak s pomoci paní Zuzany Bajgerové nákup nemovitosti v Itálii probíhal. Každý si po přečtení udělá závěr sám.\n16.4. jsem oslovil paní Zuzanu s požadavkem na velikost, cenu a místo apartmánu (bytu) v Itálii.\n18.4. mi paní Zuzana poslala odkaz asi na deset apartmánů…',
+    likes: 1,
+  },
+  {
+    id: 'firmy-15',
+    author: 'Alessandro Sfamurri',
+    initials: 'AS',
+    bankIdVerified: false,
+    rating: 5,
+    date: '5. září 2025',
+    text: 'Zuzana je ve svete realit naprosty profesional ,vstricna, lidska, zajisti kompletni servis od A do Z velice doporucuji tuto maklerku pro region Abruzzo',
+    likes: 1,
+  },
+];

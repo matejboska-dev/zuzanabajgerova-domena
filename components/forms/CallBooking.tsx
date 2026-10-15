@@ -37,7 +37,7 @@ function nextWeekdays(count: number): Day[] {
 const FIELDS: LeadField[] = [
   { name: 'jmeno', label: 'Jméno', type: 'text', required: true, autoComplete: 'name', half: true },
   { name: 'telefon', label: 'Telefon nebo WhatsApp', type: 'tel', required: true, autoComplete: 'tel', placeholder: '+420', half: true },
-  { name: 'email', label: 'E-mail', type: 'email', required: true, autoComplete: 'email', half: true },
+  { name: 'email', label: 'E-mail (nepovinné)', type: 'email', autoComplete: 'email', half: true },
   { name: 'ucel', label: 'Co hledáte', type: 'select', options: PURPOSE_OPTIONS, half: true },
   { name: 'rozpocet', label: 'Rozpočet včetně všech nákladů', type: 'select', options: BUDGET_OPTIONS },
   {
@@ -93,7 +93,7 @@ function SlotPicker() {
       </fieldset>
 
       <p className="slot__note">
-        Itálie i Česko mají stejný čas. Navržený termín vám potvrdím do 24 hodin.
+        Itálie i Česko mají stejný čas. Navržený termín vám osobně potvrdím.
       </p>
 
       <h3 className="slot__h">4. Kam termín potvrdit</h3>
@@ -107,10 +107,10 @@ export default function CallBooking({ id }: { id?: string }) {
       <LeadForm
         source="konzultace"
         variant="light"
-        ariaLabel="Rezervace nezávazné konzultace"
+        ariaLabel="Návrh termínu nezávazné konzultace"
         before={<SlotPicker />}
         fields={FIELDS}
-        submitLabel="Rezervovat hovor"
+        submitLabel="Navrhnout termín hovoru"
         fine={
           <>
             Konzultace je zdarma a k ničemu vás nezavazuje. Údaje použiji jen k domluvě hovoru a na webu se

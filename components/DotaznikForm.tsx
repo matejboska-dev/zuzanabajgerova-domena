@@ -33,7 +33,7 @@ export default function DotaznikForm({ privacyHref }: { privacyHref: string }) {
   if (status === 'ok') {
     return (
       <p className="dq__done" role="status">
-        Děkuji, dotazník mám. Ozvu se vám do 24 hodin.
+        Děkuji, dotazník mám. Ozvu se vám osobně.
       </p>
     );
   }
@@ -112,7 +112,7 @@ export default function DotaznikForm({ privacyHref }: { privacyHref: string }) {
           Odeslat dotazník
         </button>
         <p className="dq__fine">
-          Ozvu se do 24 hodin. Údaje použiji jen k odpovědi na vaši poptávku a na webu se neukládají. Více v{' '}
+          Ozvu se vám osobně. Údaje použiji jen k odpovědi na vaši poptávku a na webu se neukládají. Více v{' '}
           <Link href={privacyHref}>zásadách ochrany osobních údajů</Link>.
         </p>
         {/* skryte pole proti botum */}

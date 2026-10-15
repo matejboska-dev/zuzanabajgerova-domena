@@ -6,6 +6,7 @@ import { submitLead, trackEvent, type LeadSource } from '@/lib/forms';
 import { waLink, PHONE_TEL, PHONE_DISPLAY } from '@/lib/contact';
 import { path } from '@/lib/routes';
 import { Doplnit } from '@/components/Marked';
+import type { Locale } from '@/lib/i18n';
 
 export type LeadField =
   | {
@@ -21,12 +22,18 @@ export type LeadField =
   | { name: string; label: string; type: 'radio'; options: string[]; required?: boolean }
   | { name: string; label: string; type: 'textarea'; rows?: number; placeholder?: string; required?: boolean };
 
-type Status = 'idle' | 'sending' | 'error';
+type Status = 'idle' | 'sending' | 'error' | 'success';
 
 const ERRORS: Record<string, string> = {
   invalid_email: 'Zkontrolujte prosím e-mailovou adresu.',
   invalid_fields: 'Vyplňte prosím jméno a e-mail nebo telefon.',
   rate_limited: 'Odesíláte příliš často. Zkuste to prosím za chvíli, nebo mi napište na WhatsApp.',
+};
+
+const FORM_UI = {
+  cs: { sending: 'Odesílám…', select: 'Vyberte', email: ERRORS.invalid_email, fields: ERRORS.invalid_fields, rate: ERRORS.rate_limited, error: 'Zprávu se nepodařilo odeslat. Napište mi prosím na WhatsApp nebo zavolejte.', whatsapp: 'Napsat na WhatsApp', call: 'Zavolat' },
+  en: { sending: 'Sending…', select: 'Choose', email: 'Please check your email address.', fields: 'Please enter your name and email or phone.', rate: 'Too many attempts. Please try again later or message me on WhatsApp.', error: 'Your message could not be sent. Please contact me on WhatsApp or call me.', whatsapp: 'Message on WhatsApp', call: 'Call' },
+  it: { sending: 'Invio in corso…', select: 'Seleziona', email: 'Controlla l’indirizzo e-mail.', fields: 'Inserisci nome e indirizzo e-mail o telefono.', rate: 'Troppi tentativi. Riprova più tardi o scrivimi su WhatsApp.', error: 'Non è stato possibile inviare il messaggio. Scrivimi su WhatsApp o chiamami.', whatsapp: 'Scrivimi su WhatsApp', call: 'Chiama' },
 };
 
 /**
@@ -43,6 +50,9 @@ export default function LeadForm({
   fine,
   ariaLabel,
   hidden,
+  locale = 'cs',
+  successMessage,
+  whatsappText,
 }: {
   source: LeadSource;
   fields: LeadField[];
@@ -55,7 +65,12 @@ export default function LeadForm({
   ariaLabel: string;
   /** skryta pole, ktera se poslou s poptavkou (napr. nazev a odkaz nemovitosti) */
   hidden?: Record<string, string>;
+  locale?: Locale;
+  /** An inline confirmation avoids sending localized service enquiries to a Czech-only page. */
+  successMessage?: string;
+  whatsappText?: string;
 }) {
+  const ui = FORM_UI[locale];
   const router = useRouter();
   const startedAt = useRef(0);
   const [status, setStatus] = useState<Status>('idle');
@@ -67,12 +82,13 @@ export default function LeadForm({
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (status === 'sending') return;
+    if (status === 'sending' || status === 'success') return;
     setStatus('sending');
     const data = Object.fromEntries(new FormData(e.currentTarget));
     const res = await submitLead(source, data, Date.now() - startedAt.current);
     if (res.ok) {
-      trackEvent('generate_lead', { form: source });
+      trackEvent('generate_lead', { form: source, ...(source === 'sluzba' ? { service: hidden?.sluzba ?? '', locale } : {}) });
+      if (successMessage) { setStatus('success'); return; }
       router.push(`${path('dekujeme', 'cs')}?z=${source}`);
       return;
     }
@@ -81,6 +97,8 @@ export default function LeadForm({
   }
 
   const cls = `lf lf--${variant}${variant === 'dark' ? ' contact__form' : ''}${className ? ` ${className}` : ''}`;
+
+  if (status === 'success') return <div className={`${cls} lf__success`} role="status" tabIndex={-1}><p>{successMessage}</p></div>;
 
   return (
     <form className={cls} onSubmit={onSubmit} aria-label={ariaLabel} noValidate={false}>
@@ -120,7 +138,7 @@ export default function LeadForm({
               {f.type === 'select' ? (
                 <select id={id} name={f.name} required={f.required} defaultValue="">
                   <option value="" disabled>
-                    Vyberte
+                    {ui.select}
                   </option>
                   {f.options.map((o) => (
                     <option key={o} value={o}>
@@ -164,7 +182,7 @@ export default function LeadForm({
 
       <div className="lf__submit">
         <button type="submit" className="btn btn--saffron" disabled={status === 'sending'}>
-          {status === 'sending' ? 'Odesílám…' : submitLabel}
+          {status === 'sending' ? ui.sending : submitLabel}
         </button>
         {fine && <p className="lf__fine">{fine}</p>}
       </div>
@@ -173,18 +191,17 @@ export default function LeadForm({
         {status === 'error' && (
           <div className="lf__error" role="alert">
             <p>
-              {ERRORS[error] ??
-                'Zprávu se nepodařilo odeslat. Napište mi prosím na WhatsApp nebo zavolejte, ozvu se hned, jak to půjde.'}
+              {{ invalid_email: ui.email, invalid_fields: ui.fields, rate_limited: ui.rate }[error] ?? ui.error}
             </p>
             <div className="lf__error-actions">
-              <a className="btn btn--saffron" href={waLink()} target="_blank" rel="noopener noreferrer">
-                Napsat na WhatsApp
+              <a className="btn btn--saffron" href={waLink(whatsappText)} target="_blank" rel="noopener noreferrer">
+                {ui.whatsapp}
               </a>
               <a className="btn btn--ghost" href={PHONE_TEL}>
-                Zavolat {PHONE_DISPLAY}
+                {ui.call} {PHONE_DISPLAY}
               </a>
             </div>
-            {error === 'not_configured' && process.env.NODE_ENV !== 'production' && (
+            {error === 'not_configured' && source !== 'sluzba' && process.env.NODE_ENV !== 'production' && (
               <p>
                 <Doplnit>[DOPLNIT: nastavit doručení poptávek, viz web/.env.example]</Doplnit>
               </p>

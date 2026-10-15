@@ -33,7 +33,7 @@ export default function PropertyCard({
   return (
     <Link href={path('nemovitost', locale, propertySlug(p))} className="card">
       <div className="card__ph">
-        {cover && <CardImage src={cover} alt={p.alt_text || p.title} priority={priority} />}
+        {cover && <CardImage src={cover} alternatives={photoUrls(p).slice(0, 3)} alt={p.alt_text || p.title} priority={priority} />}
         {tagCls ? (
           <span className={`tag ${tagCls} card__tag`}>{STATUS_LABEL[p.status]}</span>
         ) : p.featured ? (

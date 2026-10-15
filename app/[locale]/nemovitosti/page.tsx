@@ -120,6 +120,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
       <SubHero
         id="nemovitosti-h1"
+        portrait={{ src: '/hero/portret-4k.webp', alt: 'Bc. Zuzana Bajgerová' }}
         badge="Aktuální nabídka · Abruzzo"
         title="Nemovitosti v Abruzzu"
         accent="s konečnou cenou"
@@ -249,7 +250,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             <ul className="split-form__list">
               <li>Výběr podle vašeho rozpočtu včetně všech nákladů</li>
               <li>Videoprohlídka ještě před příletem</li>
-              <li>Ozvu se do 24 hodin</li>
+              <li>Odpovím vám osobně</li>
             </ul>
           </div>
           <LeadForm

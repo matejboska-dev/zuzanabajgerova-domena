@@ -8,6 +8,7 @@ import { isLocale, DEFAULT_LOCALE } from '@/lib/i18n';
 import { absolute, path } from '@/lib/routes';
 import { pageMetadata } from '@/lib/seo';
 import Gallery from '@/components/Gallery';
+import PropertyDescription from '@/components/PropertyDescription';
 import LandscapeLine from '@/components/LandscapeLine';
 import PropertyCard from '@/components/PropertyCard';
 import LeadForm, { type LeadField } from '@/components/forms/LeadForm';
@@ -187,10 +188,10 @@ export default async function DetailPage({
           <span>{p.title}</span>
         </nav>
 
-        <p className="pd-eyebrow">{eyebrow}</p>
         <h1 className="pd-title">{p.title}</h1>
 
         <div className="pd-meta">
+          <span className="pd-addr">{eyebrow}</span>
           <span className="pd-price">
             {fmtEur(p.price_eur)}
             {p.price_czk != null && <span className="pd-price__czk">{fmtCzk(p.price_czk)}</span>}
@@ -201,6 +202,9 @@ export default async function DetailPage({
               {[p.locality.adresa, p.locality.obec].filter(Boolean).join(', ')}
             </span>
           )}
+          <a className="btn btn--saffron pd-inquiry-link" href="#poptavka">
+            Zeptat se na nemovitost
+          </a>
         </div>
       </div>
 
@@ -214,7 +218,7 @@ export default async function DetailPage({
         <div className="pd-body">
           <div className="pd-main">
             <h2 className="pd-h2">O nemovitosti</h2>
-            <div className="pd-prose">{p.description || 'Popis není k dispozici.'}</div>
+            <PropertyDescription text={p.description} />
 
             {p.price_history?.length > 1 && (
               <p className="pd-history">
@@ -231,6 +235,7 @@ export default async function DetailPage({
 
           <aside className="pd-aside">
             <div className="pd-quote">
+              <div className="pd-advisor"><img src="/services/curated/zuzana-office.webp" alt="Bc. Zuzana Bajgerová" width="788" height="1400" /><div><strong>Zuzana Bajgerová</strong><span>Osobně vás provedu koupí.</span></div></div>
               <div className="pd-quote__price">{fmtEur(p.price_eur)}</div>
               {p.price_czk != null && (
                 <div className="pd-quote__czk">≈ {fmtCzk(p.price_czk)}</div>
@@ -305,7 +310,6 @@ export default async function DetailPage({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={loc.image.webp} alt={loc.image.alt} width={loc.image.width} height={loc.image.height} loading="lazy" />
             <span className="pd-loc__body">
-              <span className="pd-loc__kicker">O lokalitě</span>
               <span id="pd-lokalita" className="pd-loc__t">{loc.title}</span>
               <span className="pd-loc__d">{loc.lead}</span>
               <span className="pd-loc__more">Více o lokalitě</span>
@@ -326,7 +330,7 @@ export default async function DetailPage({
         <div className="pd-inquiry__text">
           <h2 id="pd-poptavka" className="pd-h2">Mám zájem o tuto nemovitost</h2>
           <p className="pd-lead">
-            Napište mi a domluvíme videoprohlídku nebo osobní prohlídku. Ozvu se do 24 hodin, nejrychleji přes WhatsApp.
+            Napište mi a domluvíme videoprohlídku nebo osobní prohlídku. Ozvu se vám osobně, nejrychleji přes WhatsApp.
           </p>
           <a className="btn btn--ghost" href={waLink(waText)} target="_blank" rel="noopener noreferrer">
             Napsat na WhatsApp

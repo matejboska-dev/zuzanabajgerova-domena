@@ -35,7 +35,7 @@ The differentiator is not "a RE/MAX agent who sells Italian property" — it's a
 Czech-speaking agent who lives year-round in Abruzzo and has personally built and
 vetted a local network of notaries, lawyers, technicians, and tradespeople there.
 That combination (native-language service + full-time local presence + an
-established professional network + 20 years in real estate, RE/MAX Platinum/Hall of
+established professional network + 20 years living in Abruzzo, RE/MAX Platinum/Hall of
 Fame, TOP 10 RE/MAX Czech Republic) is what a remote agent, a generic Italian
 listing site, or a foreign-market RE/MAX agent without the Czech language or the
 Abruzzo network cannot truthfully replicate.
@@ -70,12 +70,27 @@ Abruzzo network cannot truthfully replicate.
 
 ## Capabilities and Constraints
 
-- Home page (`app/[locale]/page.tsx` and `components/home/*`) is fully written and
-  live: hero, stats, services, process, FAQ, testimonials, guides. Most other
-  pages (`o-mne`, `sluzby`, `jak-koupit-nemovitost-v-italii`, `lokality`, etc.) are
-  still in blueprint/placeholder state — `PageShell` renders the approved section
-  list as numbered placeholders (`NEXT_PUBLIC_SHOW_BLUEPRINT`) until each section
-  is written; placeholders are hidden in production.
+- Home page (`app/[locale]/page.tsx` and `components/home/*`) is implemented.
+  The user explicitly reopened the whole-site visual scope on 14 October 2026.
+  The shared rounded frame, portrait composition, typography, media and restrained motion
+  now cover homepage and the real public routes; the retained brand is authoritative.
+- The Czech buying guide (`/jak-koupit-nemovitost-v-italii`) presents the approved
+  nine-step journey across three phases, led by existing authentic photography,
+  with visible €200 reservation conditions, first-year basic assistance scope,
+  six FAQs and consultation, WhatsApp and enquiry actions. Its registered child route
+  (`/jak-koupit-nemovitost-v-italii/prakticke-informace`) preserves the manual budget
+  calculator, expense categories, seven checks, glossary and one-euro-house note.
+  Scope and local verification limits are recorded in `GUIDE-JOURNEY.md`.
+  The Czech About page (`/o-mne`)
+  includes authentic Drive photography, client-supplied credentials, portrait
+  videos, community imagery, services and contact actions. Neither of these
+  surfaces has a completed English or Italian translation in this release.
+- Contact form delivery remains a production blocker: delivery credentials must
+  be configured and receipt at the intended mailbox verified end to end.
+  A successful local build does not confirm production deployment or lead delivery.
+- Catalog, real property details, locations, references, contact, consultation and guide hub
+  share the finished visual system. Supplied production-mode/responsive checks are recorded
+  in `.impeccable/review/site-finish/verification.md`. They do not certify public launch.
 - Real evidence already in place must not be replaced with invented content:
   named Google-review testimonials plus one video testimonial
   (`components/home/TestimonialsCarousel.tsx`), a live RE/MAX listings feed, and a
@@ -88,15 +103,15 @@ Abruzzo network cannot truthfully replicate.
 ## Brand Commitments
 
 - Name: Bc. Zuzana Bajgerová. Affiliation: RE/MAX Czech Republic — TOP 10
-  nationally, 20+ years in real estate, RE/MAX Platinum and Hall of Fame status.
+  nationally, 20 years living in Abruzzo, RE/MAX Platinum and Hall of Fame status.
   These credentials appear verbatim in hero/stat copy across all three locales and
   are factual claims, not marketing flourishes — do not soften, round, or drop them
   when touching that copy.
 - Design system name "Abruzzo Heritage Estate" (Playfair Display + Archivo;
   Cobalto/Smalto/Zafferano/Pietra palette; the Landscape Line motif) is
-  established design authority, documented in the sibling
-  `ZuzanaBajgerova-Projekt/DESIGN.md` and implemented in `app/globals.css` — not
-  yet mirrored into this repo's own `DESIGN.md`.
+  retained design authority is the actual homepage plus the user's explicit brand
+  instructions, implemented in `app/globals.css` and `app/site-finish.css`.
+  Local `DESIGN.md` records the finished tokens; no unavailable sibling file is required.
 
 ## Evidence on Hand
 
@@ -125,3 +140,17 @@ Abruzzo network cannot truthfully replicate.
    and require the client's sign-off to change, not just a design judgment call.
 5. Czech is the primary voice; English and Italian are faithful secondary
    translations, not separately optimized experiences.
+
+## Current review boundary — 14 October 2026
+
+The user confirmed Zuzana operates as an entrepreneur. `BUSINESS` in `lib/contact.ts`
+contains the verified IČO and registered address; privacy controller and footer use it.
+Retention periods, final hosting/delivery providers and legal approval remain unresolved.
+Four shared service title photographs are illustrative and visibly captioned; actual
+portraits and client evidence are authentic. Unused PageShell/Filler and dummy article
+route were removed. Real dynamic property details, private qualification and the genuine
+form success page are retained. This work does not confirm deployment, message receipt,
+listing refresh, complete EN/IT homepage copy or production performance.
+
+Older operating-context claims about sibling repositories, deployment and asset counts
+are historical and were not verified in this visual completion. They are not launch evidence.

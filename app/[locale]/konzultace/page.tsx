@@ -24,7 +24,7 @@ export function generateStaticParams() {
 
 const TITLE = 'Nezávazná konzultace o koupi v Abruzzu';
 const DESC =
-  'Rezervujte si hovor zdarma. Projdeme, co hledáte, jaký máte rozpočet a co všechno koupě nemovitosti v Itálii obnáší. Termín potvrdím do 24 hodin.';
+  'Navrhněte termín hovoru zdarma. Projdeme, co hledáte, jaký máte rozpočet a co všechno koupě nemovitosti v Itálii obnáší. Termín osobně potvrdím.';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -54,7 +54,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           breadcrumbNode([
             { name: 'Domů', href: '/' },
             { name: 'Kontakt', href: path('kontakt', DEFAULT_LOCALE) },
-            { name: 'Rezervace hovoru', href: here },
+            { name: 'Domluvení hovoru', href: here },
           ]),
           faqNode(KONZULTACE_FAQ),
         )}
@@ -65,12 +65,12 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         badge="Rezervace hovoru · Zdarma"
         title="Nezávazná konzultace"
         accent="o koupi v Abruzzu"
-        lead="Vyberte si termín, který vám vyhovuje. Projdeme, co hledáte, jaký máte rozpočet a co všechno koupě v Itálii obnáší. Nic neplatíte a k ničemu se nezavazujete."
+        lead="Navrhněte den a část dne, kdy se vám hovor hodí. Termín vám osobně potvrdím. Projdeme vaši představu, rozpočet i postup koupě. Zdarma a nezávazně."
         bg={{ src: '/images/abruzzo-zivot-komunita.webp', width: 1600, height: 1069 }}
         bgPosition="center 45%"
-        portrait={{ src: '/hero/portret-4k.png', alt: 'Bc. Zuzana Bajgerová' }}
+        portrait={{ src: '/hero/portret-4k.webp', alt: 'Bc. Zuzana Bajgerová' }}
         ctas={[
-          { href: '#rezervace', label: 'Vybrat termín hovoru' },
+          { href: '#rezervace', label: 'Navrhnout termín hovoru' },
           { href: waLink(), label: 'Radši napíšu na WhatsApp', variant: 'glass', external: true },
         ]}
         chips={['Zdarma a nezávazně', 'Zhruba dvacet minut', 'Česky, telefonem nebo videem']}
@@ -79,17 +79,17 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <Crumbs
         items={[
           { name: 'Kontakt', href: path('kontakt', DEFAULT_LOCALE) },
-          { name: 'Rezervace hovoru', href: here },
+          { name: 'Domluvení hovoru', href: here },
         ]}
       />
 
       <section className="sec" aria-labelledby="po-rezervaci">
         <div className="wrap">
-          <SecHead id="po-rezervaci" badge="Jak to probíhá" title="Co se stane" accent="po rezervaci" />
+          <SecHead id="po-rezervaci" badge="Jak to probíhá" title="Jak si domluvíme" accent="hovor" />
           <StepCards
             items={[
-              { title: 'Vyberete termín', text: 'Navrhnete den a část dne, kdy se vám hovor hodí, a vyplníte pár údajů o tom, co hledáte.' },
-              { title: 'Potvrdím do 24 hodin', text: 'Navržený termín vám potvrdím přes WhatsApp, telefon nebo e-mail. Když čas nevyjde, domluvíme jiný.' },
+              { title: 'Navrhnete termín', text: 'Vyberete den a část dne, kdy se vám hovor hodí, a vyplníte pár údajů o tom, co hledáte.' },
+              { title: 'Osobně potvrdím termín', text: 'Navržený termín vám potvrdím přes WhatsApp, telefon nebo e-mail. Když čas nevyjde, domluvíme jiný.' },
               { title: 'Zavoláme si', text: 'Hovor trvá zhruba dvacet minut. Pak budete vědět, jestli je koupě v Itálii pro vás reálná a co by obnášela.' },
             ]}
           />
@@ -99,7 +99,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <section className="sec sec--tight" id="rezervace" aria-labelledby="rezervace-h">
         <div className="wrap booking-split">
           <div className="booking-split__form">
-            <SecHead id="rezervace-h" title="Rezervujte si hovor" accent="zdarma" lead="Čtyři krátké kroky, nic víc nepotřebuji." left />
+            <SecHead id="rezervace-h" title="Domluvme si hovor" accent="zdarma" lead="Navrhněte termín a nechte mi telefon. Konkrétní čas si společně potvrdíme." left />
             <CallBooking />
           </div>
 

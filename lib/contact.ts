@@ -49,3 +49,12 @@ export const PURPOSE_OPTIONS = [
   'Trvalé bydlení',
   'Zatím nevím',
 ];
+
+// User confirmed Zuzana operates the website as an entrepreneur (14 Oct 2026).
+// Identity and registered address verified in ARES, IČO also matches her RE/MAX profile.
+// https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/87491095
+export const BUSINESS = {
+  name: 'Bc. Zuzana Bajgerová',
+  ico: '87491095',
+  address: 'Karolíny Světlé 1363/16, Podlesí, 736 01 Havířov',
+} as const;

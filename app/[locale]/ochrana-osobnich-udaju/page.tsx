@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import LegalPage, { LegalRow, LegalSec } from '@/components/page/LegalPage';
 import Marked from '@/components/Marked';
-import { EMAIL, PHONE_DISPLAY, PHONE_TEL } from '@/lib/contact';
+import { BUSINESS, EMAIL, PHONE_DISPLAY, PHONE_TEL } from '@/lib/contact';
 import { DEFAULT_LOCALE } from '@/lib/i18n';
 import { path } from '@/lib/routes';
 import { pageMetadata } from '@/lib/seo';
@@ -41,7 +41,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       title={TITLE}
       lead={LEAD}
       description={DESC}
-      updated="Poslední aktualizace: [DOPLNIT: datum]"
+      updated="Pracovní verze k revizi: 14. 10. 2026"
       toc={[
         { id: 'spravce', label: 'Správce a kontakt' },
         { id: 'udaje', label: 'Jaké údaje sbírám' },
@@ -53,13 +53,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     >
       <LegalSec id="spravce" n={1} title="Správce údajů a kontakt">
         <p>
-          Tento web provozuje Bc. Zuzana Bajgerová, realitní specialistka, RE/MAX Černá perla, Slavíkova 6068/18,
-          708 00 Ostrava-Poruba.
-        </p>
-        <p>
-          Správcem osobních údajů je{' '}
-          <Marked text="[DOPLNIT: správce údajů, tedy jméno nebo obchodní firma, IČO a sídlo. Záleží na tom, zda údaje zpracovávám jako podnikající osoba, nebo v rámci RE/MAX Černá perla]" />
-          .
+          Provozovatelkou tohoto webu a správkyní osobních údajů je <strong>{BUSINESS.name}</strong>,
+          podnikající fyzická osoba, IČO {BUSINESS.ico}, se sídlem {BUSINESS.address}.
         </p>
         <p>
           Ve věcech osobních údajů se na mě můžete obrátit e-mailem <a href={`mailto:${EMAIL}`}>{EMAIL}</a> nebo

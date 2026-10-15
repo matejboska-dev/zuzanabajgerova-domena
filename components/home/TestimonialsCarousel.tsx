@@ -4,10 +4,8 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import type { Locale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
-import { REVIEW_PROFILES } from '@/lib/home';
 import { TESTIMONIALS, type Testimonial } from '@/lib/reviews';
 import Zastupny from '@/components/Zastupny';
-import { Doplnit } from '@/components/Marked';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -44,46 +42,55 @@ function VideoTestimonialCard({ src, poster }: { src: string; poster?: string })
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
-  const [isInViewport, setIsInViewport] = useState(false);
+  const inViewport = useRef(false);
+  const userPaused = useRef(false);
+  const preferredMuted = useRef(src !== '/media/ref-petra.mp4');
 
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
-
     if (video.paused) {
-      video.play().catch(() => {});
-      setIsPlaying(true);
+      userPaused.current = false;
+      preferredMuted.current = false;
+      video.muted = false;
+      void video.play().catch(() => {});
     } else {
+      userPaused.current = true;
       video.pause();
-      setIsPlaying(false);
     }
   };
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
-            // Pokazde od zacatku — i kdyz uzivatel video predtim rozjel, odscrolloval
-            // a vratil se zpet, ma zase najet od nulte sekundy.
-            video.currentTime = 0;
-            video.play().catch(() => {});
-            setIsInViewport(true);
-          } else {
-            video.pause();
-            setIsInViewport(false);
-          }
-        });
-      },
-      { threshold: 0.6 },
-    );
+    let request = 0;
+    const attemptPlay = async () => {
+      if (!inViewport.current || userPaused.current || document.hidden) return;
+      const current = ++request;
+      video.muted = preferredMuted.current;
+      try { await video.play(); }
+      catch {
+        if (current !== request || !inViewport.current || userPaused.current) return;
+        // Browsers may refuse audible autoplay. Keep the sound control available.
+        video.muted = true;
+        try { await video.play(); } catch { /* Native click remains available. */ }
+      }
+      if (current !== request || !inViewport.current || document.hidden) video.pause();
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      const visible = entry.isIntersecting && entry.intersectionRatio >= 0.6;
+      inViewport.current = visible;
+      if (visible) {
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) void attemptPlay();
+      } else { request++; video.pause(); }
+    }, { threshold: [0, 0.6] });
+    const onVisibility = () => {
+      if (document.hidden) { request++; video.pause(); }
+      else if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) void attemptPlay();
+    };
     observer.observe(video);
-
-    return () => observer.disconnect();
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => { request++; observer.disconnect(); document.removeEventListener('visibilitychange', onVisibility); video.pause(); };
   }, []);
 
   const toggleMute = (e: React.MouseEvent) => {
@@ -91,7 +98,8 @@ function VideoTestimonialCard({ src, poster }: { src: string; poster?: string })
     const video = videoRef.current;
     if (!video) return;
     video.muted = !video.muted;
-    setIsMuted(video.muted);
+    preferredMuted.current = video.muted;
+    if (video.paused) { userPaused.current = false; void video.play().catch(() => {}); }
   };
 
   return (
@@ -101,7 +109,7 @@ function VideoTestimonialCard({ src, poster }: { src: string; poster?: string })
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === ' ' || e.key === 'Enter') {
+        if (e.target === e.currentTarget && (e.key === ' ' || e.key === 'Enter')) {
           e.preventDefault();
           togglePlay();
         }
@@ -118,6 +126,7 @@ function VideoTestimonialCard({ src, poster }: { src: string; poster?: string })
         preload="none"
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
+        onVolumeChange={(e) => setIsMuted(e.currentTarget.muted)}
       />
       <div className="test-card__play-btn">
         <div className={`test-card__play-icon ${isPlaying ? 'is-pause' : ''}`}>
@@ -245,7 +254,6 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
     <section className="test-sec" aria-labelledby="sec-09">
       <div className="wrap">
         <div className="test-sec__head">
-          <p className="eyebrow">Reference</p>
           <h2 id="sec-09" className="home-h2 test-sec__title">
             Věřte lidem, kteří to <em>už mají za sebou</em>
           </h2>
@@ -311,66 +319,47 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
 
       <div className="wrap">
         <div className="test-carousel__nav">
-          <Link href={path('reference', locale)} className="btn btn--cobalt">
-            <span>Všechny reference</span>
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" />
-            </svg>
-          </Link>
-          <button
-            className="test-carousel__btn"
-            onClick={() => scroll(-1)}
-            disabled={!canPrev}
-            aria-label="Předchozí"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-          <button
-            className="test-carousel__btn"
-            onClick={() => scroll(1)}
-            disabled={!canNext}
-            aria-label="Další"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
+          <div className="test-carousel__actions">
+            <Link href={path('reference', locale)} className="btn btn--cobalt">
+              <span>Všechny reference</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M5 12h14m-6-6 6 6-6 6" />
+              </svg>
+            </Link>
+            <a
+              href="https://www.firmy.cz/detail/13787177-reality-bc-zuzana-bajgerova-havirov-podlesi.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn--ghost test-carousel__firmy"
+            >
+              <span>Recenze na Firmy.cz</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <div className="test-carousel__arrows">
+            <button
+              className="test-carousel__btn"
+              onClick={() => scroll(-1)}
+              disabled={!canPrev}
+              aria-label="Předchozí"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <button
+              className="test-carousel__btn"
+              onClick={() => scroll(1)}
+              disabled={!canNext}
+              aria-label="Další"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </div>
         </div>
 
-        {/* recenze z Googlu a Firmy.cz — NEVYMYSLET. misto pro napojeni + odkaz na profil */}
-        <div className="revblocks">
-          {REVIEW_PROFILES.map((r) => (
-            <section className="revblock" key={r.id} aria-label={r.title}>
-              <div className="revblock__head">
-                {r.id === 'google' && <GoogleIcon />}
-                <h3 className="revblock__t">{r.title}</h3>
-              </div>
-              <Zastupny
-                kind="recenze"
-                label={r.placeholder}
-                ratio="16 / 7"
-                who="vývoj (napojení), klientka (odkaz na profil)"
-                spec="widget nebo seznam recenzí"
-                className="zastupny--compact"
-              />
-              <div className="revblock__cta">
-                <a
-                  className="btn btn--cobalt"
-                  href={r.url || '#'}
-                  target={r.url ? '_blank' : undefined}
-                  rel={r.url ? 'noopener noreferrer' : undefined}
-                  aria-disabled={r.url ? undefined : true}
-                  onClick={r.url ? undefined : (e) => e.preventDefault()}
-                >
-                  <span>{r.cta}</span>
-                </a>
-                {!r.url && <Doplnit>[DOPLNIT: odkaz na profil]</Doplnit>}
-              </div>
-            </section>
-          ))}
-        </div>
       </div>
     </section>
   );

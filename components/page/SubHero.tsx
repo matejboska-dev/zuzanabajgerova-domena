@@ -9,7 +9,6 @@ type Cta = { href: string; label: string; variant?: 'saffron' | 'glass'; externa
  */
 export default function SubHero({
   id,
-  badge,
   title,
   accent,
   lead,
@@ -17,6 +16,7 @@ export default function SubHero({
   bgPosition = 'center 40%',
   portrait,
   photo,
+  photos,
   ctas,
   chips,
 }: {
@@ -29,11 +29,13 @@ export default function SubHero({
   bgPosition?: string;
   portrait?: { src: string; alt: string };
   photo?: { src: string; alt: string; width: number; height: number };
+  /** Kolaz 3-5 fotek v mozaice (misto jedne `photo`). */
+  photos?: { src: string; alt: string; width: number; height: number }[];
   ctas?: Cta[];
   chips?: string[];
 }) {
   return (
-    <section className="subhero" aria-labelledby={id}>
+    <section className={`subhero${portrait ? ' subhero--portrait' : ''}${photo || photos ? ' subhero--photo' : ''}${photos ? ' subhero--collage' : ''}`} aria-labelledby={id}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         className="subhero__bg"
@@ -60,11 +62,18 @@ export default function SubHero({
         </figure>
       )}
 
-      <div className="subhero__content">
-        <div className="subhero__badge">
-          <span className="subhero__dot" />
-          <span>{badge}</span>
+      {photos && photos.length > 0 && (
+        <div className="subhero__collage">
+          {photos.slice(0, 5).map((ph, i) => (
+            <figure key={ph.src} className={`subhero__card subhero__card--${i + 1}`}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={ph.src} alt={ph.alt} width={ph.width} height={ph.height} />
+            </figure>
+          ))}
         </div>
+      )}
+
+      <div className="subhero__content">
         <h1 id={id} className="subhero__h1">
           {title}
           {accent && (

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BUSINESS } from '@/lib/contact';
 import { FOOTER_NAV, MAIN_NAV, SEGMENTS, path } from '@/lib/routes';
 import { LIVE_LOCALES, LOCALE_NAME, type Locale } from '@/lib/i18n';
 
@@ -16,13 +17,17 @@ const SOCIAL = [
 ];
 
 export default function SiteFooter({ locale }: { locale: Locale }) {
+  const ui = {
+    cs: { intro: 'Realitní specialistka na nemovitosti v Itálii, region Abruzzo. Kompletní servis pro české a slovenské kupující, celý proces v češtině, od výběru přes notáře až po klíče.', sections: 'Sekce webu', contact: 'Kontakt', info: 'Informace', legal: 'Povinné stránky', privacy: 'Ochrana osobních údajů', sitemap: 'Mapa stránek' },
+    en: { intro: 'Personal support for property in Abruzzo, Italy. From choosing a home and coordinating the purchase to renovation, ongoing care and rental operations with a local team.', sections: 'Website sections', contact: 'Contact', info: 'Information', legal: 'Legal information', privacy: 'Privacy policy (Czech)', sitemap: 'Sitemap (Czech)' },
+    it: { intro: 'Supporto personale per gli immobili in Abruzzo. Dalla scelta della casa e dall’acquisto alla ristrutturazione, alla cura dell’immobile e agli affitti, con un team locale.', sections: 'Sezioni del sito', contact: 'Contatti', info: 'Informazioni', legal: 'Informazioni legali', privacy: 'Privacy (in ceco)', sitemap: 'Mappa del sito (in ceco)' },
+  }[locale];
   return (
     <footer className="site-footer">
       <div className="footer-top">
         <div className="footer-intro">
           <p>
-            Realitní specialistka na nemovitosti v Itálii, region Abruzzo. Kompletní servis pro
-            české a slovenské kupující, celý proces v češtině, od výběru přes notáře až po klíče.
+            {ui.intro}
           </p>
           {SOCIAL.some((s) => s.href !== '#') && (
           <div className="footer-socials">
@@ -36,7 +41,7 @@ export default function SiteFooter({ locale }: { locale: Locale }) {
         </div>
 
         <div className="footer-cols">
-          <nav aria-label="Sekce webu">
+          <nav aria-label={ui.sections}>
             <p className="footer-cols__h">Web</p>
             {MAIN_NAV.map((item) => (
               <Link key={item.id} href={path(item.id, locale)}>
@@ -45,19 +50,19 @@ export default function SiteFooter({ locale }: { locale: Locale }) {
             ))}
           </nav>
 
-          <address aria-label="Kontakt">
-            <p className="footer-cols__h">Kontakt</p>
+          <address aria-label={ui.contact}>
+            <p className="footer-cols__h">{ui.contact}</p>
             <a href="tel:+420723824348">+420 723 824 348</a>
             <a href="mailto:zuzana.bajgerova@re-max.cz">zuzana.bajgerova@re-max.cz</a>
             <span>RE/MAX Černá perla</span>
             <span>Slavíkova 6068/18, 708 00 Ostrava-Poruba</span>
           </address>
 
-          <nav aria-label="Povinné stránky">
-            <p className="footer-cols__h">Informace</p>
+          <nav aria-label={ui.legal}>
+            <p className="footer-cols__h">{ui.info}</p>
             {FOOTER_NAV.map((id) => (
               <Link key={id} href={path(id, locale)}>
-                {FOOTER_LABEL[SEGMENTS[id]] ?? id}
+                {id === 'ochranaUdaju' ? ui.privacy : id === 'mapaStranek' ? ui.sitemap : FOOTER_LABEL[SEGMENTS[id]] ?? id}
               </Link>
             ))}
             {LIVE_LOCALES.length > 1 && (
@@ -83,7 +88,8 @@ export default function SiteFooter({ locale }: { locale: Locale }) {
       </div>
 
       <div className="footer-legal">
-        <span>© {new Date().getFullYear()} Bc. Zuzana Bajgerová</span>
+        <span>© {new Date().getFullYear()} {BUSINESS.name}</span>
+        <span>IČO {BUSINESS.ico}</span>
         <span>·</span>
         <span>Web: matejboska.cz</span>
       </div>

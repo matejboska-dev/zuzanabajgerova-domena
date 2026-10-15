@@ -1,7 +1,6 @@
 /** hlavicka sekce: odznak, nadpis s Playfair akcentem, perex. Stejny vzhled jako sekce na hlavni strane. */
 export default function SecHead({
   id,
-  badge,
   title,
   accent,
   lead,
@@ -16,12 +15,6 @@ export default function SecHead({
 }) {
   return (
     <div className={`sec__head${left ? ' sec__head--left' : ''}`}>
-      {badge && (
-        <div className="listings__badge">
-          <span className="listings__badge-dot" />
-          <span>{badge}</span>
-        </div>
-      )}
       <h2 id={id} className="home-h2">
         {title}
         {accent && (
