@@ -112,7 +112,7 @@ export default function WhyAbruzzo({ locale = 'cs' }: { locale?: Locale }) {
             })}
 
             <Link href={path('lokality', locale)} className="btn btn--cobalt">
-              Poznat lokality v Abruzzu
+              {{ cs: 'Poznat lokality v Abruzzu', en: 'Explore locations in Abruzzo', it: 'Scopri le località in Abruzzo' }[locale]}
             </Link>
           </div>
         </div>

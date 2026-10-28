@@ -150,7 +150,7 @@ function VideoTestimonialCard({ src, poster, locale }: { src: string; poster?: s
         className="test-card__sound-btn"
         onClick={toggleMute}
         aria-label={isMuted ? ui.unmute : ui.mute}
-        title={isMuted ? 'Zapnout zvuk' : 'Vypnout zvuk'}
+        title={isMuted ? ui.unmute : ui.mute}
       >
         {isMuted ? (
           <svg viewBox="0 0 24 24" fill="currentColor">
@@ -304,7 +304,7 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
               {t.isVideo && t.videoSrc && (
                 <div className="test-card__footer test-card__footer--video">
                   <span className="test-card__vname">{t.name}</span>
-                  <span className="test-card__role">Videoreference</span>
+                  <span className="test-card__role">{{ cs: 'Videoreference', en: 'Video testimonial', it: 'Testimonianza video' }[locale]}</span>
                 </div>
               )}
 
