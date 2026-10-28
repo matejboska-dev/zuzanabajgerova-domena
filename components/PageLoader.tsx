@@ -4,7 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { LOCALES } from '@/lib/i18n';
 
-/** Play the intro only when the document opens on a homepage, never on navigation. */
+// sessionStorage: intro jen jednou za relaci (zmineno na strance Cookies)
+const SEEN_KEY = 'zb-intro-seen';
+
+/** Play the intro only when the document opens on a homepage, never on navigation or twice per session. */
 export default function PageLoader() {
   const pathname = usePathname();
   const [initialPath] = useState(pathname);
@@ -47,7 +50,14 @@ function HomeIntro() {
     release.current = cleanup;
 
     try {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let seen = false;
+      try {
+        seen = sessionStorage.getItem(SEEN_KEY) === '1';
+        sessionStorage.setItem(SEEN_KEY, '1');
+      } catch {
+        // blokovane uloziste: intro se prehraje jako poprve
+      }
+      if (seen || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         setRemoved(true);
         return cleanup;
       }

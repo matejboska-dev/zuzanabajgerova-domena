@@ -1,10 +1,12 @@
+import { localizeTree } from '@/lib/localize.server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Crumbs from '@/components/page/Crumbs';
 import JsonLd from '@/components/page/JsonLd';
 import { listProperties } from '@/lib/data.server';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { listArticles } from '@/lib/articles';
+import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/lib/i18n';
 import { LOCALITIES, LOCALITY_SLUGS } from '@/lib/localities';
 import { path, type RouteId } from '@/lib/routes';
 import { breadcrumbNode, graph, webPageNode } from '@/lib/schema';
@@ -13,7 +15,7 @@ import { pageMetadata } from '@/lib/seo';
 export const revalidate = 21600;
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return [{ locale: DEFAULT_LOCALE }];
+  return LOCALES.map(locale => ({ locale }));
 }
 
 const TITLE = 'Mapa stránek';
@@ -21,15 +23,15 @@ const DESC = 'Přehled všech stránek webu na jednom místě.';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) return {};
-  return pageMetadata({ id: 'mapaStranek', locale, title: TITLE, description: DESC, onlyCs: true });
+  if (!isLocale(locale)) return {};
+  return pageMetadata({ id: 'mapaStranek', locale, title: TITLE, description: DESC, });
 }
 
 const L = (id: RouteId) => path(id, DEFAULT_LOCALE);
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) notFound();
+  if (!isLocale(locale)) notFound();
   const here = L('mapaStranek');
   const count = (await listProperties()).length;
   const guide = L('jakKoupit');
@@ -56,7 +58,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       h: 'Lokality',
       links: [
         { href: L('lokality'), label: 'Všechny lokality' },
-        ...LOCALITY_SLUGS.map((s) => ({ href: path('lokalita', DEFAULT_LOCALE, s), label: LOCALITIES[s].title })),
+        ...LOCALITY_SLUGS.map((s) => ({ href: path('lokalita', locale, s), label: LOCALITIES[s].title })),
       ],
     },
     {
@@ -69,13 +71,15 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         { href: `${guide}#codice-fiscale`, label: 'Codice fiscale' },
         { href: `${practical}#domy-za-1-euro`, label: 'Domy za 1 euro' },
         { href: `${practical}#slovnicek`, label: 'Slovníček pojmů' },
-        { href: L('clanky'), label: 'Články' },
+        { href: L('clanky'), label: 'Blog' },
+        ...listArticles(locale).map((a) => ({ href: path('clanek', locale, a.slug), label: a.title })),
       ],
     },
     {
       h: 'Povinné stránky',
       links: [
         { href: L('ochranaUdaju'), label: 'Ochrana osobních údajů' },
+        { href: L('podminky'), label: 'Podmínky užití webu' },
         { href: L('cookies'), label: 'Cookies' },
       ],
     },
@@ -118,4 +122,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       </section>
     </main>
   );
+}
+
+export default async function LocalizedPage(props: Parameters<typeof Page>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await Page(props), locale);
 }

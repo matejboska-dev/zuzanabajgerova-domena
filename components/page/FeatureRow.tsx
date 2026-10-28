@@ -1,5 +1,7 @@
+
+import { localized } from '@/lib/localize';
 /** stridava sekce (text + media), stejne tridy jako ZigRow na hlavni strane (.zig) */
-export default function FeatureRow({
+function FeatureRow({
   id,
   badge,
   title,
@@ -47,3 +49,5 @@ export default function FeatureRow({
     </section>
   );
 }
+
+export default localized(FeatureRow);

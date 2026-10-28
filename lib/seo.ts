@@ -1,3 +1,4 @@
+import { translate } from './localize.server';
 import type { Metadata } from 'next';
 import { HTML_LANG, DEFAULT_LOCALE, type Locale } from './i18n';
 import { absolute, path, publishedLocales, type RouteId } from './routes';
@@ -21,17 +22,22 @@ export function pageMetadata(opts: {
   image?: string;
   /** stranka existuje jen cesky: bez hreflang na /en a /it (ty zatim neexistuji) */
   onlyCs?: boolean;
+  /** adresa (slug) stranky v jednotlivych jazycich, kdyz se lisi (clanky) */
+  slugs?: Partial<Record<Locale, string>>;
 }): Metadata {
-  const { id, locale, slug, title, description } = opts;
+  const { id, locale, slug } = opts;
+  const title = translate(opts.title, locale);
+  const description = translate(opts.description, locale);
   const ogImage = absolute(opts.image ?? DEFAULT_OG_IMAGE);
-  const canonical = absolute(path(id, locale, slug));
+  const slugFor = (l: Locale) => opts.slugs?.[l] ?? slug;
+  const canonical = absolute(path(id, locale, slugFor(locale)));
 
   const languages: Record<string, string> = {};
   const readyLocales = opts.onlyCs ? [DEFAULT_LOCALE] : publishedLocales(id);
   for (const l of readyLocales) {
-    languages[HTML_LANG[l]] = absolute(path(id, l, slug));
+    languages[HTML_LANG[l]] = absolute(path(id, l, slugFor(l)));
   }
-  languages['x-default'] = absolute(path(id, DEFAULT_LOCALE, slug));
+  languages['x-default'] = absolute(path(id, DEFAULT_LOCALE, slugFor(DEFAULT_LOCALE)));
 
   return {
     title: `${title} | ${SITE_NAME}`,

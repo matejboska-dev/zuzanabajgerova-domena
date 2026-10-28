@@ -1,7 +1,9 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 import { useEffect, useRef, type ReactNode } from 'react';
 
-export default function GuideMotion({ children }: { children: ReactNode }) {
+function GuideMotion({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let disposed = false;
@@ -29,3 +31,5 @@ export default function GuideMotion({ children }: { children: ReactNode }) {
   }, []);
   return <div ref={root}>{children}</div>;
 }
+
+export default localized(GuideMotion);

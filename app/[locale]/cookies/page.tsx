@@ -1,38 +1,37 @@
+import { localizeTree } from '@/lib/localize.server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import LegalPage, { LegalSec } from '@/components/page/LegalPage';
-import Marked from '@/components/Marked';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
 import { pageMetadata } from '@/lib/seo';
 
 // Vychozi bod: kontrola kodu (zadne document.cookie, localStorage, sessionStorage, zadna analytika)
 // a mereni v prohlizeci na vsech hlavnich strankach (po nacteni prazdne cookies i uloziste).
 // Kdyz se nasadi GA4 nebo jine mereni, tuhle stranku a cookie listu je treba upravit PRED spustenim mereni.
-// Existuje jen cesky. Pravni text se nepreklada bez pravnika.
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return [{ locale: DEFAULT_LOCALE }];
+  return LOCALES.map(locale => ({ locale }));
 }
 
 const TITLE = 'Cookies';
 const LEAD =
-  'Stručně: web v tuto chvíli nenastavuje žádné cookies a nic neukládá do vašeho prohlížeče. Níže je přehled toho, s čím se můžete setkat.';
+  'Stručně: web nenastavuje žádné cookies a nic vás nesleduje. Níže je přehled toho, s čím se můžete setkat.';
 const DESC = 'Jaké cookies a úložiště prohlížeče web používá, jak je to s měřením návštěvnosti a třetími stranami.';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) return {};
-  return pageMetadata({ id: 'cookies', locale, title: TITLE, description: DESC, onlyCs: true });
+  if (!isLocale(locale)) return {};
+  return pageMetadata({ id: 'cookies', locale, title: TITLE, description: DESC, });
 }
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) notFound();
+  if (!isLocale(locale)) notFound();
 
-  const here = path('cookies', DEFAULT_LOCALE);
-  const privacy = path('ochranaUdaju', DEFAULT_LOCALE);
+  const here = path('cookies', locale);
+  const privacy = path('ochranaUdaju', locale);
 
   return (
     <LegalPage
@@ -40,7 +39,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       title={TITLE}
       lead={LEAD}
       description={DESC}
-      updated="Pracovní verze k revizi: 14. 10. 2026"
+      updated="Poslední aktualizace: 26. 10. 2026"
       toc={[
         { id: 'co-jsou', label: 'Co jsou cookies' },
         { id: 'nezbytne', label: 'Nezbytné cookies' },
@@ -59,15 +58,13 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
       <LegalSec id="nezbytne" n={2} title="Nezbytné cookies">
         <p>
-          Web nenastavuje žádné vlastní cookies a do úložišť prohlížeče (cookies, localStorage, sessionStorage) nic
-          neukládá. Při kontrole všech hlavních stránek zůstal seznam cookies i úložiště prohlížeče prázdný.
+          Web nenastavuje žádné vlastní cookies. Do úložiště prohlížeče (sessionStorage) ukládá jedinou technickou
+          značku, že jste už viděli úvodní animaci hlavní stránky, aby se vám při dalším otevření nepřehrávala znovu.
+          Značka neobsahuje žádné osobní údaje a prohlížeč ji smaže, jakmile zavřete okno nebo kartu.
         </p>
         <p>
           Formuláře proto fungují bez cookies. Ochrana před spamem (skryté pole a minimální doba vyplnění) cookies
           nepoužívá.
-        </p>
-        <p>
-          <Marked text="[OVĚŘIT: po nasazení na ostrý hosting znovu zkontrolovat v prohlížeči (DevTools, Application, Cookies), zda hosting nepřidává vlastní cookies]" />
         </p>
       </LegalSec>
 
@@ -77,9 +74,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           Ve stránkách jsou připravené události pro měření, například odeslání formuláře, ale nikam se neodesílají,
           dokud měřicí nástroj není nasazen.
         </p>
-        <p>
-          <Marked text="[OVĚŘIT: pokud se před spuštěním nasadí GA4 nebo jiné měření, je nutné nejdřív upravit tuto stránku i zásady ochrany osobních údajů a přidat cookie lištu, přes kterou se měření zapne až po souhlasu]" />
-        </p>
+        <p>Pokud měření návštěvnosti v budoucnu zavedu, spustí se až po vašem souhlasu a tuto stránku předem upravím.</p>
       </LegalSec>
 
       <LegalSec id="souhlas" n={4} title="Jak souhlas změnit">
@@ -92,7 +87,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
       <LegalSec id="platnost" n={5} title="Doba platnosti">
         <p>
-          Vlastní cookies web nenastavuje, nemají tedy žádnou dobu platnosti. U cookies třetích stran určuje dobu
+          Vlastní cookies web nenastavuje. Technická značka úvodní animace platí jen do zavření okna nebo karty. U cookies třetích stran určuje dobu
           platnosti jejich provozovatel.
         </p>
       </LegalSec>
@@ -120,4 +115,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       </LegalSec>
     </LegalPage>
   );
+}
+
+export default async function LocalizedPage(props: Parameters<typeof Page>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await Page(props), locale);
 }

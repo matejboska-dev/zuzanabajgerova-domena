@@ -1,4 +1,6 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -37,10 +39,10 @@ const FORM_UI = {
 };
 
 /**
- * Formular, ktery posila poptavku pres lib/forms.ts na /api/lead. Po uspechu presmeruje na
+ * Formular, ktery posila poptavku pres lib/forms.ts do Web3Forms. Po uspechu presmeruje na
  * /dekujeme (noindex), kde se da merit konverze. Pri chybe nic nepredstira: ukaze zalozni kontakty.
  */
-export default function LeadForm({
+function LeadForm({
   source,
   fields,
   submitLabel = 'Odeslat',
@@ -59,7 +61,7 @@ export default function LeadForm({
   submitLabel?: string;
   variant?: 'light' | 'dark';
   className?: string;
-  /** vlozeno nad pole (napr. vyber terminu hovoru) */
+  /** Obsah vložený nad pole formuláře. */
   before?: React.ReactNode;
   fine?: React.ReactNode;
   ariaLabel: string;
@@ -89,7 +91,7 @@ export default function LeadForm({
     if (res.ok) {
       trackEvent('generate_lead', { form: source, ...(source === 'sluzba' ? { service: hidden?.sluzba ?? '', locale } : {}) });
       if (successMessage) { setStatus('success'); return; }
-      router.push(`${path('dekujeme', 'cs')}?z=${source}`);
+      router.push(`${path('dekujeme', locale)}?z=${source}`);
       return;
     }
     setError(res.error ?? '');
@@ -212,3 +214,5 @@ export default function LeadForm({
     </form>
   );
 }
+
+export default localized(LeadForm);

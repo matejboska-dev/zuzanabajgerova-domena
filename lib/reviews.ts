@@ -275,3 +275,78 @@ export const FIRMY_REVIEWS: FirmyReview[] = [
     likes: 1,
   },
 ];
+
+// Vsech 14 recenzi z profilu Google (Mapy Google), v poradi "nejrelevantnejsi", stav k 26. 10. 2026.
+// Texty jsou prepsane beze zmen (jen doplnene mezery za teckami). Pridani nove = jedna polozka.
+export const GOOGLE_SUMMARY = {
+  rating: '5,0',
+  count: 14,
+  url: 'https://www.google.com/maps/place/Bc.+Zuzana+Bajgerov%C3%A1/data=!4m8!3m7!1s0x881fff37c36dc9c9:0x9286a87c8ddb0f53!8m2!3d43.2727092!4d12.7429781!9m1!1b1!16s%2Fg%2F11m5tw4h75',
+};
+
+export interface GoogleReview {
+  author: string;
+  text: string;
+  /** recenze psana v jinem jazyce, text je preklad Googlu */
+  translatedFrom?: string;
+}
+
+export const GOOGLE_REVIEWS: GoogleReview[] = [
+  {
+    author: 'Lucie Pejčochová',
+    text: 'Se službami pani Zuzany Bajgerové jsme byli spokojeni od A do Z. Ocenili jsme nejen její velkou profesionalitu a vstřícnost během koupě samotné, ale také celý proces “postprodeje”. Celý proces s energiemi i dalšími administrativními kroky mohl být v Itálii bez jazykové výbavy “italskou vesnicí”, ale paní Zuzana a její skvělý tým nás nikdy nenechali na holičkách. Vše se zařídilo s lehkostí a úsměvem!',
+  },
+  {
+    author: 'viktor',
+    text: 'Zuzanka říká věci na rovinu a nic neskrývá, což velmi oceňuji. Vždy vše srozumitelně vysvětlí a doporučí nejlepší další postup. Její přístup je profesionální a zároveň lidský – působí klidně, rozvážně a s trpělivostí. I když má hodně práce, dokáže si najít čas a věnovat se naplno. Je znát, že má bohaté zkušenosti a ví přesně, co dělá. Díky tomu působí velmi důvěryhodně a člověk má pocit jistoty, že je v dobrých rukou. Určitě doporučuji všem, kdo hledají spolehlivou a ochotnou pomoc.',
+  },
+  {
+    author: 'Zita Drabkova',
+    text: 'Děkuji za to, že jsem měla příležitost spolupracovat s profesionálkou v oblasti realit, kterou je Zuzana Bajgerová. Zuzana mi byla nápomocna nejen při pořízení bytu v Montesilvánu, ale sama utváří také lidsky velmi přátelské prostředí v nádherné oblasti Itálie, kam nyní přijíždíme s radostí. Děkuji za šťastné okamžiky, které díky Zuzaně mohu v Montesilvanu prožívat :-).',
+  },
+  {
+    author: 'Polechtana Vana',
+    text: 'Vstřícná a rychla spolupráce. Se skvělým přístupem paní Bajgerové a jejích asistentek byl celý proces nákupu nemovitosti v oblasti Abruzzo veden velmi profesionálně. Roman Kniha s rodinou.',
+  },
+  {
+    author: 'Tomas Cepek',
+    text: 'Spolupráce s touto makléřkou byla naprosto výjimečná. Její znalost italského trhu, spolehlivost a osobní přístup zaručují jistotu i v zahraničním prostředí. Celý proces koupě nemovitosti proběhl hladce, s maximální péčí a důrazem na detail. Velice doporučuji.',
+  },
+  {
+    author: 'Rene Cichy',
+    text: 'Přání koupit si hezký apartmán u moře v Itálii, nám pomohla vyřešit paní Zuzana Bajgerová. Vybrala nám možnosti, udělali jsme prohlídku, my si vybrali a vše ostatní už paní Zuzka zařídila. Vše proběhlo hladce a my máme krásný apartmánek přímo u moře v Montesilvánu. Děkujeme 🇨🇿🇮🇹',
+  },
+  {
+    author: 'Petra Chelikova',
+    text: 'Paní Zuzka nám pomohla splnit si sen. 💯 Máme nádherné bydleni u moře. Milujeme to tam ❤️ Moc děkujeme za velmi profesionální a lidský přístup. Zuzka je opravdu jednička ve svém oboru 💯',
+  },
+  {
+    author: 'Lenka R',
+    text: 'Měla jsem to obrovské štěstí poznat se se skvělou realitní makléřkou Zuzanou, která mi pomohla splnit můj sen – pořídit si byt u moře v Itálii. Od prvního kontaktu byla neuvěřitelně profesionální, milá a ochotná. Dokonale pochopila, co hledám, a našla mi přesně to, co jsem si vysnila. Zuzana se postarala opravdu o všechno — od výběru a prohlídek, přes samotný nákup a notáře, až po kompletní servis po podpisu smlouvy. Díky její péči jsem se celým procesem cítila provázená a v naprostém klidu.',
+  },
+  {
+    author: 'Petr',
+    text: 'Paní Zuzanu jsem objevil čirou náhodou na internetu. Zavolal jsem a během pár minut jsme se dohodli že se přijedu podívat do Montesilvano. Ačkoliv mi připravila prohlídku spousty nemovitostí, hned do druhé jsem se zamiloval. Vypadal sice hrozně a staře ale paní Zuzana slíbila totální rekonstrukci a vybavení na klíč. Svěřil jsem se tedy do rukou osudu a Zuzany. V lednu jsem řekl ano a za 6 měsíců jsem přijel do zbrusu nového apartmánu se 180 stupňovým výhledem na moře kde stačilo abych si přivezl jen kartáček na zuby. Vše ostatní bylo zde, krásné nové a voňavé. Teď zde žiju třetí měsíc a nelitoval jsem ani na okamžik. Skvělí, stále se usmívající lidé, nepřeplněno, ceny nižší než v ČR. Vlastně hledám důvod proč se vůbec vracet do Čech.',
+  },
+  {
+    author: 'Jaroslav Fiala',
+    text: 'Trošku netradiční recenze. Popíšu v krátkosti jak s pomoci paní Zuzany Bajgerové nákup nemovitosti v Itálii probíhal. Každý si po přečtení udělá závěr sám.\n16.4. jsem oslovil paní Zuzanu s požadavkem na velikost, cenu a místo apartmánu (bytu) v Itálii. 18.4. mi paní Zuzana poslala odkaz asi na deset apartmánů. 19.4. jsem odeslal cca 5 které jsem vybral a chtěl bych je vidět. 6.6. jsem odletěl do Pescary a prohlédl vybrané apartmány. 11.7. jsem potvrdil výběr jednoho z prohlédnutých bytů. Proběhly platby a plná moc. 29.7. se u místního notáře podepsala smlouva - paní Zuzana v mém zastoupení. 19.9. jsem přijel do bytu a dohodnul s paní Zuzanou a jejími kolegyněmi různé úpravy, opravy, malování, nákupy nábytku, odvoz odpadu, platby různých daní a poplatků, přehlášení vody a plynu, zálohy condominia atd. 2.11. jsem dostal video, kde jsou vidět všechny zásadní úpravy a byt je připraven podle našich představ. Myslím že víc není třeba dodávat, zbýva jen poděkovat za profesionální práci.',
+  },
+  {
+    author: 'alfredo spinosi',
+    text: 'Velice doporucuji tuhle maklerku na region abruzzo, spolehliva, rozumi opravdu realitam, kdo hleda experta na nakup nemovitisti v italii',
+  },
+  {
+    author: 'Vladimír Penc',
+    text: 'V červnu tohoto roku jsem na základě inzerátu a následné komunikace s paní Zuzanou Bajgerovou navštívil Montesilváno s úmyslem koupit nemovitost. Celý proces ze strany paní Zuzany proběhl naprosto profesionálně, věcně, efektivně ve všech fázích.\nVladimír',
+  },
+  {
+    author: 'Jakub Štádler',
+    text: 'Zuzana Bajgerová ve 3 krátkých větách. Úžasná. Skvělá. Báječná.',
+  },
+  {
+    author: 'Rosanna Silenzi',
+    text: "I highly recommend my colleague Zuzana to anyone from Czechoslovakia looking to buy a property in Abruzzo, Italy. She's very helpful and works hard to find the most beautiful properties close to the sea. After the notary deed, she takes care of the necessary paperwork for utilities and everything else needed to assist buyers. Well done, Zuzana!",
+    translatedFrom: 'italštiny',
+  },
+];

@@ -6,3 +6,5 @@ out/
 next-env.d.ts
 
 public/video/referencni-video.MOV
+.vercel
+.env*

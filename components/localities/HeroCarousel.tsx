@@ -1,4 +1,6 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useEffect, useState } from 'react';
 
@@ -7,14 +9,14 @@ const SLIDES = [
   { src: '/hero/backgrounds/abruzzo-olivy-a-more.webp', alt: 'Olivové háje a moře v Abruzzu', place: 'Olivy a moře' },
   { src: '/hero/backgrounds/abruzzo-montesilvano-plaz.webp', alt: 'Pláž v Montesilvanu', place: 'Montesilvano' },
   { src: '/hero/backgrounds/abruzzo-montesilvano-colle.webp', alt: 'Montesilvano Colle na kopci nad pobřežím', place: 'Montesilvano Colle' },
-  { src: '/hero/backgrounds/hero-bg-3-abruzzo-jezero-barrea.webp', alt: 'Jezero Barrea v národním parku Abruzzo', place: 'Jezero Barrea' },
-  { src: '/hero/backgrounds/hero-bg-4-abruzzo-rocca-calascio.webp', alt: 'Pevnost Rocca Calascio v horách Abruzza', place: 'Rocca Calascio' },
-  { src: '/hero/backgrounds/hero-bg-5-abruzzo-panoramaticke-udoli.webp', alt: 'Panoramatické údolí v Abruzzu', place: 'Panoramatické údolí' },
+  { src: '/hero/backgrounds/hero-bg-3-abruzzo-jezero-barrea-1920.webp', alt: 'Jezero Barrea v národním parku Abruzzo', place: 'Jezero Barrea' },
+  { src: '/hero/backgrounds/hero-bg-4-abruzzo-rocca-calascio-1920.webp', alt: 'Pevnost Rocca Calascio v horách Abruzza', place: 'Rocca Calascio' },
+  { src: '/hero/backgrounds/hero-bg-5-abruzzo-panoramaticke-udoli-1920.webp', alt: 'Panoramatické údolí v Abruzzu', place: 'Panoramatické údolí' },
 ];
 
 const INTERVAL_MS = 7000;
 
-export default function HeroCarousel() {
+function HeroCarousel() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -43,3 +45,5 @@ export default function HeroCarousel() {
     </figure>
   );
 }
+
+export default localized(HeroCarousel);

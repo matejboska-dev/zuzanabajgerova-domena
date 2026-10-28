@@ -1,4 +1,6 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -11,7 +13,7 @@ type Status = 'idle' | 'sending' | 'ok' | 'error';
 
 // dotaznik pro vazne zajemce. odesila se pres lib/forms.ts, tedy stejnym mistem
 // jako kontaktni formular. dokud neni napojeni hotove, formular to rekne a nic nepredstira.
-export default function DotaznikForm({ privacyHref }: { privacyHref: string }) {
+function DotaznikForm({ privacyHref }: { privacyHref: string }) {
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
   const startedAt = useRef(0);
@@ -147,3 +149,5 @@ export default function DotaznikForm({ privacyHref }: { privacyHref: string }) {
     </form>
   );
 }
+
+export default localized(DotaznikForm);

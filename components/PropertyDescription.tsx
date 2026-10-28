@@ -1,3 +1,5 @@
+
+import { localized } from '@/lib/localize';
 import type { ReactNode } from 'react';
 
 type Block = { kind: 'paragraph' | 'heading'; text: string } | { kind: 'list'; items: string[] };
@@ -24,7 +26,7 @@ function paragraphText(text: string): ReactNode {
   if (colon > 0 && colon <= 45 && !/[.!?]/.test(text.slice(0, colon))) return <><strong>{text.slice(0, colon + 1)}</strong>{text.slice(colon + 1)}</>;
   return text;
 }
-export default function PropertyDescription({ text }: { text: string }) {
+function PropertyDescription({ text }: { text: string }) {
   if (!text.trim()) return <p className="pd-prose">Popis není k dispozici.</p>;
   return <div className="pd-prose pd-description">{blocksOf(text).map((block, index) => block.kind === 'heading'
     ? <h3 key={index}>{block.text}</h3>
@@ -32,3 +34,5 @@ export default function PropertyDescription({ text }: { text: string }) {
       ? <ul key={index}>{block.items.map((item, itemIndex) => <li key={itemIndex}>{item}</li>)}</ul>
       : <p key={index}>{paragraphText(block.text)}</p>)}</div>;
 }
+
+export default localized(PropertyDescription);

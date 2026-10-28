@@ -56,8 +56,8 @@ export const KONZULTACE_FAQ: Item[] = [
     a: 'Ne. Nejprve si zavoláme nebo se spojíme online. Do Itálie stačí přiletět až na prohlídky, které naskládám do jednoho dne.',
   },
   {
-    q: 'Co když mi vybraný termín nevyjde?',
-    a: 'Termín vám osobně potvrdím. Pokud vám vybraný čas nevyhovuje, domluvíme jiný, klidně přes WhatsApp.',
+    q: 'Jak si domluvíme čas hovoru?',
+    a: 'Napište mi přes formulář, e-mailem nebo na WhatsApp. Ozvu se vám osobně a společně najdeme čas, který nám bude vyhovovat.',
   },
 ];
 

@@ -1,12 +1,14 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useEffect, useRef, useState } from 'react';
 import { thumbUrl } from '@/lib/types';
 
-function Arrow({ back = false }: { back?: boolean }) {
+function ArrowContent({ back = false }: { back?: boolean }) {
   return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" style={back ? {transform:'rotate(180deg)'} : undefined}><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
-export default function Gallery({ photos, alt }: { photos: string[]; alt: string }) {
+function Gallery({ photos, alt }: { photos: string[]; alt: string }) {
   const [active, setActive] = useState(0);
   const [failed, setFailed] = useState<string[]>([]);
   const [useThumb, setUseThumb] = useState(false);
@@ -43,3 +45,7 @@ export default function Gallery({ photos, alt }: { photos: string[]; alt: string
     </button>)}</div>}
   </div>;
 }
+
+export default localized(Gallery);
+
+const Arrow = localized(ArrowContent);

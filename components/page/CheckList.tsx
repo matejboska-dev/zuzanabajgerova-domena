@@ -1,5 +1,7 @@
+
+import { localized } from '@/lib/localize';
 /** odrazkovy seznam se safranovymi fajfkami (stejna ikona jako v sekci ceny na hlavni strane) */
-export default function CheckList({ items }: { items: string[] }) {
+function CheckList({ items }: { items: string[] }) {
   return (
     <ul className="checklist">
       {items.map((x) => (
@@ -15,3 +17,5 @@ export default function CheckList({ items }: { items: string[] }) {
     </ul>
   );
 }
+
+export default localized(CheckList);

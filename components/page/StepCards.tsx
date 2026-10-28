@@ -1,5 +1,7 @@
+
+import { localized } from '@/lib/localize';
 /** ciselne karty krok za krokem (01, 02, 03 v Playfair, safranova) */
-export default function StepCards({ items, cols = 3 }: { items: { title: string; text: string }[]; cols?: 3 | 4 }) {
+function StepCards({ items, cols = 3 }: { items: { title: string; text: string }[]; cols?: 3 | 4 }) {
   return (
     <ol className={`stepcards stepcards--${cols}`}>
       {items.map((s, i) => (
@@ -14,3 +16,5 @@ export default function StepCards({ items, cols = 3 }: { items: { title: string;
     </ol>
   );
 }
+
+export default localized(StepCards);

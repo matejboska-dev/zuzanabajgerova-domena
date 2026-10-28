@@ -1,10 +1,12 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useEffect, useRef, useState } from 'react';
 import { railMetrics, useReviewRail } from '@/components/hooks/useReviewRail';
 import { FIRMY_REVIEWS, FIRMY_SUMMARY, type FirmyReview } from '@/lib/reviews';
 
-function StarIcon({ filled = true }: { filled?: boolean }) {
+function StarIconContent({ filled = true }: { filled?: boolean }) {
   return (
     <svg viewBox="0 0 20 20" fill={filled ? "currentColor" : "none"} aria-hidden="true" className="firmy-star">
       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.063 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z" />
@@ -12,7 +14,7 @@ function StarIcon({ filled = true }: { filled?: boolean }) {
   );
 }
 
-function HeartIcon() {
+function HeartIconContent() {
   return (
     <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" className="firmy-heart">
       <path d="M11 2.667c-1.241 0-2.336.619-3 1.563-.664-.944-1.759-1.563-3-1.563C2.975 2.667 1.333 4.309 1.333 6.333c0 .149.011.294.029.437.288 2.972 3.459 5.324 6.638 7.23 3.179-1.906 6.35-4.258 6.638-7.23.018-.143.029-.288.029-.437 0-2.024-1.642-3.666-3.667-3.666z" />
@@ -20,7 +22,7 @@ function HeartIcon() {
   );
 }
 
-function CheckShieldIcon() {
+function CheckShieldIconContent() {
   return (
     <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="firmy-check-icon">
       <path fillRule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM13.707 8.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -29,7 +31,7 @@ function CheckShieldIcon() {
 }
 
 
-function ReviewCard({ rev, full = false, onRead, onPhoto }: {
+function ReviewCardContent({ rev, full = false, onRead, onPhoto }: {
   rev: FirmyReview;
   full?: boolean;
   onRead: (review: FirmyReview) => void;
@@ -141,7 +143,7 @@ function ReviewCard({ rev, full = false, onRead, onPhoto }: {
   );
 }
 
-export default function FirmyReviewsSection() {
+function FirmyReviewsSection() {
   const [filter, setFilter] = useState<'all' | 'photos'>('all');
   const [activeReview, setActiveReview] = useState<FirmyReview | null>(null);
   const [activePhoto, setActivePhoto] = useState<string | null>(null);
@@ -247,3 +249,10 @@ export default function FirmyReviewsSection() {
     </section>
   );
 }
+
+export default localized(FirmyReviewsSection);
+
+const StarIcon = localized(StarIconContent);
+const HeartIcon = localized(HeartIconContent);
+const CheckShieldIcon = localized(CheckShieldIconContent);
+const ReviewCard = localized(ReviewCardContent);

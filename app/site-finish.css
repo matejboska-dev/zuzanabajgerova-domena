@@ -901,6 +901,7 @@ html.intro-active body {
 @media (prefers-reduced-motion: reduce) {
   .intro-curtain { display: none !important; }
 }
+html.intro-seen .intro-curtain { display: none !important; }
 
 
 /* Foto v hero podstranky: zobrazit celou, bez orezu */
@@ -958,4 +959,42 @@ html.intro-active body {
   .subhero__card--3 { grid-column: 5 / 7; grid-row: 1; }
   .subhero__card--4 { grid-column: 1 / 4; grid-row: 2; }
   .subhero__card--5 { grid-column: 4 / 7; grid-row: 2; }
+}
+
+/* Google recenze na /reference: souhrn s odkazem na profil + karusel vsech recenzi */
+.greviews__summary { display:flex;align-items:center;flex-wrap:wrap;gap:14px 20px;margin:0 0 28px;padding:18px 22px;background:var(--surface);border:1px solid var(--pietra-dim);border-radius:var(--r-card); }
+.greviews__g { width:30px;height:30px;flex:none; }
+.greviews__score { display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;color:var(--cobalto-deep); }
+.greviews__score b { font-size:1.6rem;font-weight:600;line-height:1; }
+.greviews__score > span:last-child { font-size:.92rem;color:var(--ink-soft); }
+.greviews__link { margin-left:auto; }
+.greview__stars { display:inline-flex;gap:2px;color:#FBBC04; }
+.greview__stars svg { width:17px;height:17px; }
+.greview { justify-content:flex-start; }
+.greview blockquote { flex:1; }
+.greview__text { display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical;overflow:hidden; }
+.greview__text.is-open { display:block;overflow:visible; }
+.greview__text p + p { margin-top:.6em; }
+.greview__more { margin-top:10px;padding:0;border:0;background:none;color:var(--cobalto);font:inherit;font-size:.86rem;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer; }
+@media (max-width:600px) {
+  .greviews__summary { padding:16px; }
+  .greviews__link { margin-left:0;width:100%;justify-content:center; }
+}
+
+/* maly profil na Mapach Google dole na /kontakt (nacita se az po kliknuti) */
+.gmap { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,600px);gap:24px 40px;align-items:center; }
+.gmap__text .sec__head { margin-bottom:0; }
+.gmap__text a { color:var(--cobalto);font-weight:600;text-decoration:underline;text-underline-offset:3px; }
+.omap--small { min-height:300px;aspect-ratio:4 / 3;max-height:450px; }
+@media (max-width:900px) { .gmap { grid-template-columns:1fr; } }
+
+/* Translated labels must fit the same narrow screens as the Czech copy. */
+.gmap > .omap { min-width:0;max-width:100%;width:100%; }
+.omap__ph { min-width:0; }
+.omap__addr,.omap__fine { max-width:100%;overflow-wrap:anywhere; }
+.price-overview__footnote > * { min-width:0;max-width:100%; }
+.price-overview__link { white-space:normal; }
+@media (max-width:600px) {
+  .subhero__cta .btn { max-width:100%;white-space:normal;text-align:center; }
+  .price-overview__link { flex-wrap:wrap; }
 }

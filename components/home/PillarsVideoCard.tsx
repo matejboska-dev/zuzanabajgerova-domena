@@ -1,20 +1,27 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useLazyPoster } from '@/components/hooks/useLazyPoster';
+import type { Locale } from '@/lib/i18n';
+import { HOME_UI } from './ui';
 
 interface PillarsVideoCardProps {
   videoSrc?: string;
   posterSrc?: string;
   photoSrc?: string;
+  locale?: Locale;
 }
 
 export default function PillarsVideoCard({
   videoSrc = '/video/ctyri-veci-ktere-jinde-nedostanete.mp4',
   posterSrc = '/video/poster.jpg',
+  locale = 'cs',
 }: PillarsVideoCardProps) {
+  const ui = HOME_UI[locale];
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  useLazyPoster(videoRef, posterSrc);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -81,12 +88,11 @@ export default function PillarsVideoCard({
   };
 
   return (
-    <div className="pillars-media-card" aria-label="Video: Bc. Zuzana Bajgerová v Abruzzu">
+    <div className="pillars-media-card" aria-label={ui.pillarVideo}>
       <div className="pillars-media-card__viewport" onClick={() => togglePlay()}>
         <video
           ref={videoRef}
           src={videoSrc}
-          poster={posterSrc}
           preload="metadata"
           muted
           loop
@@ -100,8 +106,8 @@ export default function PillarsVideoCard({
             type="button"
             className="pillars-media-card__btn"
             onClick={togglePlay}
-            aria-label={isPlaying ? 'Pozastavit video' : 'Přehrát video'}
-            title={isPlaying ? 'Pozastavit video' : 'Přehrát video'}
+            aria-label={isPlaying ? ui.pause : ui.play}
+            title={isPlaying ? ui.pause : ui.play}
           >
             {isPlaying ? (
               <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14" aria-hidden="true">
@@ -118,8 +124,8 @@ export default function PillarsVideoCard({
             type="button"
             className="pillars-media-card__btn"
             onClick={toggleMute}
-            aria-label={isMuted ? 'Zapnout zvuk' : 'Vypnout zvuk'}
-            title={isMuted ? 'Zapnout zvuk' : 'Vypnout zvuk'}
+            aria-label={isMuted ? ui.unmute : ui.mute}
+            title={isMuted ? ui.unmute : ui.mute}
           >
             {isMuted ? (
               <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14" aria-hidden="true">

@@ -1,3 +1,6 @@
+'use client';
+import { usePathname } from 'next/navigation';
+import { localizeTree } from '@/lib/localize';
 import Link from 'next/link';
 import { path } from '@/lib/routes';
 import { DEFAULT_LOCALE } from '@/lib/i18n';
@@ -6,7 +9,9 @@ import { waLink } from '@/lib/contact';
 // 404 uvnitr jazykove verze. Neprefixovane adresy se prepisuji na /cs/..., takze sem spadne
 // i nezname URL bez jazykoveho prefixu. Nejcasteji jde o prodanou nebo stazenou nabidku.
 export default function NotFound() {
-  return (
+  const pathname = usePathname();
+  const locale = /^\/en(?:\/|$)/.test(pathname) ? 'en' : /^\/it(?:\/|$)/.test(pathname) ? 'it' : 'cs';
+  return localizeTree((
     <main className="nf">
       <div className="nf__card">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -32,5 +37,5 @@ export default function NotFound() {
         </div>
       </div>
     </main>
-  );
+  ), locale);
 }

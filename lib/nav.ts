@@ -1,3 +1,4 @@
+import { articleFor } from './articles';
 import { path, type RouteId } from './routes';
 import type { Locale } from './i18n';
 
@@ -164,6 +165,29 @@ export const NAV_TREE: NavSection[] = [
         label: { cs: 'Krátkodobý pronájem', en: 'Holiday rental management', it: 'Gestione affitti brevi' },
         roleTag: 'K',
         href: (l) => path('pronajem', l),
+      },
+    ],
+  },
+  {
+    id: 'clanky',
+    label: { cs: 'Blog', en: 'Blog', it: 'Blog' },
+    roleTag: 'V',
+    href: (l) => path('clanky', l),
+    children: [
+      {
+        label: { cs: 'Kolik stojí koupě domu', en: 'Cost of buying a house', it: 'Costi di acquisto' },
+        roleTag: 'V',
+        href: (l) => path('clanek', l, articleFor(l, 'kolik-stoji-koupe-domu-v-italii')?.slug),
+      },
+      {
+        label: { cs: 'Domy za 1 euro', en: '1-Euro houses', it: 'Case a 1 euro' },
+        roleTag: 'V',
+        href: (l) => path('clanek', l, articleFor(l, 'domy-za-1-euro-jak-to-je-doopravdy')?.slug),
+      },
+      {
+        label: { cs: 'Codice fiscale', en: 'Codice fiscale', it: 'Codice fiscale' },
+        roleTag: 'V',
+        href: (l) => path('clanek', l, articleFor(l, 'codice-fiscale-pro-cechy-a-slovaky')?.slug),
       },
     ],
   },

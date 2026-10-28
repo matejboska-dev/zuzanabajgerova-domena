@@ -2,9 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import AutoLoop from '@/components/media/AutoLoop';
-import { COMMUNITY_MEDIA } from '@/lib/home';
+import type { Locale } from '@/lib/i18n';
+import { homeData } from '@/lib/home.l10n';
+import { HOME_UI } from './ui';
 
-export default function CommunitySection() {
+export default function CommunitySection({ locale = 'cs' }: { locale?: Locale }) {
+  const { COMMUNITY_MEDIA } = homeData(locale);
+  const ui = HOME_UI[locale].community;
   const [expanded, setExpanded] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -50,12 +54,9 @@ export default function CommunitySection() {
       <div className="wrap">
         <div className="sec__head community__head">
           <h2 id="sec-09a" className="home-h2">
-            Staňte se součástí <em>naší komunity</em>
+            {ui.title} <em>{ui.accent}</em>
           </h2>
-          <p className="home-lead">
-            Nekupujete si jen nemovitost v Itálii. Kupujete si kus nového života.
-            Společné večeře, Velikonoce na pláži a přátelé, za kterými se rádi vracíte.
-          </p>
+          <p className="home-lead">{ui.lead}</p>
 
         </div>
 
@@ -65,7 +66,7 @@ export default function CommunitySection() {
               key={m.label}
               className={`community__item media-tile${i === 0 ? ' community__item--lead' : ''}`}
             >
-              <button type="button" className="community__open" onClick={() => setSelected(i)} aria-label={`Zobrazit: ${m.label}`}>
+              <button type="button" className="community__open" onClick={() => setSelected(i)} aria-label={m.label}>
                 {m.src && m.video ? (
                   <AutoLoop src={m.video} poster={m.src} label={m.alt ?? m.label} />
                 ) : m.src ? (
@@ -84,18 +85,18 @@ export default function CommunitySection() {
           ))}
         </div>
 
-        <button className="btn btn--ghost community__more" type="button" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? 'Zobrazit méně momentů' : `Dalších ${COMMUNITY_MEDIA.length - 4} momentů z našeho života`}</button>
+        <button className="btn btn--ghost community__more" type="button" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? ui.less : ui.more(COMMUNITY_MEDIA.length - 4)}</button>
         <p className="community__ig">
           <a href="https://www.instagram.com/bc.zuzana_remax/" target="_blank" rel="noopener noreferrer">
-            Další momenty z Abruzza na Instagramu @bc.zuzana_remax <span aria-hidden="true">↗</span>
+            {ui.instagram} <span aria-hidden="true">↗</span>
           </a>
         </p>
       </div>
 
       {active && (
         <div ref={dialogRef} className="community-lightbox" role="dialog" aria-modal="true" aria-label={active.label} onClick={() => setSelected(null)}>
-          <button ref={closeRef} type="button" className="community-lightbox__close" onClick={() => setSelected(null)} aria-label="Zavřít galerii">×</button>
-          <button type="button" className="community-lightbox__nav" onClick={(event) => { event.stopPropagation(); setSelected((selected! - 1 + COMMUNITY_MEDIA.length) % COMMUNITY_MEDIA.length); }} aria-label="Předchozí snímek">‹</button>
+          <button ref={closeRef} type="button" className="community-lightbox__close" onClick={() => setSelected(null)} aria-label={ui.closeGallery}>×</button>
+          <button type="button" className="community-lightbox__nav" onClick={(event) => { event.stopPropagation(); setSelected((selected! - 1 + COMMUNITY_MEDIA.length) % COMMUNITY_MEDIA.length); }} aria-label={ui.prev}>‹</button>
           <figure className="community-lightbox__figure" onClick={(event) => event.stopPropagation()}>
             {active.video ? (
               <video key={active.video} src={active.video} poster={active.src} controls autoPlay playsInline />
@@ -105,7 +106,7 @@ export default function CommunitySection() {
             )}
             <figcaption><span>{String(selected! + 1).padStart(2, '0')} / {String(COMMUNITY_MEDIA.length).padStart(2, '0')}</span>{active.label}</figcaption>
           </figure>
-          <button type="button" className="community-lightbox__nav" onClick={(event) => { event.stopPropagation(); setSelected((selected! + 1) % COMMUNITY_MEDIA.length); }} aria-label="Další snímek">›</button>
+          <button type="button" className="community-lightbox__nav" onClick={(event) => { event.stopPropagation(); setSelected((selected! + 1) % COMMUNITY_MEDIA.length); }} aria-label={ui.next}>›</button>
         </div>
       )}
     </section>

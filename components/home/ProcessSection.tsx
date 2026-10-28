@@ -34,7 +34,7 @@ const PROCESS_DATA: Record<Locale, ProcessCopy> = {
     titleLead: 'Vy si přijedete splnit svůj italský sen.',
     titleAccent: 'O starosti kolem koupě se postaráme my.',
     lead:
-      'Koupě nemovitosti v Itálii má být radost, ne starost s úřady a papírováním. V Abruzzu žiji přes 20 let a se svým týmem pro vás zajistím kompletní servis od A do Z.',
+      'Koupě nemovitosti v Itálii má být radost, ne starost s úřady a papírováním. V Abruzzu funguji již 20 let a se svým týmem pro vás zajistím kompletní servis od A do Z.',
     steps: [
       {
         n: '01',
@@ -48,7 +48,7 @@ const PROCESS_DATA: Record<Locale, ProcessCopy> = {
         n: '02',
         tag: 'Aktivní scouting celého trhu',
         title: 'Nehledám jen v nabídce, kterou vidíte na webu',
-        text: 'Aktivně pro vás mapuji celý regionální trh. Díky více než 20 letům života v Abruzzu znám místní prostředí. Spolupracuji s prověřenými místními kancelářemi a majiteli s vysokými standardy důvěry.',
+        text: 'Aktivně pro vás mapuji celý regionální trh. Díky 20 letům zkušeností v Abruzzu znám místní prostředí. Spolupracuji s prověřenými místními kancelářemi a majiteli s vysokými standardy důvěry.',
         sub: 'Nehledám jen v nabídce, kterou vidíte na webu, ale i mezi ověřenými realitními agenturami, kolegy a místními. Řada nemovitostí se ke mně dostane přes známé, ještě než se objeví na internetu.',
         highlight: 'Přístup k neveřejným nabídkám a prověřeným partnerům.',
         icon: 'compass',
@@ -56,8 +56,8 @@ const PROCESS_DATA: Record<Locale, ProcessCopy> = {
       {
         n: '03',
         tag: 'Rezervační záloha 200 €',
-        title: 'Příprava prohlídek a záloha 200 €',
-        text: 'Po potvrzení termínu vašeho příjezdu sestavíme přesný harmonogram prohlídek. Záloha 200 € kryje intenzivní přípravu a plně se odečítá z naší konečné provize při koupi.',
+        title: 'Příprava prohlídek na míru',
+        text: 'Po potvrzení termínu vašeho příjezdu sestavíme přesný harmonogram prohlídek. Záloha 200 € je na přípravu prohlídek a při koupi se v plné výši odečítá z konečné provize. Úvodní konzultace je zdarma.',
         highlight: '100% odečitatelné z konečné provize · Žádný náklad navíc.',
         icon: 'calendar',
       },
@@ -114,7 +114,7 @@ const PROCESS_DATA: Record<Locale, ProcessCopy> = {
     climaxText:
       'Chci, abyste přijeli do Abruzza, otevřeli dveře svého italského domova a místo řešení problémů přemýšleli nad tím, kam dnes půjdete na kávu, co si dáte k večeři a jestli strávíte odpoledne u moře. O zbytek se postaráme my.',
     authorName: 'Bc. Zuzana Bajgerová',
-    authorRole: 'Realitní specialistka na nemovitosti v Itálii / Abruzzo · TOP 10 RE/MAX ČR · 20+ let na místě',
+    authorRole: 'Realitní specialistka na nemovitosti v Itálii / Abruzzo · TOP 10 RE/MAX ČR · 20 let zkušeností v Abruzzu',
     ctaConsultation: 'Domluvit bezplatnou konzultaci',
     ctaGuide: 'Celý průvodce koupí',
     whatsAppText: 'Máte dotaz? Napište mi přímo na WhatsApp: +420 723 824 348',
@@ -391,7 +391,7 @@ export default function ProcessSection({
           <figure className="process-editorial__portrait process-zigzag__trust">
             <img
               src="/images/zuzana-notar.webp"
-              alt={locale === 'cs' ? 'Zuzana Bajgerová při podpisu u notáře' : 'Zuzana Bajgerová signing at the notary'}
+              alt={{ cs: 'Zuzana Bajgerová při podpisu u notáře', en: 'Zuzana Bajgerová signing at the notary', it: 'Zuzana Bajgerová alla firma dal notaio' }[locale]}
               width={120}
               height={120}
               className="process-zigzag__avatar"
@@ -401,7 +401,7 @@ export default function ProcessSection({
               <span className="process-zigzag__trust-name">{copy.authorName}</span>
               <span className="process-zigzag__trust-role">
                 {locale === 'cs'
-                  ? 'Realitní specialistka v Abruzzu · 20+ let na místě'
+                  ? 'Realitní specialistka v Abruzzu · 20 let zkušeností v Abruzzu'
                   : locale === 'en'
                   ? 'Italian Property Specialist · 20+ years in Abruzzo'
                   : 'Specialista immobiliare in Abruzzo · 20+ anni sul posto'}

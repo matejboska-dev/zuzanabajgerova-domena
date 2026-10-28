@@ -1,3 +1,4 @@
+import { localizeTree, translate } from '@/lib/localize.server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -5,7 +6,7 @@ import JsonLd from '@/components/page/JsonLd';
 import StepCards from '@/components/page/StepCards';
 import ThanksLead from '@/components/page/ThanksLead';
 import { PHONE_DISPLAY, PHONE_TEL, waLink } from '@/lib/contact';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
 import { breadcrumbNode, graph, webPageNode } from '@/lib/schema';
 
@@ -13,19 +14,21 @@ import { breadcrumbNode, graph, webPageNode } from '@/lib/schema';
 // Sem prijde navstevnik po odeslani formulare. Dobre misto pro mereni konverze.
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return [{ locale: DEFAULT_LOCALE }];
+  return LOCALES.map(locale => ({ locale }));
 }
 
-export const metadata: Metadata = {
+const baseMetadata = {
   title: 'Děkuji za zprávu | Bc. Zuzana Bajgerová',
   description: 'Vaše zpráva dorazila. Ozvu se vám osobně.',
   robots: { index: false, follow: false },
 };
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> { const { locale } = await params; if (!isLocale(locale)) return {}; return { ...baseMetadata, title: translate(baseMetadata.title, locale), description: translate(baseMetadata.description, locale) }; }
+
+async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) notFound();
-  const here = path('dekujeme', DEFAULT_LOCALE);
+  if (!isLocale(locale)) notFound();
+  const here = path('dekujeme', locale);
 
   return (
     <main className="subpage thanks">
@@ -90,19 +93,19 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           </div>
           <ul className="thanks__links">
             <li>
-              <Link href={path('nemovitosti', DEFAULT_LOCALE)}>
+              <Link href={path('nemovitosti', locale)}>
                 <b>Aktuální nabídky</b>
                 <span>Byty a domy v Abruzzu, plní se každý den.</span>
               </Link>
             </li>
             <li>
-              <Link href={path('jakKoupit', DEFAULT_LOCALE)}>
+              <Link href={path('jakKoupit', locale)}>
                 <b>Jak koupit nemovitost v Itálii</b>
                 <span>Celý proces krok za krokem.</span>
               </Link>
             </li>
             <li>
-              <Link href={path('sluzby', DEFAULT_LOCALE)}>
+              <Link href={path('sluzby', locale)}>
                 <b>Co všechno za vás vyřídím</b>
                 <span>Servis od A do Z i po koupi.</span>
               </Link>
@@ -112,4 +115,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       </section>
     </main>
   );
+}
+
+export default async function LocalizedPage(props: Parameters<typeof Page>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await Page(props), locale);
 }

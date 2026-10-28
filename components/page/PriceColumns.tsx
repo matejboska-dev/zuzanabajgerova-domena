@@ -1,7 +1,9 @@
+
+import { localized } from '@/lib/localize';
 import { PRICE_IN, PRICE_OUT } from '@/lib/home';
 
 // dva sloupce "co je v provizi / co v cene neni". stejne tridy jako sekce ceny na hlavni strane.
-export default function PriceColumns() {
+function PriceColumns() {
   return (
     <div className="pricecols">
       <div className="pricecol pricecol--included">
@@ -43,3 +45,5 @@ export default function PriceColumns() {
     </div>
   );
 }
+
+export default localized(PriceColumns);

@@ -1,11 +1,13 @@
 'use client';
 
+import { HOME_UI } from './ui';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import type { Locale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
 import { TESTIMONIALS, type Testimonial } from '@/lib/reviews';
 import Zastupny from '@/components/Zastupny';
+import { useLazyPoster } from '@/components/hooks/useLazyPoster';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -38,8 +40,10 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
-function VideoTestimonialCard({ src, poster }: { src: string; poster?: string }) {
+function VideoTestimonialCard({ src, poster, locale }: { src: string; poster?: string; locale: Locale }) {
+  const ui = HOME_UI[locale];
   const videoRef = useRef<HTMLVideoElement>(null);
+  useLazyPoster(videoRef, poster);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const inViewport = useRef(false);
@@ -114,12 +118,11 @@ function VideoTestimonialCard({ src, poster }: { src: string; poster?: string })
           togglePlay();
         }
       }}
-      aria-label={isPlaying ? 'Pozastavit video' : 'Přehrát video se zvukem'}
+      aria-label={isPlaying ? ui.pause : ui.playSound}
     >
       <video
         ref={videoRef}
         src={src}
-        poster={poster}
         muted
         loop
         playsInline
@@ -146,7 +149,7 @@ function VideoTestimonialCard({ src, poster }: { src: string; poster?: string })
         type="button"
         className="test-card__sound-btn"
         onClick={toggleMute}
-        aria-label={isMuted ? 'Zapnout zvuk' : 'Vypnout zvuk'}
+        aria-label={isMuted ? ui.unmute : ui.mute}
         title={isMuted ? 'Zapnout zvuk' : 'Vypnout zvuk'}
       >
         {isMuted ? (
@@ -175,6 +178,7 @@ function getInitials(name: string): string {
 }
 
 export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
+  const ui = HOME_UI[locale].testimonials;
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
@@ -255,10 +259,10 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
       <div className="wrap">
         <div className="test-sec__head">
           <h2 id="sec-09" className="home-h2 test-sec__title">
-            Věřte lidem, kteří to <em>už mají za sebou</em>
+            {ui.title} <em>{ui.accent}</em>
           </h2>
           <p className="home-lead test-sec__lead">
-            Přečtěte si skutečné zkušenosti klientů, kteří si splnili sen o bydlení v Itálii.
+            {ui.lead}{ui.originalNote ? ` ${ui.originalNote}` : ''}
           </p>
         </div>
       </div>
@@ -276,7 +280,7 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
           {TESTIMONIALS.map((t, i) => (
             <article className="test-card" key={i}>
               {t.isVideo && t.videoSrc ? (
-                <VideoTestimonialCard src={t.videoSrc} poster={t.poster} />
+                <VideoTestimonialCard src={t.videoSrc} poster={t.poster} locale={locale} />
               ) : t.isVideo ? (
                 <Zastupny
                   kind="video"
@@ -292,7 +296,7 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
               )}
 
               {t.text && (
-                <blockquote className="test-card__text">
+                <blockquote className="test-card__text" lang="cs">
                   <p>{t.text}</p>
                 </blockquote>
               )}
@@ -308,7 +312,7 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
                 <div className="test-card__footer">
                   <div className="test-card__google-badge">
                     <GoogleIcon />
-                    <span className="test-card__role">Google recenze</span>
+                    <span className="test-card__role">{locale === 'cs' ? 'Google recenze' : locale === 'en' ? 'Google review' : 'Recensione Google'}</span>
                   </div>
                 </div>
               )}
@@ -321,7 +325,7 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
         <div className="test-carousel__nav">
           <div className="test-carousel__actions">
             <Link href={path('reference', locale)} className="btn btn--cobalt">
-              <span>Všechny reference</span>
+              <span>{ui.all}</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M5 12h14m-6-6 6 6-6 6" />
               </svg>
@@ -332,7 +336,7 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
               rel="noopener noreferrer"
               className="btn btn--ghost test-carousel__firmy"
             >
-              <span>Recenze na Firmy.cz</span>
+              <span>{locale === 'cs' ? 'Recenze na Firmy.cz' : locale === 'en' ? 'Reviews on Firmy.cz' : 'Recensioni su Firmy.cz'}</span>
               <span aria-hidden="true">↗</span>
             </a>
           </div>
@@ -341,7 +345,7 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
               className="test-carousel__btn"
               onClick={() => scroll(-1)}
               disabled={!canPrev}
-              aria-label="Předchozí"
+              aria-label={ui.prev}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 18l-6-6 6-6" />
@@ -351,7 +355,7 @@ export default function TestimonialsCarousel({ locale }: { locale: Locale }) {
               className="test-carousel__btn"
               onClick={() => scroll(1)}
               disabled={!canNext}
-              aria-label="Další"
+              aria-label={ui.next}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 18l6-6-6-6" />

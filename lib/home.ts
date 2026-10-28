@@ -29,7 +29,7 @@ export const PROOF: { value: string; label: string }[] = [
   { value: 'Platinum', label: 'ocenění RE/MAX' },
   { value: 'Hall of Fame', label: 'ocenění RE/MAX' },
   { value: '5,0 / 5', label: 'z 15 recenzí' },
-  { value: '20 let', label: 'v Abruzzu' },
+  { value: '20 let', label: 'zkušeností v Abruzzu' },
 ];
 
 // sekce 03 — ctyri obavy kupujiciho (PROJEKT-BAJGEROVA.md 2). formulace v uvozovkach
@@ -252,9 +252,11 @@ export const GUIDES: GuideItem[] = [
 export const QUICK_PICKS: { label: string; q: string }[] = [
   { label: 'Vše', q: '' },
   { label: 'Pobřeží', q: 'oblast=pobrezi' },
-  { label: 'Byty', q: 'typ=byt' },
+  { label: 'Apartmány', q: 'typ=byt' },
   { label: 'Domy a vily', q: 'typ=dum' },
-  { label: 'Do 150 000 €', q: 'cena=150000' },
+  { label: 'Do 100 000 €', q: 'cena=100000' },
+  { label: 'Investiční', q: 'kategorie=investicni' },
+  { label: 'Luxusní', q: 'kategorie=luxusni' },
 ];
 
 // Sekce 4 služby — 2x2 minimalistické karty s výraznou fotografií a jasným textem
@@ -322,7 +324,7 @@ export const WHY_ABRUZZO: WhyCard[] = [
   },
   {
     title: 'Letiště na dosah',
-    text: 'Letiště Pescara je blízko pobřeží. Přímé spoje z Prahy a Krakova i jejich sezónní provoz ověřte před cestou.',
+    text: 'Z Prahy létá Ryanair přímo do Pescary sezónně, z Krakova i v zimě. Přímý let trvá přibližně 1 h 40–50 min. V zimě můžete z Prahy cestovat také přes Milán; návaznost letů si ověřte pro konkrétní termín.',
     photo: '/media/why-letiste-pescara.webp',
     photoAlt: 'Letecký pohled na mezinárodní letiště v Pescaře a pobřeží',
     caption: 'Letiště Pescara · přímé lety z Prahy i Krakova',
@@ -331,8 +333,8 @@ export const WHY_ABRUZZO: WhyCard[] = [
     ],
   },
   {
-    title: 'Po příletu do města',
-    text: 'Letiště u Pescary má spojení veřejnou dopravou. Konkrétní spoj a jízdné si ověřte podle termínu cesty.',
+    title: 'Za 15 minut v Montesilvanu',
+    text: 'Z letiště Pescara jste autem přibližně za 15 minut v Montesilvanu. Doba záleží na provozu a cílové adrese; cestu můžete naplánovat i veřejnou dopravou.',
     photo: '/media/why-po-priletu-mesto.webp',
     photoAlt: 'Pobřežní promenáda a pláže v Pescaře a Montesilvanu',
     caption: 'Pobřeží v Pescaře · život pár minut od letiště',
@@ -432,7 +434,7 @@ export const RENO_DONE: { src: string; alt: string; label: string }[] = [
 ];
 
 // sekce 10B — výběr ze skutečných videí dodaných z Instagramu klientky.
-export const INSTAGRAM_REELS: { title: string; theme: string; src: string; poster: string }[] = [
+export const INSTAGRAM_REELS: { title: string; theme: string; src: string; poster: string; image?: boolean }[] = [
   {
     title: 'Moje začátky',
     theme: 'Z mé cesty',
@@ -440,7 +442,7 @@ export const INSTAGRAM_REELS: { title: string; theme: string; src: string; poste
     poster: '/media/instagram-moje-zacatky.webp',
   },
   {
-    title: 'Nahlédněte do bytu v Itálii',
+    title: 'Nahlédněte do apartmánu v Itálii',
     theme: 'Nemovitosti',
     src: '/media/instagram-byt-v-italii.mp4',
     poster: '/media/instagram-byt-v-italii.webp',
@@ -475,11 +477,18 @@ export const INSTAGRAM_REELS: { title: string; theme: string; src: string; poste
     src: '/media/proc-abruzzo.mp4',
     poster: '/media/proc-abruzzo.webp',
   },
+  {
+    title: 'Ocenění RE/MAX',
+    theme: 'Z mé práce',
+    src: '/media/omne-vyhlaseni.webp',
+    poster: '/media/omne-vyhlaseni.webp',
+    image: true,
+  },
 ];
 
 // sekce 12A — "O mně". Jen doložené údaje z podkladů klientky a projektu.
 export const ABOUT = {
-  text: 'V Abruzzu žiji už dvacet let. Díky místním kontaktům hledám pro české klienty nemovitosti i mimo veřejné nabídky a osobně je provázím koupí v češtině. Spolupracuji s ověřenými italskými partnery a po předání klíčů pomáhám také s rekonstrukcí, správou a pronájmem.',
+  text: 'V Abruzzu funguji již 20 let. Díky místním kontaktům hledám pro české klienty nemovitosti i mimo veřejné nabídky a osobně je provázím koupí v češtině. Spolupracuji s ověřenými italskými partnery a po předání klíčů pomáhám také s rekonstrukcí, správou a pronájmem.',
   photo: { src: '/media/about-zuzana.webp', alt: 'Bc. Zuzana Bajgerová na terase u moře v Abruzzu', width: 1000, height: 1250 },
   awards: [
     'Nejúspěšnější makléř měsíce realitní sítě RE/MAX ČR, 1. místo (červenec 2025)',

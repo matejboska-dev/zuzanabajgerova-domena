@@ -1,4 +1,6 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -20,7 +22,7 @@ const POINTS: Record<string, [number, number]> = {
   'gran-sasso-a-vnitrozemi': [13.65, 42.30],
 };
 
-export default function AreaMap({ areas }: { areas: MapArea[] }) {
+function AreaMap({ areas }: { areas: MapArea[] }) {
   const [selected, setSelected] = useState(0);
   const active = areas[selected];
   const airport = mapPoint(14.181, 42.43);
@@ -82,3 +84,5 @@ export default function AreaMap({ areas }: { areas: MapArea[] }) {
     </div>
   );
 }
+
+export default localized(AreaMap);

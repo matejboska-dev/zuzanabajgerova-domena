@@ -1,10 +1,12 @@
+
+import { localized } from '@/lib/localize';
 import Link from 'next/link';
 import { TESTIMONIALS } from '@/lib/reviews';
 import GoogleG from './GoogleG';
 import ReviewCarousel from './ReviewCarousel';
 
 /** tri skutecne Google recenze (lib/reviews.ts), nic se nevymysli ani neupravuje */
-export default function ReviewQuotes({
+function ReviewQuotes({
   names,
   carousel = false,
   href,
@@ -50,3 +52,5 @@ export default function ReviewQuotes({
     </>
   );
 }
+
+export default localized(ReviewQuotes);

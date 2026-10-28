@@ -1,4 +1,5 @@
 'use client';
+import { localized } from '@/lib/localize';
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -8,7 +9,7 @@ type FaqItem = { q: string; a: string };
 const EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)';
 const EASE_IN_OUT = 'cubic-bezier(0.4, 0, 0.2, 1)';
 
-export default function FaqSection({
+function FaqSection({
   faq,
   ctaHref,
   ctaLabel,
@@ -184,3 +185,4 @@ export default function FaqSection({
     </section>
   );
 }
+export default localized(FaqSection);

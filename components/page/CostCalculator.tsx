@@ -1,4 +1,6 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
@@ -19,7 +21,7 @@ function toNumber(v: string): number {
   return Number.isFinite(n) && n > 0 ? n : 0;
 }
 
-export default function CostCalculator({ rate, consultHref }: { rate: number; consultHref: string }) {
+function CostCalculator({ rate, consultHref }: { rate: number; consultHref: string }) {
   const [price, setPrice] = useState('');
   const [reno, setReno] = useState('');
 
@@ -115,3 +117,5 @@ export default function CostCalculator({ rate, consultHref }: { rate: number; co
     </div>
   );
 }
+
+export default localized(CostCalculator);

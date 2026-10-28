@@ -1,11 +1,12 @@
+import { localizeTree } from '@/lib/localize';
 import Link from 'next/link';
 import { listProperties } from '@/lib/data.server';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { DEFAULT_LOCALE, type Locale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
 import PropertyCard from '@/components/PropertyCard';
 
 /** 3 aktualni nabidky (skutecne fotky z RE/MAX, plni se samo ze scraperu) */
-export default async function FeaturedListings({ id, title, accent }: { id: string; title: string; accent?: string }) {
+async function FeaturedListings({ id, title, accent }: { id: string; title: string; accent?: string }) {
   const items = (await listProperties()).filter((p) => p.status === 'aktivní').slice(0, 3);
   if (items.length === 0) return null;
 
@@ -41,3 +42,5 @@ export default async function FeaturedListings({ id, title, accent }: { id: stri
     </section>
   );
 }
+
+export default async function LocalizedListings(props: Parameters<typeof FeaturedListings>[0] & { locale?: Locale }) { return localizeTree(await FeaturedListings(props), props.locale ?? DEFAULT_LOCALE); }

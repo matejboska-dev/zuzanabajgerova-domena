@@ -1,4 +1,6 @@
-"use client"
+"use client";
+import { localized, localizeTree } from '@/lib/localize';
+import type { Locale } from '@/lib/i18n';
 
 import * as React from "react"
 import { createPortal } from "react-dom"
@@ -51,6 +53,7 @@ export type PolaroidLineCarouselProps = {
   onSlideClick?: (index: number, slide: Slide) => void
   className?: string
   style?: React.CSSProperties
+  locale?: Locale
   ariaLabel?: string
 }
 
@@ -287,7 +290,7 @@ const PL_CSS = [
   "@keyframes pl-zoom{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}",
 ].join("\n")
 
-export default function PolaroidLineCarousel({
+function PolaroidLineCarousel({
   slides = DEFAULT_SLIDES,
   height = "100svh",
   cardWidth = 300,
@@ -301,6 +304,7 @@ export default function PolaroidLineCarousel({
   onSlideClick,
   className,
   style,
+  locale = "cs",
   ariaLabel = "Image carousel",
 }: PolaroidLineCarouselProps) {
   const n = slides.length
@@ -619,7 +623,7 @@ export default function PolaroidLineCarousel({
 
       {mounted && activeMedia && typeof document !== "undefined"
         ? createPortal(
-            <div
+            localizeTree(<div
               className="pl-modal-backdrop"
               role="dialog"
               aria-modal="true"
@@ -660,10 +664,12 @@ export default function PolaroidLineCarousel({
                   {activeMedia.caption ? <p>{activeMedia.caption}</p> : null}
                 </div>
               </div>
-            </div>,
+            </div>, locale),
             document.body,
           )
         : null}
     </>
   )
 }
+
+export default localized(PolaroidLineCarousel);

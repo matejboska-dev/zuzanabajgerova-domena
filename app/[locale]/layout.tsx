@@ -49,8 +49,18 @@ export default async function LocaleLayout({
   if (!isLocale(locale)) notFound();
 
   return (
-    <html lang={HTML_LANG[locale]} className={`${display.variable} ${body.variable} ${cursive.variable}`}>
+    <html
+      lang={HTML_LANG[locale]}
+      className={`${display.variable} ${body.variable} ${cursive.variable}`}
+      suppressHydrationWarning
+    >
       <body>
+        {/* intro uz v teto relaci bezelo: skryt oponu jeste pred prvnim vykreslenim (viz PageLoader) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "try{if(sessionStorage.getItem('zb-intro-seen')==='1')document.documentElement.classList.add('intro-seen')}catch(e){}",
+          }}
+        />
         <ScrollToTop />
         <SmoothInteractions />
         <PageLoader />

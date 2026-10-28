@@ -1,20 +1,19 @@
+import { localizeTree } from '@/lib/localize.server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import LegalPage, { LegalRow, LegalSec } from '@/components/page/LegalPage';
-import Marked from '@/components/Marked';
-import { BUSINESS, EMAIL, PHONE_DISPLAY, PHONE_TEL } from '@/lib/contact';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { BUSINESS, EMAIL, OFFICE, PHONE_DISPLAY, PHONE_TEL } from '@/lib/contact';
+import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
 import { pageMetadata } from '@/lib/seo';
 
 // Text vychazi z kontroly kodu (app/api/lead/route.ts, lib/forms.ts) a z mereni v prohlizeci:
 // zadne cookies ani localStorage, cizi servery jen RE/MAX CDN (fotky nabidek) a Google (az po kliknuti
 // na mapu). Kdyz se neco z toho zmeni (analytika, hosting, fotky na vlastni domene), upravit i tady.
-// Existuje jen cesky. Pravni text se nepreklada bez pravnika.
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return [{ locale: DEFAULT_LOCALE }];
+  return LOCALES.map(locale => ({ locale }));
 }
 
 const TITLE = 'Ochrana osobních údajů';
@@ -24,16 +23,16 @@ const DESC =
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) return {};
-  return pageMetadata({ id: 'ochranaUdaju', locale, title: TITLE, description: DESC, onlyCs: true });
+  if (!isLocale(locale)) return {};
+  return pageMetadata({ id: 'ochranaUdaju', locale, title: TITLE, description: DESC, });
 }
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) notFound();
+  if (!isLocale(locale)) notFound();
 
-  const here = path('ochranaUdaju', DEFAULT_LOCALE);
-  const cookies = path('cookies', DEFAULT_LOCALE);
+  const here = path('ochranaUdaju', locale);
+  const cookies = path('cookies', locale);
 
   return (
     <LegalPage
@@ -41,7 +40,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       title={TITLE}
       lead={LEAD}
       description={DESC}
-      updated="Pracovní verze k revizi: 14. 10. 2026"
+      updated="Poslední aktualizace: 26. 10. 2026"
       toc={[
         { id: 'spravce', label: 'Správce a kontakt' },
         { id: 'udaje', label: 'Jaké údaje sbírám' },
@@ -71,7 +70,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           rows={[
             [
               'Údaje',
-              'Jméno, e-mail, telefon nebo WhatsApp a to, co do formuláře sami doplníte: účel koupě, rozpočet, oblast a typ nemovitosti, zprávu, preferovaný den a část dne pro hovor a způsob spojení. U poptávky z detailu nabídky i název a odkaz nemovitosti. V dotazníku navíc typ nemovitosti, lokalitu, vzdálenost od moře, způsob financování, termín koupě, zájem o rekonstrukci a správu, zkušenost s Abruzzem, odkud o mně víte, a vlastní představu.',
+              'Jméno, e-mail, telefon nebo WhatsApp a to, co do formuláře sami doplníte: účel koupě, rozpočet, oblast a typ nemovitosti, zprávu. U poptávky z detailu nabídky i název a odkaz nemovitosti. V dotazníku navíc typ nemovitosti, lokalitu, vzdálenost od moře, způsob financování, termín koupě, zájem o rekonstrukci a správu, zkušenost s Abruzzem, odkud o mně víte, a vlastní představu.',
             ],
             ['Účel', 'Odpovědět na vaši poptávku, domluvit hovor a vybrat vám vhodné nabídky. U hlídače nabídek vám posílat nabídky podle vašeho zadání.'],
             ['Pozor', 'Do formulářů prosím nepište rodná čísla, čísla dokladů ani platební údaje. Nepotřebuji je.'],
@@ -92,10 +91,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <LegalRow
           title="IP adresa"
           rows={[
-            ['Údaje', 'IP adresu vašeho zařízení drží web krátce v paměti běžícího serveru.'],
+            ['Údaje', 'Při odeslání formuláře se váš prohlížeč spojí se službou Web3Forms a předá jí také technické údaje včetně IP adresy.'],
             [
               'Účel',
-              'Omezit spam: z jedné adresy projde nejvýše 5 odeslání formuláře za 10 minut. IP adresa se neukládá do poptávky ani do žádné databáze a zaniká, když se server restartuje. Jako technický záznam ji mohou uchovávat také poskytovatelé hostingu, viz část Komu údaje předávám.',
+              'Doručení formuláře a ochrana služby před spamem. Technické údaje mohou zpracovávat také poskytovatelé hostingu, viz část Komu údaje předávám.',
             ],
           ]}
         />
@@ -137,20 +136,18 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           Souhlas pro odpověď na poptávku nepotřebuji. Kdyby web později nabízel odběr novinek nebo měření návštěvnosti,
           požádám o souhlas zvlášť.
         </p>
-        <p>
-          <Marked text="[OVĚŘIT: právní základy potvrdí právník]" />
-        </p>
       </LegalSec>
 
       <LegalSec id="uchovani" n={4} title="Doba uchování">
         <p>
           Odeslaný formulář se na webu neukládá, takže na webu není co mazat. Poptávka mi přijde k vyřízení a uchovávám
-          ji{' '}
-          <Marked text="[DOPLNIT: doba uchování poptávek, tedy jak dlouho po vyřízení se mažou]" />.
+          ji po dobu nezbytnou k jejímu vyřízení a případné spolupráci, nejdéle však 3 roky od našeho posledního
+          kontaktu. Pokud spolupráce vyústí ve smlouvu, uchovávám údaje po dobu, kterou mi ukládají právní předpisy.
         </p>
         <p>
-          IP adresa v paměti serveru slouží jen k omezení spamu a zaniká s restartem serveru.{' '}
-          <Marked text="[OVĚŘIT: jak dlouho uchovává technické záznamy zvolený hosting]" />
+          Technické údaje při odesílání formuláře zpracovává Web3Forms a technické záznamy o návštěvě webu jeho
+          hosting, oba podle svých zásad ochrany osobních údajů a jen po dobu potřebnou k zajištění provozu a
+          bezpečnosti služby.
         </p>
       </LegalSec>
 
@@ -158,22 +155,23 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <p>Údaje poskytuji jen těm, kdo se podílejí na provozu webu a na doručení poptávky.</p>
         <ul>
           <li>
-            <strong>Doručení poptávky e-mailem:</strong> poptávky z formulářů doručuje služba Resend (resend.com).{' '}
-            <Marked text="[OVĚŘIT: konečné nastavení doručení (Resend, nebo jiný nástroj), sídlo poskytovatele a případné předání údajů mimo EU]" />
+            <strong>Doručení poptávky e-mailem:</strong> poptávky z formulářů odesílá prohlížeč přímo službě
+            Web3Forms (web3forms.com), která zajišťuje jejich doručení e-mailem. Údaje se přitom mohou zpracovávat i
+            mimo Evropskou unii. Podrobnosti uvádí poskytovatel ve svých{' '}
+            <a href="https://web3forms.com/privacy" target="_blank" rel="noopener noreferrer">zásadách ochrany soukromí</a>.
           </li>
           <li>
-            <strong>Hosting webu:</strong> web běží u{' '}
-            <Marked text="[DOPLNIT: provozovatel hostingu]" />
-            , testovací verze běží na službě Netlify. Formulář prochází servery hostingu a ten může uchovávat technické
-            záznamy včetně IP adresy.
+            <strong>Hosting webu:</strong> web běží na službě Netlify, Inc. (USA). Hosting může při prohlížení webu
+            uchovávat technické záznamy včetně IP adresy. Předání do USA se řídí rámcem EU–USA pro ochranu osobních
+            údajů (Data Privacy Framework), případně standardními smluvními doložkami.
           </li>
           <li>
-            <strong>Další nástroj pro evidenci poptávek:</strong>{' '}
-            <Marked text="[DOPLNIT: pokud se poptávky budou posílat také do tabulky, CRM nebo automatizačního nástroje, uvést ho zde, jinak bod smazat]" />
+            <strong>E-mailová schránka:</strong> poptávky přicházejí do mé pracovní schránky v doméně re-max.cz, kterou
+            mi poskytuje síť RE/MAX.
           </li>
           <li>
-            <strong>RE/MAX:</strong>{' '}
-            <Marked text="[OVĚŘIT: zda se údaje z poptávek předávají RE/MAX Černá perla nebo do systému RE/MAX a v jakém postavení]" />
+            <strong>Při koupi nemovitosti:</strong> teprve když spolupráci zahájíme, předám údaje v nezbytném rozsahu
+            těm, kdo se na koupi podílejí, například kanceláři {OFFICE.name}, notáři nebo překladateli.
           </li>
         </ul>
 
@@ -183,8 +181,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <ul>
           <li>
             Fotografie nabídek nemovitostí se načítají přímo ze serverů RE/MAX (mlsf.remax-czech.cz). Při jejich
-            zobrazení proto váš prohlížeč pošle RE/MAX technické údaje, zejména IP adresu a údaje o zařízení.{' '}
-            <Marked text="[OVĚŘIT: platí, dokud se fotky nehostují na vlastní doméně]" />
+            zobrazení proto váš prohlížeč pošle RE/MAX technické údaje, zejména IP adresu a údaje o zařízení.
           </li>
           <li>
             Mapa kanceláře na stránce Kontakt se načte až po vašem kliknutí na tlačítko. Teprve pak se váš prohlížeč
@@ -218,4 +215,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       </LegalSec>
     </LegalPage>
   );
+}
+
+export default async function LocalizedPage(props: Parameters<typeof Page>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await Page(props), locale);
 }

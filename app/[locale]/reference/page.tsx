@@ -1,3 +1,4 @@
+import { localizeTree } from '@/lib/localize.server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -6,17 +7,18 @@ import CtaBand from '@/components/page/CtaBand';
 import ClickVideo from '@/components/page/ClickVideo';
 import JsonLd from '@/components/page/JsonLd';
 import MobileCtaBar from '@/components/page/MobileCtaBar';
-import ReviewQuotes from '@/components/page/ReviewQuotes';
+import GoogleReviews from '@/components/page/GoogleReviews';
 import FirmyReviewsSection from '@/components/page/FirmyReviewsSection';
 import SecHead from '@/components/page/SecHead';
 import BeforeAfter from '@/components/page/BeforeAfter';
 import SubHero from '@/components/page/SubHero';
-import ReferenceVideoCarousel, { DRIVE_REFERENCE_SLIDES } from '@/components/page/ReferenceVideoCarousel';
+import ReferenceVideoCarousel from '@/components/page/ReferenceVideoCarousel';
+import { DRIVE_REFERENCE_SLIDES } from '@/lib/reference-slides';
 import { COMMUNITY_MEDIA, RENO_PAIRS } from '@/lib/home';
 import { waLink } from '@/lib/contact';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
-import { TESTIMONIALS, VIDEO_REFS } from '@/lib/reviews';
+import { VIDEO_REFS } from '@/lib/reviews';
 import { agentNode, breadcrumbNode, graph, webPageNode } from '@/lib/schema';
 import { pageMetadata } from '@/lib/seo';
 
@@ -24,24 +26,23 @@ import { pageMetadata } from '@/lib/seo';
 // pripadova studie z jejich videi. Co chybi (pribeh, vysledek, screenshoty), je oznacene.
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return [{ locale: DEFAULT_LOCALE }];
+  return LOCALES.map(locale => ({ locale }));
 }
 
 const TITLE = 'Reference klientů';
 const DESC =
-  'Videoreference a recenze klientů, kteří koupili nemovitost v Abruzzu. Hodnocení 5,0 z 15 recenzí na Googlu.';
+  'Videoreference a recenze klientů, kteří koupili nemovitost v Abruzzu. Hodnocení 5,0 ze 14 recenzí na Googlu.';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) return {};
-  return pageMetadata({ id: 'reference', locale, title: TITLE, description: DESC, onlyCs: true, image: '/media/kom-obed.webp' });
+  if (!isLocale(locale)) return {};
+  return pageMetadata({ id: 'reference', locale, title: TITLE, description: DESC, image: '/media/kom-obed.webp' });
 }
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) notFound();
-  const here = path('reference', DEFAULT_LOCALE);
-  const reviewNames = TESTIMONIALS.filter((t) => !t.isVideo && t.text).map((t) => t.name);
+  if (!isLocale(locale)) notFound();
+  const here = path('reference', locale);
   const ostrava = RENO_PAIRS[0];
   const strip = COMMUNITY_MEDIA.filter((m) => m.src && !m.video).slice(0, 4);
 
@@ -53,7 +54,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           webPageNode({ type: 'CollectionPage', path: here, name: TITLE, description: DESC, image: '/media/kom-obed.webp' }),
           breadcrumbNode([
             { name: 'Domů', href: '/' },
-            { name: 'O mně', href: path('oMne', DEFAULT_LOCALE) },
+            { name: 'O mně', href: path('oMne', locale) },
             { name: 'Reference', href: here },
           ]),
         )}
@@ -61,7 +62,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
       <SubHero
         id="reference-h1"
-        badge="Reference · 5,0 z 15 recenzí"
+        badge="Reference · 5,0 ze 14 recenzí na Googlu"
         title="Reference"
         accent="od klientů"
         lead="Skutečné příběhy lidí, kteří se mnou koupili nemovitost v Abruzzu. Na videu, slovy z Googlu a na fotkách z našich společných akcí."
@@ -75,15 +76,15 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           { src: '/media/kom-notar.webp', alt: 'Klienti s klíči při setkání v notářské kanceláři', width: 720, height: 1000 },
         ]}
         ctas={[
-          { href: path('konzultace', DEFAULT_LOCALE), label: 'Domluvit konzultaci' },
+          { href: path('konzultace', locale), label: 'Domluvit konzultaci' },
           { href: waLink(), label: 'Napsat na WhatsApp', variant: 'glass', external: true },
         ]}
-        chips={['5,0 z 15 recenzí na Googlu', `${DRIVE_REFERENCE_SLIDES.length} videoreferencí a momentů`, 'Komunita v Abruzzu']}
+        chips={['5,0 ze 14 recenzí na Googlu', `${DRIVE_REFERENCE_SLIDES.length} videoreferencí a momentů`, 'Komunita v Abruzzu']}
       />
 
       <Crumbs
         items={[
-          { name: 'O mně', href: path('oMne', DEFAULT_LOCALE) },
+          { name: 'O mně', href: path('oMne', locale) },
           { name: 'Reference', href: here },
         ]}
       />
@@ -108,9 +109,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             badge="Google recenze"
             title="Co píšou"
             accent="na Googlu"
-            lead="Citace jsou přepsané beze změn."
+            lead="Všech 14 recenzí z mého profilu na Mapách Google, přepsaných beze změn. Originály si můžete ověřit přímo na Googlu."
           />
-          <ReviewQuotes names={reviewNames} carousel />
+          <GoogleReviews />
 
         </div>
       </section>
@@ -181,7 +182,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             </dl>
 
             <div className="case2__cta">
-              <Link className="btn btn--saffron" href={path('rekonstrukce', DEFAULT_LOCALE)}>
+              <Link className="btn btn--saffron" href={path('rekonstrukce', locale)}>
                 <span>Rekonstrukce na klíč</span>
                 <svg
                   viewBox="0 0 24 24"
@@ -226,9 +227,15 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         title="Chcete být"
         accent="další"
         text="Začneme nezávaznou konzultací. Řekneme si, co hledáte a co je reálné."
-        primary={{ href: path('konzultace', DEFAULT_LOCALE), label: 'Vybrat termín hovoru' }}
+        primary={{ href: path('konzultace', locale), label: 'Domluvit konzultaci' }}
       />
       <MobileCtaBar />
     </main>
   );
+}
+
+export default async function LocalizedPage(props: Parameters<typeof Page>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await Page(props), locale);
 }

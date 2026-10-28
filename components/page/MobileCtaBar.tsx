@@ -1,11 +1,13 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useEffect, useState } from 'react';
 import { PHONE_TEL, waLink } from '@/lib/contact';
 
 // Lepici lista pro mobil: po scrollnuti se objevi dve velka tlacitka (telefon, WhatsApp).
 // Na desktopu se nezobrazuje (CSS).
-export default function MobileCtaBar({ whatsAppText }: { whatsAppText?: string }) {
+function MobileCtaBar({ whatsAppText }: { whatsAppText?: string }) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -37,3 +39,5 @@ export default function MobileCtaBar({ whatsAppText }: { whatsAppText?: string }
     </>
   );
 }
+
+export default localized(MobileCtaBar);

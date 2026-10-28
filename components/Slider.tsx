@@ -1,11 +1,13 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useRef, useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { Property } from '@/lib/types';
 import type { Locale } from '@/lib/i18n';
 import PropertyCard from './PropertyCard';
 
-export default function Slider({
+function Slider({
   properties,
   locale,
   cta,
@@ -90,7 +92,7 @@ export default function Slider({
   };
 
   if (!properties.length) {
-    return <div className="empty">Zatím žádné nabídky. Spusťte scraper tlačítkem nahoře.</div>;
+    return <div className="empty">{locale === 'cs' ? 'Zatím žádné nabídky. Spusťte scraper tlačítkem nahoře.' : locale === 'en' ? 'No listings yet.' : 'Nessun annuncio al momento.'}</div>;
   }
 
   return (
@@ -105,7 +107,7 @@ export default function Slider({
         onClickCapture={handleClickCapture}
       >
         {properties.map((p, i) => (
-          <PropertyCard key={p.id || i} p={p} locale={locale} priority={i < 6} />
+          <PropertyCard key={p.id || i} p={locale === 'cs' && p.type === 'byt' ? { ...p, title: p.title.replace(/\bbytu\b/gi, 'apartmánu') } : p} locale={locale} />
         ))}
       </div>
 
@@ -154,3 +156,5 @@ export default function Slider({
     </div>
   );
 }
+
+export default localized(Slider);

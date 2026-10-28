@@ -1,10 +1,13 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
+import { useLazyPoster } from '@/components/hooks/useLazyPoster';
 
 // Video, ktere se NEstahuje, dokud na nej navstevnik neklikne (jen poster). Pro tezka videa.
-export default function ClickVideo({
+function ClickVideo({
   src,
   poster,
   label,
@@ -21,6 +24,7 @@ export default function ClickVideo({
   playbackRatio?: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
+  useLazyPoster(ref, poster);
   const [on, setOn] = useState(false);
   const [retry, setRetry] = useState(false);
 
@@ -29,7 +33,6 @@ export default function ClickVideo({
       <video
         ref={ref}
         src={on ? src : undefined}
-        poster={poster}
         controls={on}
         playsInline
         preload="none"
@@ -58,3 +61,5 @@ export default function ClickVideo({
     </div>
   );
 }
+
+export default localized(ClickVideo);

@@ -4,19 +4,12 @@ import type { Locale } from '@/lib/i18n';
 import { path, SITE_URL } from '@/lib/routes';
 import { AGENT_ID } from '@/lib/schema';
 import {
-  HERO,
-  PROOF,
-  FEARS,
-  PILLARS,
-  PROCESS,
-  AFTER,
-  FAQ,
-  GUIDES,
-  QUICK_PICKS,
   csNum,
   csPlural,
   capFirst,
 } from '@/lib/home';
+import { homeData, HOME_FAQ_OVERRIDES } from '@/lib/home.l10n';
+import { HOME_UI } from './ui';
 import LandscapeLine from '@/components/LandscapeLine';
 import Marked from '@/components/Marked';
 import ContactFormCard from '@/components/forms/ContactFormCard';
@@ -41,14 +34,6 @@ import FearsAccordion from './FearsAccordion';
 const WA_PREFILLED = waLink();
 const TEL = PHONE_TEL;
 
-const PILLAR_SUMMARIES = [
-  'Jsem na místě a znám lidi, se kterými při koupi spolupracuji.',
-  'Prohlídky, dokumenty i přepisy energií řešíme společně.',
-  'Celou koupí vás provedu srozumitelně v češtině.',
-  'Pomohu vám také s rekonstrukcí, správou a povinnostmi po koupi.',
-  'Spolupracuji s místními realitkami a dalšími prověřenými odborníky.',
-  'Při jednání hájím vaše zájmy a usiluji o dobré podmínky.',
-];
 
 /** stridava sekce (layout B): media a text, strany se u dalsi sekce prohodi.
  *  `n` uz se nikde nezobrazuje, slouzi jen jako kotva (id + aria-labelledby). */
@@ -107,7 +92,7 @@ const LISTINGS_COPY: Record<
     titleAccent: 'v italském Abruzzu',
     lead: 'Výběr nemovitostí z mé nabídky v Abruzzu. Dostupnost a aktuální cenu vám potvrdím před prohlídkou.',
     cta: 'Všechny nabídky nemovitostí',
-    updated: 'Údaje k',
+    updated: 'Aktualizuje se automaticky',
   },
   en: {
     badge: 'Current Portfolio · Abruzzo, Italy',
@@ -115,7 +100,7 @@ const LISTINGS_COPY: Record<
     titleAccent: 'in Abruzzo, Italy',
     lead: 'A selection of properties in Abruzzo. I will confirm availability and the current price before your viewing.',
     cta: 'View all property listings',
-    updated: 'Data as of',
+    updated: 'Updated automatically',
   },
   it: {
     badge: 'Portfolio attuale · Abruzzo, Italia',
@@ -123,118 +108,16 @@ const LISTINGS_COPY: Record<
     titleAccent: 'in Abruzzo, Italia',
     lead: 'Una selezione di immobili in Abruzzo. Confermerò disponibilità e prezzo aggiornato prima della visita.',
     cta: 'Tutti gli immobili disponibili',
-    updated: 'Dati al',
-  },
-};
-
-const VISIBLE_FEARS = FEARS;
-
-// Na homepage musí odpověď odpovídat zdejší cenové sekci: inzerovaná cena už
-// zahrnuje náklady koupě. Sdílený obsah podstránek tím neměníme.
-const HOME_FAQ = FAQ.map((item) => {
-  if (item.q === 'Kolik zaplatím navíc nad cenu nemovitosti?') {
-    return {
-      q: 'Co zahrnuje cena uvedená v inzerátu?',
-      a: 'U nabídek na tomto webu je v uvedené ceně započítaná nemovitost, daň z převodu, notář i naše provize. Zvlášť počítejte s případnou rekonstrukcí, vybavením a následnými ročními poplatky.',
-    };
-  }
-  if (item.q === 'Můžu nemovitost pronajímat a vydělávat na ní?') {
-    return {
-      q: 'Můžu nemovitost pronajímat?',
-      a: 'Ano. Pomohu s přípravou apartmánu pro krátkodobý nebo sezónní pronájem, úklidem a komunikací s hosty. Konkrétní možnosti a očekávané náklady spolu probereme pro vybranou nemovitost.',
-    };
-  }
-  return item;
-});
-
-const FEARS_COPY: Record<
-  Locale,
-  {
-    badge: string;
-    titleLine: string;
-    titleAccent: string;
-    lead: string;
-    cta: string;
-    topBadge: string;
-    mediaImgAlt: string;
-    items: { q: string; a: string }[];
-  }
-> = {
-  cs: {
-    // Počet odpovídá všem zobrazeným otázkám.
-    badge: `${VISIBLE_FEARS.length} ${csPlural(VISIBLE_FEARS.length, 'klíčová otázka', 'klíčové otázky', 'klíčových otázek')} · Bezpečná koupě`,
-    titleLine: `Znám ${csNum(VISIBLE_FEARS.length)} ${csPlural(VISIBLE_FEARS.length, 'otázku', 'otázky', 'otázek')}, které vám`,
-    titleAccent: 'teď běží hlavou',
-    lead: 'Odpovím na ně hned. Dokud na ně neodpovím, žádná nemovitost vás nezajímá.',
-    cta: 'Jak koupit nemovitost v Itálii',
-    topBadge: 'Osobní garance',
-    mediaImgAlt: 'Bc. Zuzana Bajgerová – osobní dohled a garance bezpečné koupě',
-    items: VISIBLE_FEARS,
-  },
-  en: {
-    badge: '4 Key Questions · Safe Purchase',
-    titleLine: 'Four questions on your mind',
-    titleAccent: 'right now',
-    lead: 'Let me answer them right away. Until they are resolved, no property matters yet.',
-    cta: 'How to buy property in Italy',
-    topBadge: 'Personal guarantee',
-    mediaImgAlt: 'Bc. Zuzana Bajgerová – personal oversight and safe purchase guarantee',
-    items: [
-      {
-        q: '“I don’t understand the language or Italian law.”',
-        a: 'I guide you through the entire process in your language. I negotiate with Italian authorities and send you clear, understandable summaries.',
-      },
-      {
-        q: '“I don’t know what the real extra costs will be.”',
-        a: 'The price you see online is final. It includes the property price, the transfer taxes, the notary fee and our commission, plus the first year of basic service with my assistants, who also live locally.',
-      },
-      {
-        q: '“I worry about being scammed from afar.”',
-        a: 'I live directly in Abruzzo. I inspect every property in person, and contracts are verified by my lawyer, not the seller’s.',
-      },
-      {
-        q: '“I don’t know what happens after the purchase.”',
-        a: 'Tax registration, utility transfers, renovation, furnishing, and property management. Our relationship doesn’t end at the notary.',
-      },
-    ],
-  },
-  it: {
-    badge: '4 dubbi chiave · Acquisto sicuro',
-    titleLine: 'Quattro dubbi fondamentali',
-    titleAccent: 'prima dell’acquisto',
-    lead: 'Rispondo subito. Solo dopo aver chiarito ogni aspetto ha senso valutare gli immobili.',
-    cta: 'Come acquistare un immobile in Italia',
-    topBadge: 'Garanzia diretta',
-    mediaImgAlt: 'Bc. Zuzana Bajgerová – supervisione personale e garanzia di acquisto sicuro',
-    items: [
-      {
-        q: '“Non conosco la lingua o il diritto immobiliare locale.”',
-        a: 'Guido ogni fase del processo con totale trasparenza. Gestisco personalmente ogni contatto con le controparti italiane.',
-      },
-      {
-        q: '“Temo costi accessori nascosti e imprevisti.”',
-        a: 'Il prezzo che vedete online è definitivo. Comprende il prezzo dell’immobile, le imposte di trasferimento, l’onorario del notaio e la nostra provvigione, oltre al primo anno di assistenza di base con le mie assistenti, che vivono anch’esse sul posto.',
-      },
-      {
-        q: '“Temo sorprese acquistando a distanza.”',
-        a: 'Vivo sul posto in Abruzzo. Verifico personalmente ogni immobile e i documenti sono controllati dal mio legale indipendente.',
-      },
-      {
-        q: '“Cosa succede dopo la firma dal notaio?”',
-        a: 'Volture utenze, imposte, eventuale ristrutturazione, arredo e gestione dell’immobile. Il servizio non si ferma all’atto.',
-      },
-    ],
+    updated: 'Aggiornato automaticamente',
   },
 };
 
 export default function HomeSections({
   locale,
   featured,
-  stamp,
 }: {
   locale: Locale;
   featured: Property[];
-  stamp: Date | null;
 }) {
   const href = {
     nemovitosti: path('nemovitosti', locale),
@@ -246,7 +129,46 @@ export default function HomeSections({
   };
 
   const listingsCopy = LISTINGS_COPY[locale] ?? LISTINGS_COPY.cs;
-  const fearsCopy = FEARS_COPY[locale] ?? FEARS_COPY.cs;
+  const D = homeData(locale);
+  const ui = HOME_UI[locale];
+  const { PROOF, PILLARS, AFTER, QUICK_PICKS } = D;
+  const VISIBLE_FEARS = D.FEARS;
+  const fearsCopy =
+    locale === 'cs'
+      ? {
+          // Počet odpovídá všem zobrazeným otázkám.
+          badge: `${VISIBLE_FEARS.length} ${csPlural(VISIBLE_FEARS.length, 'klíčová otázka', 'klíčové otázky', 'klíčových otázek')} · Bezpečná koupě`,
+          titleLine: `Znám ${csNum(VISIBLE_FEARS.length)} ${csPlural(VISIBLE_FEARS.length, 'otázku', 'otázky', 'otázek')}, které vám`,
+          titleAccent: 'teď běží hlavou',
+          lead: 'Odpovím na ně hned. Dokud na ně neodpovím, žádná nemovitost vás nezajímá.',
+          cta: 'Jak koupit nemovitost v Itálii',
+          topBadge: 'Osobní garance',
+          mediaImgAlt: 'Bc. Zuzana Bajgerová – osobní dohled a garance bezpečné koupě',
+        }
+      : {
+          ...ui.fears,
+          cta: { en: 'How to buy property in Italy', it: 'Come acquistare un immobile in Italia' }[locale],
+          topBadge: { en: 'Personal guarantee', it: 'Garanzia diretta' }[locale],
+          mediaImgAlt: {
+            en: 'Bc. Zuzana Bajgerová – personal oversight and a safe-purchase guarantee',
+            it: 'Bc. Zuzana Bajgerová – supervisione personale e garanzia di acquisto sicuro',
+          }[locale],
+        };
+  // Na homepage musí odpověď odpovídat zdejší cenové sekci: inzerovaná cena už
+  // zahrnuje náklady koupě. Sdílený obsah podstránek tím neměníme.
+  const HOME_FAQ = D.FAQ.map((item, i) => {
+    if (i === 1) {
+      return locale === 'cs'
+        ? { q: 'Co zahrnuje cena uvedená v inzerátu?', a: 'U nabídek na tomto webu je v uvedené ceně započítaná nemovitost, daň z převodu, notář i naše provize. Zvlášť počítejte s případnou rekonstrukcí, vybavením a následnými ročními poplatky.' }
+        : HOME_FAQ_OVERRIDES.price[locale];
+    }
+    if (i === 7) {
+      return locale === 'cs'
+        ? { q: 'Můžu nemovitost pronajímat?', a: 'Ano. Pomohu s přípravou apartmánu pro krátkodobý nebo sezónní pronájem, úklidem a komunikací s hosty. Konkrétní možnosti a očekávané náklady spolu probereme pro vybranou nemovitost.' }
+        : HOME_FAQ_OVERRIDES.rent[locale];
+    }
+    return item;
+  });
 
   // schema.org — bez nej se web neobjevi v bohatych vysledcich ani v AI odpovedich
   const agentLd = {
@@ -296,7 +218,7 @@ export default function HomeSections({
       <HeroSection locale={locale} href={href} />
 
       {/* 02 — PRUH DŮKAZŮ (plovoucí pill bar sladěný s hero sekcí) ------------ */}
-      <section className="proof-pill-wrap" aria-label="Ocenění a zkušenost">
+      <section className="proof-pill-wrap" aria-label={ui.proofAria}>
         <div className="proof-pill">
           <div className="proof-pill__row">
             {PROOF.map((p, idx) => (
@@ -354,7 +276,7 @@ export default function HomeSections({
           </div>
         }
       >
-        <FearsAccordion items={fearsCopy.items} />
+        <FearsAccordion items={VISIBLE_FEARS} />
 
         <div className="fears-sec__cta">
           <Link href={href.jakKoupit} className="btn btn--saffron fears-sec__btn">
@@ -395,6 +317,12 @@ export default function HomeSections({
 
               <p className="listings__lead">{listingsCopy.lead}</p>
 
+            </div>
+            <aside className="listings__offmarket" aria-label={ui.offmarketAria}>
+              <p className="listings__offmarket-title">{locale === 'cs' ? 'Moje nabídka je mnohem širší, než vidíte na webu.' : locale === 'it' ? 'La mia offerta è molto più ampia di quella che trovi sul sito.' : 'My portfolio goes far beyond what you see online.'}</p>
+              <p>{locale === 'cs' ? 'Díky spolupráci s místními realitními kolegy a přímým kontaktům mezi Italy mám přístup i k neveřejným nabídkám, které běžně v inzerci nenajdete.' : locale === 'it' ? 'Grazie alla collaborazione con agenti immobiliari locali e ai contatti diretti con gli italiani, ho accesso anche a immobili non pubblicizzati.' : 'Through local estate agents and direct contacts with Italians, I also have access to properties that are not publicly advertised.'}</p>
+              <p>{locale === 'cs' ? 'Nemovitosti proto aktivně vyhledávám na míru vašim představám a požadavkům.' : locale === 'it' ? 'Cerco quindi attivamente immobili su misura per le tue esigenze e preferenze.' : 'I actively search for properties that match your preferences and requirements.'}</p>
+            </aside>
               <div className="listings__bar">
                 <div className="chips">
                   {QUICK_PICKS.map((q, idx) => (
@@ -407,17 +335,11 @@ export default function HomeSections({
                     </Link>
                   ))}
                 </div>
-                {stamp && (
-                  <span className="stamp">
-                    <span className="dot" />
-                    {listingsCopy.updated}{' '}
-                    {stamp.toLocaleDateString(
-                      locale === 'cs' ? 'cs-CZ' : locale === 'it' ? 'it-IT' : 'en-US'
-                    )}
-                  </span>
-                )}
+                <span className="stamp">
+                  <span className="dot" />
+                  {listingsCopy.updated}
+                </span>
               </div>
-            </div>
           </div>
         </div>
 
@@ -444,6 +366,10 @@ export default function HomeSections({
             </Link>
           }
         />
+        <div className="wrap listings__custom">
+          <p>{locale === 'cs' ? 'Nenašli jste v nabídce to, co hledáte?' : locale === 'it' ? 'Non hai trovato quello che cerchi?' : 'Haven’t found what you are looking for?'}</p>
+          <Link href={href.konzultace} className="btn btn--ghost">{locale === 'cs' ? 'Napište mi svou představu' : locale === 'it' ? 'Raccontami cosa cerchi' : 'Tell me what you are looking for'}</Link>
+        </div>
       </section>
 
       {/* 06 — PROC JA ------------------------------------------------------ */}
@@ -451,14 +377,20 @@ export default function HomeSections({
         <div className="wrap">
           <div className="reasons-section__head">
             <h2 id="sec-06" className="home-h2">
-              {capFirst(`${csNum(PILLARS.length)} ${csPlural(PILLARS.length, 'věc', 'věci', 'věcí')}`)}, které{' '}
-              <em>jinde nedostanete</em>
+              {locale === 'cs' ? (
+                <>{capFirst(`${csNum(PILLARS.length)} ${csPlural(PILLARS.length, 'věc', 'věci', 'věcí')}`)}, které{' '}</>
+              ) : locale === 'en' ? (
+                <>Six things{' '}</>
+              ) : (
+                <>Sei cose{' '}</>
+              )}
+              <em>{ui.reasonsAccent}</em>
             </h2>
-            <p className="home-lead">Žiji v Abruzzu a osobně vás provedu výběrem, koupí i péčí o nemovitost po podpisu.</p>
+            <p className="home-lead">{ui.reasonsLead}</p>
           </div>
 
           <div className="reasons-section__layout">
-            <div className="reasons-section__media"><PillarsVideoCard /></div>
+            <div className="reasons-section__media"><PillarsVideoCard locale={locale} /></div>
             <ol className="reasons-grid">
               {PILLARS.map((p, index) => (
                 <li className="reason-card" key={p.roman}>
@@ -467,7 +399,7 @@ export default function HomeSections({
                     <span className="reason-card__number">{p.roman}</span>
                   </div>
                   <h3 className="reason-card__title">{p.title}</h3>
-                  <p className="reason-card__description">{PILLAR_SUMMARIES[index]}</p>
+                  <p className="reason-card__description">{ui.pillarSummaries[index]}</p>
                 </li>
               ))}
             </ol>
@@ -475,12 +407,12 @@ export default function HomeSections({
 
           <div className="reasons-section__cta">
             <Link href={href.konzultace} className="btn btn--saffron">
-              <span>Domluvit nezávaznou konzultaci</span>
+              <span>{ui.consult}</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M5 12h14m-6-6 6 6-6 6" />
               </svg>
             </Link>
-            <Link href={href.sluzby} className="btn btn--ghost"><span>Více o mých službách</span></Link>
+            <Link href={href.sluzby} className="btn btn--ghost"><span>{ui.moreServices}</span></Link>
           </div>
         </div>
       </section>
@@ -491,7 +423,7 @@ export default function HomeSections({
       <ProcessSection locale={locale} href={href} />
 
       {/* 08 — PROC PRAVE ABRUZZO (nahradila "Kde v Abruzzu hledat") ---------------- */}
-      <WhyAbruzzo />
+      <WhyAbruzzo locale={locale} />
 
       <LandscapeLine />
 
@@ -499,13 +431,13 @@ export default function HomeSections({
       <TestimonialsCarousel locale={locale} />
 
       {/* 09A — KOMUNITA (hned pod referencemi) --------------------------------- */}
-      <CommunitySection />
+      <CommunitySection locale={locale} />
 
       {/* 10 — CO DELAM PO KOUPI ------------------------------------------- */}
       <section className="aftercare-summary" aria-labelledby="sec-10">
         <div className="wrap">
-          <h2 id="sec-10" className="home-h2">Klíči to <em>nekončí</em></h2>
-          <p className="home-lead">První rok základního asistenčního servisu máte v naší provizi. A když potřebujete víc, náš tým zůstává na místě.</p>
+          <h2 id="sec-10" className="home-h2">{ui.aftercareTitle} <em>{ui.aftercareAccent}</em></h2>
+          <p className="home-lead">{ui.aftercareLead}</p>
           <div className="aftercare-summary__links">
             {AFTER.map((a, i) => {
               const serviceId = a.serviceId ?? (['rekonstrukce', 'sprava', 'pronajem'] as const)[i];
@@ -543,15 +475,15 @@ export default function HomeSections({
       </section>
 
       {/* 10A — REKONSTRUKCE NA KLIC (za sekci "Klici to nekonci", ktera ji zminuje) */}
-      <RenoSection href={href.konzultace} />
+      <RenoSection href={href.konzultace} locale={locale} />
 
       <LandscapeLine />
 
       {/* 10B — PTATE SE, ODPOVIDAM (video odpovedi pred FAQ) -------------------- */}
-      <VideoAnswers />
+      <VideoAnswers locale={locale} />
 
       {/* 11 — FAQ -------------------------------------------------------------- */}
-      <FaqSection faq={HOME_FAQ} ctaHref={href.jakKoupit} ctaLabel="Všechny časté dotazy" />
+      <FaqSection faq={HOME_FAQ} ctaHref={href.jakKoupit} ctaLabel={ui.faqCta} heading={<>{ui.faqTitle} <em>{ui.faqAccent}</em></>} />
 
       {/* 12 — PRŮVODCI A ČLÁNKY — 3 clean 3D karty --------------------------- */}
       <GuidesCards locale={locale} />
@@ -559,7 +491,7 @@ export default function HomeSections({
       <LandscapeLine accent />
 
       {/* 12A — O MNE (pred kontaktem) ------------------------------------------ */}
-      <AboutSection href={href.oMne} />
+      <AboutSection href={href.oMne} locale={locale} />
 
       <LandscapeLine />
 
@@ -571,14 +503,11 @@ export default function HomeSections({
           <div className="contact__intro">
             <div>
               <h2 id="sec-13" className="home-h2">
-                Zavolejme si
+                {ui.contactTitle}
               </h2>
-              <p className="home-lead">
-                Napište mi, co hledáte, jaký máte rozpočet a kdy byste chtěli kupovat.
-                Společně probereme možnosti v Abruzzu. Úvodní konzultace je zdarma a nezávazná.
-              </p>
+              <p className="home-lead">{ui.contactLead}</p>
               <Link href={href.konzultace} className="link-more">
-                Nebo navrhněte termín hovoru →
+                {ui.contactForm}
               </Link>
             </div>
 
@@ -593,7 +522,7 @@ export default function HomeSections({
                 <span>
                   RE/MAX Černá perla, Slavíkova 6068/18
                   <br />
-                  708 00 Ostrava-Poruba · celoročně v Abruzzu
+                  {ui.contactPlace}
                 </span>
               </li>
               <li>
@@ -619,21 +548,17 @@ export default function HomeSections({
                     <path d="M4 20l1.5-4A8 8 0 1 1 9 19z" />
                   </svg>
                 </span>
-                <a href={WA_PREFILLED}>WhatsApp, nejrychlejší odpověď</a>
+                <a href={WA_PREFILLED}>{ui.contactWa}</a>
               </li>
             </ul>
 
-            <aside className="contact__note" aria-label="Jak mě nejlépe zastihnete">
-              <p>
-                Nejrychleji mě zastihnete přes WhatsApp. Pokud máte vážný zájem a nedovoláte se mi,
-                zavolejte klidně znovu. Kvůli vysokému zájmu se mi občas stane, že mi číslo unikne,
-                když zrovna telefonuji.
-              </p>
+            <aside className="contact__note" aria-label={ui.contactNoteAria}>
+              <p>{ui.contactNote}</p>
             </aside>
           </div>
 
           {/* formular posila poptavky pres /api/lead (lib/forms.ts), po odeslani presmeruje na /dekujeme */}
-          <ContactFormCard source="homepage" />
+          <ContactFormCard source="homepage" locale={locale} />
         </div>
       </section>
 

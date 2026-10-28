@@ -3,16 +3,18 @@
 import Link from 'next/link';
 import { path } from '@/lib/routes';
 import type { Locale } from '@/lib/i18n';
-import { GUIDES } from '@/lib/home';
+import { homeData } from '@/lib/home.l10n';
+import { HOME_UI } from './ui';
 
 export default function GuidesCards({ locale }: { locale: Locale }) {
-  const guides = GUIDES;
+  const guides = homeData(locale).GUIDES;
+  const ui = HOME_UI[locale];
 
   return (
     <section className="band guides-cards" aria-labelledby="guides-heading">
       <div className="wrap">
         <h2 id="guides-heading" className="guides-cards__title">
-          Než se rozhodnete, přečtěte si tohle
+          {ui.guidesTitle}
         </h2>
         <div className="guides-cards__grid">
           {guides.map((g) => (

@@ -1,16 +1,16 @@
+
+import { localized } from '@/lib/localize';
 import type { ReactNode } from 'react';
-import Marked from '@/components/Marked';
 import { breadcrumbNode, graph, webPageNode } from '@/lib/schema';
 import Crumbs from './Crumbs';
 import JsonLd from './JsonLd';
 
 // kostra pravnich stranek (ochrana udaju, cookies). Texty tam musi odpovidat tomu, co web
 // opravdu dela, proto vznikly z kontroly kodu a mereni v prohlizeci, ne z vzoru.
-// Znacky [DOPLNIT: ...] a [OVĚŘIT: ...] jsou zamerne videt: pred spustenim je musi nekdo vyresit.
 
 export type LegalToc = { id: string; label: string };
 
-export default function LegalPage({
+function LegalPage({
   here,
   role = 'Právní informace',
   title,
@@ -25,7 +25,7 @@ export default function LegalPage({
   title: string;
   lead: string;
   description: string;
-  /** text s datem poslední aktualizace, smí obsahovat značku [DOPLNIT: ...] */
+  /** text s datem poslední aktualizace */
   updated: string;
   toc: LegalToc[];
   children: ReactNode;
@@ -48,12 +48,7 @@ export default function LegalPage({
           <p className="page__role">{role}</p>
           <h1 className="page__title">{title}</h1>
           <p className="page__lead">{lead}</p>
-          <p className="legal__meta">
-            <Marked text={updated} />
-          </p>
-          <p className="legal__draft">
-            <Marked text="[OVĚŘIT: text před spuštěním webu zkontroluje a schválí právník. Označená místa doplní Zuzana.]" />
-          </p>
+          <p className="legal__meta">{updated}</p>
           <nav className="toc legal__toc" aria-label="Obsah stránky">
             {toc.map((t) => (
               <a key={t.id} href={`#${t.id}`}>
@@ -69,7 +64,7 @@ export default function LegalPage({
   );
 }
 
-export function LegalSec({
+ function LegalSecContent({
   id,
   n,
   title,
@@ -94,7 +89,7 @@ export function LegalSec({
 }
 
 /** blok s nadpisem a dvojicemi „popisek: hodnota", na mobilu se skládá pod sebe */
-export function LegalRow({ title, rows }: { title: string; rows: [string, ReactNode][] }) {
+ function LegalRowContent({ title, rows }: { title: string; rows: [string, ReactNode][] }) {
   return (
     <div className="legal__row">
       <h3>{title}</h3>
@@ -109,3 +104,8 @@ export function LegalRow({ title, rows }: { title: string; rows: [string, ReactN
     </div>
   );
 }
+
+export default localized(LegalPage);
+
+export const LegalSec = localized(LegalSecContent);
+export const LegalRow = localized(LegalRowContent);

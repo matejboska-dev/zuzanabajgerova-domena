@@ -1,4 +1,6 @@
+import { localizeTree } from '@/lib/localize.server';
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import Crumbs from '@/components/page/Crumbs';
 import CtaBand from '@/components/page/CtaBand';
@@ -13,10 +15,11 @@ import ListingFilter from '@/components/listings/ListingFilter';
 import LeadForm, { type LeadField } from '@/components/forms/LeadForm';
 import { listProperties, readDataset } from '@/lib/data.server';
 import { BUDGET_OPTIONS, PURPOSE_OPTIONS } from '@/lib/contact';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/lib/i18n';
 import { COASTAL, LOCALITIES, LOCALITY_SLUGS, localityOf } from '@/lib/localities';
 import { absolute, path } from '@/lib/routes';
 import { propertySlug } from '@/lib/slug';
+import { propertyCategories } from '@/lib/property-categories';
 import { agentNode, breadcrumbNode, graph, webPageNode } from '@/lib/schema';
 import { pageMetadata } from '@/lib/seo';
 
@@ -25,7 +28,7 @@ import { pageMetadata } from '@/lib/seo';
 export const revalidate = 300;
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return [{ locale: DEFAULT_LOCALE }];
+  return LOCALES.map(locale => ({ locale }));
 }
 
 const TITLE = 'Nemovitosti v Abruzzu na prodej';
@@ -34,8 +37,8 @@ const DESC =
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) return {};
-  return pageMetadata({ id: 'nemovitosti', locale, title: TITLE, description: DESC, onlyCs: true });
+  if (!isLocale(locale)) return {};
+  return pageMetadata({ id: 'nemovitosti', locale, title: TITLE, description: DESC, });
 }
 
 const COND: Record<string, string> = {
@@ -81,17 +84,16 @@ const CUSTOM_FIELDS: LeadField[] = [
   },
 ];
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) notFound();
+  if (!isLocale(locale)) notFound();
 
-  const here = path('nemovitosti', DEFAULT_LOCALE);
+  const here = path('nemovitosti', locale);
   const properties = await listProperties();
   const ds = await readDataset();
-  const stamp = ds?.generated_at ? new Date(ds.generated_at) : null;
   const showScrapeButton =
     process.env.NODE_ENV !== 'production' && process.env.NEXT_PUBLIC_SHOW_SCRAPE_BUTTON !== '0';
-  const privacy = path('ochranaUdaju', DEFAULT_LOCALE);
+  const privacy = path('ochranaUdaju', locale);
   const oblasti = LOCALITY_SLUGS.map((s) => ({ value: s, label: LOCALITIES[s].title }));
 
   return (
@@ -111,7 +113,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             itemListElement: properties.slice(0, 30).map((p, i) => ({
               '@type': 'ListItem',
               position: i + 1,
-              url: absolute(path('nemovitost', DEFAULT_LOCALE, propertySlug(p))),
+              url: absolute(path('nemovitost', locale, propertySlug(p))),
               name: p.title,
             })),
           },
@@ -133,7 +135,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         ]}
         chips={[
           `${properties.length} nabídek`,
-          stamp ? `Aktualizováno ${stamp.toLocaleDateString('cs-CZ')}` : 'Aktualizuje se automaticky',
+          'Aktualizuje se automaticky',
           'Cena je konečná',
         ]}
       />
@@ -142,7 +144,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
       <section className="sec sec--tight" id="filtr" aria-label="Nabídky nemovitostí">
         <div className="wrap">
-          <ListingFilter gridId="listing-grid" moreId="listing-more" oblasti={oblasti} total={properties.length} />
+          <Suspense fallback={<p>Načítám filtr nabídek…</p>}>
+            <ListingFilter gridId="listing-grid" moreId="listing-more" oblasti={oblasti} total={properties.length} />
+          </Suspense>
           {showScrapeButton && (
             <div className="flt__dev">
               <ScrapeButton />
@@ -158,13 +162,14 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                   data-o={o ?? 'ostatni'}
                   data-coast={o && COASTAL.includes(o) ? '1' : '0'}
                   data-t={p.type}
+                  data-k={propertyCategories(p.id).join(' ')}
                   data-c={p.price_eur ?? 0}
                   data-a={p.area_usable_m2 ?? 0}
                   data-d={dispGroup(p.disposition)}
                   data-s={COND[p.condition ?? ''] ?? ''}
                   data-i={i}
                 >
-                  <PropertyCard p={p} locale={DEFAULT_LOCALE} priority={i < 6} />
+                  <PropertyCard p={p} locale={locale} priority={i < 6} />
                 </div>
               );
             })}
@@ -274,9 +279,15 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         title="Probereme to"
         accent="po telefonu"
         text="Za dvacet minut budete vědět, jestli je vaše představa reálná a kolik by koupě přibližně stála."
-        primary={{ href: path('konzultace', DEFAULT_LOCALE), label: 'Vybrat termín hovoru' }}
+        primary={{ href: path('konzultace', locale), label: 'Domluvit konzultaci' }}
       />
       <MobileCtaBar />
     </main>
   );
+}
+
+export default async function LocalizedPage(props: Parameters<typeof Page>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await Page(props), locale);
 }

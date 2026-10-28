@@ -3,15 +3,18 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { path } from '@/lib/routes';
-import { WHY_ABRUZZO } from '@/lib/home';
+import type { Locale } from '@/lib/i18n';
+import { homeData } from '@/lib/home.l10n';
+import { HOME_UI } from './ui';
 
-const DEFAULT_IMAGE = {
-  src: '/hero/backgrounds/abruzzo-montesilvano-colle.webp',
-  alt: 'Výhled z Montesilvana na pobřeží Abruzza',
-  caption: 'Montesilvano · tady žiji',
-};
-
-export default function WhyAbruzzo() {
+export default function WhyAbruzzo({ locale = 'cs' }: { locale?: Locale }) {
+  const { WHY_ABRUZZO } = homeData(locale);
+  const ui = HOME_UI[locale];
+  const DEFAULT_IMAGE = {
+    src: '/hero/backgrounds/abruzzo-montesilvano-colle.webp',
+    alt: ui.why.baseAlt,
+    caption: ui.why.baseCaption,
+  };
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const activeCaption =
@@ -26,11 +29,9 @@ export default function WhyAbruzzo() {
       <div className="wrap">
         <div className="sec__head">
           <h2 id="sec-08" className="home-h2">
-            Moře. Hory. <em>Abruzzo.</em>
+            {ui.why.title} <em>{ui.why.accent}</em>
           </h2>
-          <p className="home-lead">
-            Místo, které znám z každodenního života. Vybereme lokalitu podle toho, jak tady chcete žít.
-          </p>
+          <p className="home-lead">{ui.why.lead}</p>
         </div>
 
         <div className="why-editorial__layout">
@@ -43,7 +44,8 @@ export default function WhyAbruzzo() {
                 width={1920}
                 height={1080}
                 className={`why-editorial__img ${activeIndex === null ? 'is-active' : ''}`}
-                loading="eager"
+                loading="lazy"
+                decoding="async"
               />
 
               {/* Fotografie jednotlivých karet s plynulým prolínáním */}
@@ -109,7 +111,7 @@ export default function WhyAbruzzo() {
               );
             })}
 
-            <Link href={path('lokality', 'cs')} className="btn btn--cobalt">
+            <Link href={path('lokality', locale)} className="btn btn--cobalt">
               Poznat lokality v Abruzzu
             </Link>
           </div>

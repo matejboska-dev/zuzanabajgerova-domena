@@ -1,3 +1,5 @@
+
+import { localized } from '@/lib/localize';
 import { EMAIL, PHONE_DISPLAY, PHONE_TEL, waLink } from '@/lib/contact';
 
 const ICON = {
@@ -7,7 +9,7 @@ const ICON = {
 };
 
 /** tri cesty ke mne: WhatsApp (nejrychlejsi), telefon, e-mail + info okenko od klientky */
-export default function ChannelCards() {
+function ChannelCards() {
   const items = [
     {
       icon: ICON.wa,
@@ -55,3 +57,5 @@ export default function ChannelCards() {
     </div>
   );
 }
+
+export default localized(ChannelCards);

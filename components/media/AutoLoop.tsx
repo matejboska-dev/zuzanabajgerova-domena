@@ -1,12 +1,15 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useEffect, useRef } from 'react';
+import { useLazyPoster } from '@/components/hooks/useLazyPoster';
 
 /**
  * Kratka ticha smycka (atmosfera, komunita, rekonstrukce). Stahuje se a hraje, AZ kdyz je
  * na obrazovce, mimo ni se zastavi. Kdo ma v systemu omezeny pohyb, vidi jen poster.
  */
-export default function AutoLoop({
+function AutoLoop({
   src,
   poster,
   label,
@@ -20,6 +23,7 @@ export default function AutoLoop({
   className?: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
+  useLazyPoster(ref, poster);
 
   useEffect(() => {
     const v = ref.current;
@@ -45,7 +49,6 @@ export default function AutoLoop({
     <video
       ref={ref}
       className={`autoloop${className ? ` ${className}` : ''}`}
-      poster={poster}
       muted
       loop
       playsInline
@@ -55,3 +58,5 @@ export default function AutoLoop({
     />
   );
 }
+
+export default localized(AutoLoop);

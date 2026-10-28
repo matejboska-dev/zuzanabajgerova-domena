@@ -1,47 +1,54 @@
 'use client';
+import type { Locale } from '@/lib/i18n';
+import { localized, localizeTree } from '@/lib/localize';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+
+import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useSearchParams } from 'next/navigation';
 
 // Filtr vypisu nabidek. Karty vykresli server (kazda nese data-* atributy), tahle komponenta je
 // jen schovava a radi. Do prohlizece se tak neposilaji data nabidek. Stav je v URL (?typ=byt...),
 // takze filtr jde sdilet a rychle vybery z hlavni strany vedou primo na nej.
 
-type F = { oblast: string; typ: string; cena: string; plocha: string; disp: string; stav: string; razeni: string };
-const EMPTY: F = { oblast: '', typ: '', cena: '', plocha: '', disp: '', stav: '', razeni: '' };
+type F = { oblast: string; typ: string; cena: string; plocha: string; disp: string; stav: string; kategorie: string; razeni: string };
+const EMPTY: F = { oblast: '', typ: '', cena: '', plocha: '', disp: '', stav: '', kategorie: '', razeni: '' };
 const KEYS = Object.keys(EMPTY) as (keyof F)[];
 /** kolik karet ukazat najednou (zbytek je v HTML, jen skryty, takze ho Google vidi) */
 const PAGE = 24;
 
 export type Option = { value: string; label: string };
 
-export default function ListingFilter({
+function ListingFilter({
   gridId,
   moreId,
   oblasti,
   total,
+  locale = 'cs',
 }: {
   gridId: string;
   /** element pod mrizkou, kam se vlozi tlacitko Zobrazit dalsi */
   moreId: string;
   oblasti: Option[];
   total: number;
+  locale?: Locale;
 }) {
   const [moreEl, setMoreEl] = useState<HTMLElement | null>(null);
   useEffect(() => setMoreEl(document.getElementById(moreId)), [moreId]);
-  const [f, setF] = useState<F>(EMPTY);
+  const searchParams = useSearchParams();
+  const readFilters = () => {
+    const next = { ...EMPTY };
+    for (const key of KEYS) next[key] = searchParams.get(key) ?? '';
+    return next;
+  };
+  const [f, setF] = useState<F>(readFilters);
+  useEffect(() => {
+    const next = { ...EMPTY };
+    for (const key of KEYS) next[key] = searchParams.get(key) ?? '';
+    setF(next);
+  }, [searchParams]);
   const [shown, setShown] = useState(total);
   const [limit, setLimit] = useState(PAGE);
-  const ready = useRef(false);
-
-  // stav z URL pri nacteni
-  useEffect(() => {
-    const q = new URLSearchParams(window.location.search);
-    const next = { ...EMPTY };
-    for (const k of KEYS) next[k] = q.get(k) ?? '';
-    setF(next);
-    ready.current = true;
-  }, []);
 
   const apply = useCallback(
     (state: F, max: number) => {
@@ -60,6 +67,7 @@ export default function ListingFilter({
           (!state.cena || (cena > 0 && cena <= Number(state.cena))) &&
           (!state.plocha || plocha >= Number(state.plocha)) &&
           (!state.disp || d.d === state.disp) &&
+          (!state.kategorie || (d.k || '').split(' ').includes(state.kategorie)) &&
           (!state.stav || d.s === state.stav);
         if (ok) n++;
         return { el, ok, cena, plocha, i: Number(d.i || 0) };
@@ -84,19 +92,18 @@ export default function ListingFilter({
   useEffect(() => setLimit(PAGE), [f]);
 
   useEffect(() => {
-    if (!ready.current) return;
     apply(f, limit);
   }, [f, limit, apply]);
 
-  useEffect(() => {
-    if (!ready.current) return;
+  function updateFilters(next: F) {
+    setF(next);
     const q = new URLSearchParams();
-    for (const k of KEYS) if (f[k]) q.set(k, f[k]);
+    for (const k of KEYS) if (next[k]) q.set(k, next[k]);
     const qs = q.toString();
     window.history.replaceState(null, '', `${window.location.pathname}${qs ? `?${qs}` : ''}${window.location.hash}`);
-  }, [f]);
+  }
 
-  const set = (k: keyof F) => (e: React.ChangeEvent<HTMLSelectElement>) => setF((s) => ({ ...s, [k]: e.target.value }));
+  const set = (k: keyof F) => (e: React.ChangeEvent<HTMLSelectElement>) => updateFilters({ ...f, [k]: e.target.value });
   const active = KEYS.filter((k) => k !== 'razeni' && f[k]).length;
 
   return (
@@ -105,7 +112,9 @@ export default function ListingFilter({
         <Sel id="flt-oblast" label="Oblast" value={f.oblast} onChange={set('oblast')}
           options={[{ value: '', label: 'Celé Abruzzo' }, { value: 'pobrezi', label: 'Pobřeží' }, ...oblasti]} />
         <Sel id="flt-typ" label="Typ" value={f.typ} onChange={set('typ')}
-          options={[{ value: '', label: 'Vše' }, { value: 'byt', label: 'Byt' }, { value: 'dum', label: 'Dům' }, { value: 'pozemek', label: 'Pozemek' }]} />
+          options={[{ value: '', label: 'Vše' }, { value: 'byt', label: 'Apartmán' }, { value: 'dum', label: 'Dům' }, { value: 'pozemek', label: 'Pozemek' }]} />
+        <Sel id="flt-kategorie" label="Kategorie" value={f.kategorie} onChange={set('kategorie')}
+          options={[{ value: '', label: 'Vše' }, { value: 'investicni', label: 'Investiční' }, { value: 'luxusni', label: 'Luxusní' }]} />
         <Sel id="flt-cena" label="Cena do" value={f.cena} onChange={set('cena')}
           options={[{ value: '', label: 'Bez limitu' }, ...[100000, 150000, 200000, 300000, 500000].map((v) => ({ value: String(v), label: `${v.toLocaleString('cs-CZ')} €` }))]} />
         <Sel id="flt-plocha" label="Plocha od" value={f.plocha} onChange={set('plocha')}
@@ -122,7 +131,7 @@ export default function ListingFilter({
         </p>
         <div className="flt__right">
           {active > 0 && (
-            <button type="button" className="flt__reset" onClick={() => setF((s) => ({ ...EMPTY, razeni: s.razeni }))}>
+            <button type="button" className="flt__reset" onClick={() => updateFilters({ ...EMPTY, razeni: f.razeni })}>
               Zrušit filtr
             </button>
           )}
@@ -141,9 +150,9 @@ export default function ListingFilter({
       {moreEl &&
         shown > limit &&
         createPortal(
-          <button type="button" className="btn btn--ghost" onClick={() => setLimit((l) => l + PAGE)}>
+          localizeTree(<button type="button" className="btn btn--ghost" onClick={() => setLimit((l) => l + PAGE)}>
             Zobrazit další nabídky ({shown - limit})
-          </button>,
+          </button>, locale),
           moreEl,
         )}
 
@@ -157,7 +166,7 @@ export default function ListingFilter({
   );
 }
 
-function Sel({
+function SelContent({
   id,
   label,
   value,
@@ -183,3 +192,7 @@ function Sel({
     </label>
   );
 }
+
+export default localized(ListingFilter);
+
+const Sel = localized(SelContent);

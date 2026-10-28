@@ -1,8 +1,8 @@
+import { localizeTree } from '@/lib/localize.server';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import FaqSection from '@/components/home/FaqSection';
 import ContactFormCard from '@/components/forms/ContactFormCard';
-import CallBooking from '@/components/forms/CallBooking';
 import OfficeMap from '@/components/forms/OfficeMap';
 import ChannelCards from '@/components/page/ChannelCards';
 import Crumbs from '@/components/page/Crumbs';
@@ -13,33 +13,33 @@ import SecHead from '@/components/page/SecHead';
 import StepCards from '@/components/page/StepCards';
 import SubHero from '@/components/page/SubHero';
 import { KONTAKT_FAQ } from '@/lib/content/faq';
-import { OFFICE, waLink } from '@/lib/contact';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { GOOGLE_PROFILE_EMBED, OFFICE, waLink } from '@/lib/contact';
+import { GOOGLE_SUMMARY } from '@/lib/reviews';
+import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
 import { agentNode, breadcrumbNode, faqNode, graph, webPageNode } from '@/lib/schema';
 import { pageMetadata } from '@/lib/seo';
 
-// Stranka existuje jen cesky. Az bude EN a IT verze, odstrani se tahle zavora.
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return [{ locale: DEFAULT_LOCALE }];
+  return LOCALES.map(locale => ({ locale }));
 }
 
-const TITLE = 'Kontakt a rezervace hovoru';
+const TITLE = 'Kontakt a nezávazná konzultace';
 const DESC =
-  'Napište mi, zavolejte nebo si vyberte termín hovoru. Ozvu se vám osobně, konzultace o koupi nemovitosti v Abruzzu je nezávazná a zdarma.';
+  'Napište mi nebo zavolejte. Ozvu se vám osobně, konzultace o koupi nemovitosti v Abruzzu je nezávazná a zdarma.';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) return {};
-  return pageMetadata({ id: 'kontakt', locale, title: TITLE, description: DESC, onlyCs: true });
+  if (!isLocale(locale)) return {};
+  return pageMetadata({ id: 'kontakt', locale, title: TITLE, description: DESC, });
 }
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) notFound();
+  if (!isLocale(locale)) notFound();
 
-  const here = path('kontakt', DEFAULT_LOCALE);
+  const here = path('kontakt', locale);
 
   return (
     <main className="subpage">
@@ -66,7 +66,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         portrait={{ src: '/hero/portret-4k.webp', alt: 'Bc. Zuzana Bajgerová' }}
         ctas={[
           { href: waLink(), label: 'Napsat na WhatsApp', external: true },
-          { href: '#kalendar', label: 'Vybrat termín hovoru', variant: 'glass' },
+          { href: '#napsat', label: 'Napsat zprávu', variant: 'glass' },
         ]}
         chips={['TOP 10 RE/MAX ČR, 6. místo 2025', '5,0 z 15 recenzí', 'Celý proces v češtině']}
       />
@@ -102,19 +102,6 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             <SecHead id="rychle-h" title="Nebo to vyřešme" accent="rychle" lead="Nejrychlejší cesta je WhatsApp. Telefon a e-mail fungují také." left />
             <ChannelCards />
           </div>
-        </div>
-      </section>
-
-      <section className="sec" id="kalendar" aria-labelledby="kalendar-h">
-        <div className="wrap wrap--narrow">
-          <SecHead
-            id="kalendar-h"
-            badge="Rezervace hovoru"
-            title="Vyberte si termín,"
-            accent="který vám vyhovuje"
-            lead="Navrhněte den a část dne, termín vám osobně potvrdím."
-          />
-          <CallBooking />
         </div>
       </section>
 
@@ -158,9 +145,41 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         title="Pojďme si"
         accent="zavolat"
         text="Nic to nestojí a k ničemu vás to nezavazuje. Po hovoru budete vědět, jestli je koupě v Itálii pro vás reálná."
-        primary={{ href: '#kalendar', label: 'Vybrat termín hovoru' }}
+        primary={{ href: '#napsat', label: 'Napsat zprávu' }}
       />
+
+      <section className="sec sec--tight gmap-sec" aria-labelledby="gmap-h">
+        <div className="wrap gmap">
+          <div className="gmap__text">
+            <SecHead
+              id="gmap-h"
+              title="Najdete mě i na"
+              accent="Mapách Google"
+              lead={
+                <>
+                  Na mém profilu je {GOOGLE_SUMMARY.count} recenzí klientů s hodnocením {GOOGLE_SUMMARY.rating} z 5.{' '}
+                  <a href={GOOGLE_SUMMARY.url} target="_blank" rel="noopener noreferrer">Zobrazit profil a recenze</a>
+                </>
+              }
+              left
+            />
+          </div>
+          <OfficeMap
+            className="omap--small"
+            src={GOOGLE_PROFILE_EMBED}
+            title="Mapa Google: profil Bc. Zuzana Bajgerová"
+            href={GOOGLE_SUMMARY.url}
+            label="Bc. Zuzana Bajgerová na Mapách Google"
+          />
+        </div>
+      </section>
       <MobileCtaBar />
     </main>
   );
+}
+
+export default async function LocalizedPage(props: Parameters<typeof Page>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await Page(props), locale);
 }

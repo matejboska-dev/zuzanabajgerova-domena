@@ -1,3 +1,4 @@
+import { localizeTree, localized } from '@/lib/localize.server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -7,7 +8,7 @@ import JsonLd from '@/components/page/JsonLd';
 import MobileCtaBar from '@/components/page/MobileCtaBar';
 import AreaMap from '@/components/localities/AreaMap';
 import HeroCarousel from '@/components/localities/HeroCarousel';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/lib/i18n';
 import { LOCALITIES, LOCALITY_SLUGS } from '@/lib/localities';
 import { eur, localityStats } from '@/lib/localityStats';
 import { absolute, path } from '@/lib/routes';
@@ -18,7 +19,7 @@ import './localities.css';
 export const revalidate = 21600;
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return [{ locale: DEFAULT_LOCALE }];
+  return LOCALES.map(locale => ({ locale }));
 }
 
 const TITLE = 'Lokality v Abruzzu';
@@ -50,22 +51,22 @@ const EDITORIAL: Record<string, { character: string; description: string; fit: s
   },
 };
 
-function Arrow({ diagonal = false }: { diagonal?: boolean }) {
+function ArrowContent({ diagonal = false }: { diagonal?: boolean }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d={diagonal ? 'M6 18 18 6M6 6h12v12' : 'M5 12h14m-6-6 6 6-6 6'} /></svg>;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) return {};
-  return pageMetadata({ id: 'lokality', locale, title: TITLE, description: LEAD, onlyCs: true, image: '/hero/backgrounds/abruzzo-pescara-z-letadla.webp' });
+  if (!isLocale(locale)) return {};
+  return pageMetadata({ id: 'lokality', locale, title: TITLE, description: LEAD, image: '/hero/backgrounds/abruzzo-pescara-z-letadla.webp' });
 }
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) notFound();
-  const here = path('lokality', DEFAULT_LOCALE);
+  if (!isLocale(locale)) notFound();
+  const here = path('lokality', locale);
   const rows = await Promise.all(LOCALITY_SLUGS.map(async slug => ({ slug, loc: LOCALITIES[slug], st: await localityStats(slug) })));
-  const areas = rows.map(({ slug, loc }) => ({ slug, title: loc.title, ...EDITORIAL[slug], href: path('lokalita', DEFAULT_LOCALE, slug) }));
+  const areas = rows.map(({ slug, loc }) => ({ slug, title: loc.title, ...EDITORIAL[slug], href: path('lokalita', locale, slug) }));
 
   return (
     <main className="subpage atlas">
@@ -73,7 +74,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         agentNode(),
         webPageNode({ type: 'CollectionPage', path: here, name: TITLE, description: LEAD }),
         breadcrumbNode([{ name: 'Domů', href: '/' }, { name: 'Lokality', href: here }]),
-        { '@type': 'ItemList', itemListElement: rows.map((r, i) => ({ '@type': 'ListItem', position: i + 1, url: absolute(path('lokalita', DEFAULT_LOCALE, r.slug)), name: r.loc.title })) },
+        { '@type': 'ItemList', itemListElement: rows.map((r, i) => ({ '@type': 'ListItem', position: i + 1, url: absolute(path('lokalita', locale, r.slug)), name: r.loc.title })) },
       )} />
 
       <section className="atlas-hero" aria-labelledby="lokality-h1">
@@ -82,7 +83,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <p>{LEAD}</p>
           <div className="atlas-hero__actions">
             <a href="#mapa" className="btn btn--cobalt">Poznat oblasti <Arrow /></a>
-            <Link href={path('konzultace', DEFAULT_LOCALE)} className="atlas-link">Poradit se s výběrem <Arrow diagonal /></Link>
+            <Link href={path('konzultace', locale)} className="atlas-link">Poradit se s výběrem <Arrow diagonal /></Link>
           </div>
           <div className="atlas-hero__foot"><span>Jeden region. Čtyři různé světy.</span><a href="#oblasti" aria-label="Přejít na čtyři oblasti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M12 4v15m-6-6 6 6 6-6" /></svg></a></div>
         </div>
@@ -110,7 +111,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           const edit = EDITORIAL[slug];
           return (
             <article className={`atlas-region${i % 2 ? ' atlas-region--reverse' : ''}`} key={slug} id={`oblast-${slug}`} aria-labelledby={`title-${slug}`}>
-              <Link className="atlas-region__photo" href={path('lokalita', DEFAULT_LOCALE, slug)} aria-label={`Prozkoumat ${loc.title}`}>
+              <Link className="atlas-region__photo" href={path('lokalita', locale, slug)} aria-label={`Prozkoumat ${loc.title}`}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={loc.image.webp} alt={loc.image.alt} width={loc.image.width} height={loc.image.height} loading="lazy" />
                 <span className="atlas-region__index" aria-hidden="true">0{i + 1}</span>
@@ -123,7 +124,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                 <div className="atlas-region__fit"><h4>Mohla by být pro vás</h4><p>{edit.fit}</p></div>
                 <p className="atlas-region__places">{edit.places}</p>
                 <div className="atlas-region__bottom">
-                  <Link className="atlas-link" href={path('lokalita', DEFAULT_LOCALE, slug)}>Prozkoumat oblast <Arrow diagonal /></Link>
+                  <Link className="atlas-link" href={path('lokalita', locale, slug)}>Prozkoumat oblast <Arrow diagonal /></Link>
                   {st.count > 0 && <span>{st.count} {st.count === 1 ? 'nabídka' : st.count < 5 ? 'nabídky' : 'nabídek'}{st.minPrice != null && <> · od {eur(st.minPrice)}</>}</span>}
                 </div>
               </div>
@@ -139,12 +140,12 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             <caption className="atlas-sr-only">Srovnání cen aktuálních nabídek ve čtyřech oblastech Abruzza</caption>
             <thead><tr><th scope="col">Oblast</th><th scope="col">Nabídek</th><th scope="col">Cena od</th><th scope="col">Střední cena</th><th scope="col">Střední cena / m²</th></tr></thead>
             <tbody>{rows.map(({ slug, loc, st }, i) => <tr key={slug}>
-              <th scope="row"><Link href={path('lokalita', DEFAULT_LOCALE, slug)}><span>0{i + 1}</span>{loc.title}</Link></th>
+              <th scope="row"><Link href={path('lokalita', locale, slug)}><span>0{i + 1}</span>{loc.title}</Link></th>
               <td>{st.count}</td><td>{eur(st.minPrice)}</td><td>{eur(st.medianPrice)}</td><td>{st.medianPerM2 ? eur(st.medianPerM2) : 'Málo nabídek'}</td>
             </tr>)}</tbody>
           </table>
           <div className="atlas-comparison__mobile">{rows.map(({ slug, loc, st }, i) => <article key={slug}>
-            <h3><Link href={path('lokalita', DEFAULT_LOCALE, slug)}><span>0{i + 1}</span>{loc.title}<Arrow diagonal /></Link></h3>
+            <h3><Link href={path('lokalita', locale, slug)}><span>0{i + 1}</span>{loc.title}<Arrow diagonal /></Link></h3>
             <dl><div><dt>Nabídek</dt><dd>{st.count}</dd></div><div><dt>Cena od</dt><dd>{eur(st.minPrice)}</dd></div><div><dt>Střední cena</dt><dd>{eur(st.medianPrice)}</dd></div><div><dt>Střední cena / m²</dt><dd>{st.medianPerM2 ? eur(st.medianPerM2) : 'Málo nabídek'}</dd></div></dl>
           </article>)}</div>
           <p className="atlas-comparison__note">Střední cena je medián nabídkových cen, nikoli odhad hodnoty celé oblasti. Cenu za m² uvádíme při alespoň třech nabídkách se známou plochou. Cesta k moři, dostupnost letiště i charakter okolí záleží na konkrétní adrese.</p>
@@ -161,7 +162,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <div className="atlas-contact__copy">
           <h2 id="lokality-cta">Najdeme místo,<br /><em>kde vám bude dobře.</em></h2>
           <p>Nemusíte mít vybranou oblast. Zavolejme si a proberme váš rozpočet i to, jak chcete nemovitost využívat. Společně zúžíme výběr.</p>
-          <Link href={path('konzultace', DEFAULT_LOCALE)} className="btn btn--cobalt">Domluvit konzultaci <Arrow diagonal /></Link>
+          <Link href={path('konzultace', locale)} className="btn btn--cobalt">Domluvit konzultaci <Arrow diagonal /></Link>
           <div className="atlas-contact__signature"><span>Zuzana Bajgerová</span><p>Vaše průvodkyně nemovitostmi v Abruzzu</p></div>
         </div>
       </section>
@@ -169,3 +170,11 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     </main>
   );
 }
+
+export default async function LocalizedPage(props: Parameters<typeof Page>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await Page(props), locale);
+}
+
+const Arrow = localized(ArrowContent);

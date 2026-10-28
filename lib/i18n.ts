@@ -7,12 +7,8 @@ export type Locale = (typeof LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = 'cs';
 
-/**
- * Jazykove verze, ktere jsou hotove: jen ty se objevi v prepinaci, v hreflang a v indexu.
- * EN a IT zatim nejsou prelozene (nove stranky existuji jen cesky), proto jsou mimo.
- * Az budou preklady schvalene, staci je sem pridat.
- */
-export const LIVE_LOCALES: Locale[] = ['cs'];
+/** Published languages, including all public pages and property details. */
+export const LIVE_LOCALES: Locale[] = ['cs', 'en', 'it'];
 
 /** locale, ktere maji v URL prefix (vse krome vychoziho) */
 export const PREFIXED_LOCALES = LOCALES.filter((l) => l !== DEFAULT_LOCALE);

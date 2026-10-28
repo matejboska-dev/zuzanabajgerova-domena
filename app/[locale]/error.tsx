@@ -1,4 +1,7 @@
 'use client';
+import { usePathname } from 'next/navigation';
+import { localizeTree } from '@/lib/localize';
+
 
 import { useEffect } from 'react';
 import Link from 'next/link';
@@ -15,7 +18,9 @@ export default function LocaleError({
     console.error('Došlo k chybě při vykreslení stránky:', error);
   }, [error]);
 
-  return (
+  const pathname = usePathname();
+  const locale = /^\/en(?:\/|$)/.test(pathname) ? 'en' : /^\/it(?:\/|$)/.test(pathname) ? 'it' : 'cs';
+  return localizeTree((
     <div className="wrap" style={{ padding: '6rem 1.5rem', textAlign: 'center' }}>
       <h1 style={{ fontSize: 'var(--t-4xl)', marginBottom: '1rem', fontFamily: 'var(--font-display, serif)' }}>
         Něco se nepovedlo
@@ -36,5 +41,5 @@ export default function LocaleError({
         </Link>
       </div>
     </div>
-  );
+  ), locale);
 }

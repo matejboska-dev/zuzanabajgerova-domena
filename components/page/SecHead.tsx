@@ -1,5 +1,7 @@
+
+import { localized } from '@/lib/localize';
 /** hlavicka sekce: odznak, nadpis s Playfair akcentem, perex. Stejny vzhled jako sekce na hlavni strane. */
-export default function SecHead({
+function SecHead({
   id,
   title,
   accent,
@@ -28,3 +30,5 @@ export default function SecHead({
     </div>
   );
 }
+
+export default localized(SecHead);

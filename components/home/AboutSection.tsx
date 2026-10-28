@@ -1,8 +1,12 @@
 import Link from 'next/link';
-import { ABOUT } from '@/lib/home';
+import type { Locale } from '@/lib/i18n';
+import { homeData } from '@/lib/home.l10n';
+import { HOME_UI } from './ui';
 
 // sekce 12A — "O mně". Text a ocenění z doložených podkladů.
-export default function AboutSection({ href }: { href: string }) {
+export default function AboutSection({ href, locale = 'cs' }: { href: string; locale?: Locale }) {
+  const { ABOUT } = homeData(locale);
+  const ui = HOME_UI[locale].about;
   return (
     <section className="zig about" aria-labelledby="sec-12a">
       <div className="wrap zig__grid">
@@ -21,12 +25,12 @@ export default function AboutSection({ href }: { href: string }) {
         </div>
         <div className="zig__text">
           <h2 id="sec-12a" className="home-h2">
-            O <em>mně</em>
+            {ui.title} <em>{ui.accent}</em>
           </h2>
           <p className="home-lead">
             {ABOUT.text}
           </p>
-          <p className="about__awards-h">Ocenění</p>
+          <p className="about__awards-h">{ui.awards}</p>
           <ul className="about__awards">
             {ABOUT.awards.map((a) => (
               <li key={a}>
@@ -35,7 +39,7 @@ export default function AboutSection({ href }: { href: string }) {
             ))}
           </ul>
           <Link href={href} className="btn btn--ghost about__btn">
-            <span>Více o mně</span>
+            <span>{ui.more}</span>
           </Link>
         </div>
       </div>

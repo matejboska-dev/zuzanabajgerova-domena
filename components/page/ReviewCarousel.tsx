@@ -1,10 +1,12 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import styles from './ReviewCarousel.module.css';
 import { paintRail, railMetrics, useReviewRail } from '@/components/hooks/useReviewRail';
 
-export default function ReviewCarousel({ children, count }: { children: ReactNode; count: number }) {
+function ReviewCarousel({ children, count }: { children: ReactNode; count: number }) {
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLUListElement>(null);
@@ -110,7 +112,7 @@ export default function ReviewCarousel({ children, count }: { children: ReactNod
         {children}
       </ul>
       {count > 1 && <div className={styles.controls}>
-        <span className={styles.position} aria-live={paused ? 'polite' : 'off'}><b>{String(active + 1).padStart(2, '0')}</b><span aria-hidden="true"> / </span><span>{String(count).padStart(2, '0')}</span></span>
+        <span className={styles.position} aria-live={paused ? 'polite' : 'off'}><b>{String(end ? count : active + 1).padStart(2, '0')}</b><span aria-hidden="true"> / </span><span>{String(count).padStart(2, '0')}</span></span>
         <div className={styles.buttons}>
           {!reduced && <button type="button" className={styles.pause} onClick={() => { cancel(); setPaused(!paused); }} aria-label={paused ? 'Spustit automatické posouvání' : 'Pozastavit automatické posouvání'} aria-pressed={paused}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">{paused ? <path d="m9 5 11 7-11 7Z" /> : <path d="M9 5v14M15 5v14" />}</svg>
@@ -123,6 +125,10 @@ export default function ReviewCarousel({ children, count }: { children: ReactNod
   );
 }
 
-function Arrow({ previous = false }: { previous?: boolean }) {
+function ArrowContent({ previous = false }: { previous?: boolean }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={previous ? { transform: 'rotate(180deg)' } : undefined}><path d="M4 12h16m-6-6 6 6-6 6" /></svg>;
 }
+
+export default localized(ReviewCarousel);
+
+const Arrow = localized(ArrowContent);

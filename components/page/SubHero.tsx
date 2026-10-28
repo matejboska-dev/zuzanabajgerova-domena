@@ -1,3 +1,5 @@
+
+import { localized } from '@/lib/localize';
 import Link from 'next/link';
 
 type Cta = { href: string; label: string; variant?: 'saffron' | 'glass'; external?: boolean };
@@ -7,7 +9,7 @@ type Cta = { href: string; label: string; variant?: 'saffron' | 'glass'; externa
  * odznak, nadpis s Playfair akcentem, dve CTA), jen nizsi. Bud vystrizeny portret vpravo
  * (`portrait`), nebo ramovana fotka (`photo`).
  */
-export default function SubHero({
+function SubHero({
   id,
   title,
   accent,
@@ -122,3 +124,5 @@ export default function SubHero({
     </section>
   );
 }
+
+export default localized(SubHero);

@@ -1,18 +1,22 @@
 'use client';
+import { localized } from '@/lib/localize';
+
 
 import { useState } from 'react';
 
 // Porovnání před/po s tažným dělítkem. Přístupné přes nativní input[type=range] (klávesnice, čtečky).
-export default function BeforeAfter({
+function BeforeAfter({
   before,
   after,
   beforeLabel = 'Před',
   afterLabel = 'Po',
+  ariaLabel = 'Posuňte pro porovnání stavu před a po rekonstrukci',
 }: {
   before: { src: string; alt: string };
   after: { src: string; alt: string };
   beforeLabel?: string;
   afterLabel?: string;
+  ariaLabel?: string;
 }) {
   const [pos, setPos] = useState(50);
 
@@ -39,8 +43,10 @@ export default function BeforeAfter({
         step={0.5}
         value={pos}
         onChange={(e) => setPos(Number(e.target.value))}
-        aria-label="Posuňte pro porovnání stavu před a po rekonstrukci"
+        aria-label={ariaLabel}
       />
     </div>
   );
 }
+
+export default localized(BeforeAfter);

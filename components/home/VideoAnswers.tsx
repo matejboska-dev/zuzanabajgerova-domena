@@ -2,7 +2,9 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ClickVideo from '@/components/page/ClickVideo';
-import { INSTAGRAM_REELS } from '@/lib/home';
+import type { Locale } from '@/lib/i18n';
+import { homeData } from '@/lib/home.l10n';
+import { HOME_UI } from './ui';
 
 const INSTAGRAM_URL = 'https://www.instagram.com/bc.zuzana_remax/';
 
@@ -16,7 +18,9 @@ function InstagramIcon() {
   );
 }
 
-export default function VideoAnswers() {
+export default function VideoAnswers({ locale = 'cs' }: { locale?: Locale }) {
+  const { INSTAGRAM_REELS } = homeData(locale);
+  const ui = HOME_UI[locale].reels;
   const viewportRef = useRef<HTMLDivElement>(null);
   const currentRef = useRef(0);
   const targetSlotRef = useRef(INSTAGRAM_REELS.length);
@@ -108,10 +112,10 @@ export default function VideoAnswers() {
         <div className="vqa__head">
           <div className="vqa__copy">
             <h2 id="sec-10b" className="home-h2">
-              Život v Abruzzu <em>na Instagramu</em>
+              {ui.title} <em>{ui.accent}</em>
             </h2>
             <p className="home-lead">
-              Byty v Itálii, život u moře i momenty z mé práce. Prohlédněte si výběr videí a další najdete na mém profilu.
+              {ui.lead}
             </p>
           </div>
 
@@ -124,18 +128,22 @@ export default function VideoAnswers() {
             </div>
             <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="vqa__follow">
               <InstagramIcon />
-              <span>Sledovat na Instagramu</span>
+              <span>{ui.follow}</span>
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12 12 4M5 4h7v7" /></svg>
             </a>
           </div>
         </div>
 
-        <div className="vqa__viewport" ref={viewportRef} role="region" aria-roledescription="karusel" aria-label="Výběr videí z Instagramu Zuzany Bajgerové">
+        <div className="vqa__viewport" ref={viewportRef} role="region" aria-roledescription={ui.carousel} aria-label={ui.region}>
           <ul className="vqa__grid">
             {[0, 1, 2].flatMap((copy) => INSTAGRAM_REELS.map((reel, index) => (
               <li className={`vqa-card${copy !== 1 ? ' vqa-card--copy' : ''}`} key={`${copy}-${reel.src}`} aria-hidden={copy !== 1} onClick={copy !== 1 ? () => playFromCopy(index) : undefined}>
                 <div className="vqa-card__media">
-                  {copy === 1 ? (
+                  {reel.image ? (
+                    <div className="vqa-card__still">
+                      <img src={reel.poster} alt={ui.awardAlt} loading="lazy" decoding="async" />
+                    </div>
+                  ) : copy === 1 ? (
                     <ClickVideo src={reel.src} poster={reel.poster} label={reel.title} ratio="9 / 16" />
                   ) : (
                     <div className="vqa-card__preview">
@@ -156,16 +164,16 @@ export default function VideoAnswers() {
         <div className="vqa__controls">
           <span className="vqa__position" aria-live="polite">{String(current + 1).padStart(2, '0')} / {String(reelCount).padStart(2, '0')}</span>
           <div className="vqa__arrows">
-            <button type="button" onClick={() => move(-1)} aria-label="Předchozí video">
+            <button type="button" onClick={() => move(-1)} aria-label={ui.prev}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6" /></svg>
             </button>
-            <button type="button" onClick={() => move(1)} aria-label="Další video">
+            <button type="button" onClick={() => move(1)} aria-label={ui.next}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
             </button>
           </div>
         </div>
         <a className="vqa__more" href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">
-          Další videa na Instagramu <span aria-hidden="true">↗</span>
+          {ui.more} <span aria-hidden="true">↗</span>
         </a>
       </div>
     </section>

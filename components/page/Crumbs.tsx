@@ -1,12 +1,14 @@
+
+import { localized } from '@/lib/localize';
 import Link from 'next/link';
 
 export type Crumb = { name: string; href: string };
 
 // viditelna drobeckova navigace. stejna data jdou do BreadcrumbList (lib/schema.ts).
-export default function Crumbs({ items }: { items: Crumb[] }) {
+function Crumbs({ items, home = { name: 'Domů', href: '/' }, label = 'Drobečková navigace' }: { items: Crumb[]; home?: Crumb; label?: string }) {
   return (
-    <nav className="pd-crumbs wrap" aria-label="Drobečková navigace">
-      <Link href="/">Domů</Link>
+    <nav className="pd-crumbs wrap" aria-label={label}>
+      <Link href={home.href}>{home.name}</Link>
       {items.map((c, i) => (
         <span key={c.href}>
           <span aria-hidden="true"> / </span>
@@ -16,3 +18,5 @@ export default function Crumbs({ items }: { items: Crumb[] }) {
     </nav>
   );
 }
+
+export default localized(Crumbs);

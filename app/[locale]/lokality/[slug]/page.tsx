@@ -1,3 +1,4 @@
+import { localizeTree } from '@/lib/localize.server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -12,7 +13,7 @@ import SecHead from '@/components/page/SecHead';
 import SubHero from '@/components/page/SubHero';
 import { LOC_MEDIA } from '@/lib/content/localities-media';
 import { FAQ } from '@/lib/home';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/lib/i18n';
 import { LOCALITIES, LOCALITY_SLUGS } from '@/lib/localities';
 import { eur, localityStats } from '@/lib/localityStats';
 import { path } from '@/lib/routes';
@@ -22,7 +23,7 @@ import { pageMetadata } from '@/lib/seo';
 export const revalidate = 21600;
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return LOCALITY_SLUGS.map((slug) => ({ locale: DEFAULT_LOCALE, slug }));
+  return LOCALES.flatMap(locale => LOCALITY_SLUGS.map(slug => ({ locale, slug })));
 }
 
 export async function generateMetadata({
@@ -32,18 +33,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   const loc = LOCALITIES[slug];
-  if (locale !== DEFAULT_LOCALE || !loc) return {};
-  return pageMetadata({ id: 'lokalita', locale, slug, title: `${loc.title}: nemovitosti a život`, description: loc.lead, onlyCs: true, image: loc.image.webp });
+  if (!isLocale(locale) || !loc) return {};
+  return pageMetadata({ id: 'lokalita', locale, slug, title: `${loc.title}: nemovitosti a život`, description: loc.lead, image: loc.image.webp });
 }
 
 const IMU = FAQ.find((f) => f.q.startsWith('Co jsou IMU'))?.a ?? '';
 
-export default async function Page({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+async function Page({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
   const loc = LOCALITIES[slug];
-  if (locale !== DEFAULT_LOCALE || !loc) notFound();
+  if (!isLocale(locale) || !loc) notFound();
 
-  const here = path('lokalita', DEFAULT_LOCALE, slug);
+  const here = path('lokalita', locale, slug);
   const st = await localityStats(slug);
   const media = LOC_MEDIA[slug] ?? { photos: [], quotes: [] };
   const others = LOCALITY_SLUGS.filter((s) => s !== slug);
@@ -56,7 +57,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           webPageNode({ path: here, name: loc.title, description: loc.lead, image: loc.image.webp }),
           breadcrumbNode([
             { name: 'Domů', href: '/' },
-            { name: 'Lokality', href: path('lokality', DEFAULT_LOCALE) },
+            { name: 'Lokality', href: path('lokality', locale) },
             { name: loc.title, href: here },
           ]),
           { '@type': 'Place', name: loc.title, containedInPlace: { '@type': 'AdministrativeArea', name: 'Abruzzo' } },
@@ -72,7 +73,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         bgPosition={slug === 'pescara-a-pobrezi' ? '80% center' : undefined}
         ctas={[
           { href: '#nabidky', label: st.count ? `Nabídky v oblasti (${st.count})` : 'Nabídky v oblasti' },
-          { href: path('konzultace', DEFAULT_LOCALE), label: 'Poradit se', variant: 'glass' },
+          { href: path('konzultace', locale), label: 'Poradit se', variant: 'glass' },
         ]}
         chips={[
           st.count ? `${st.count} nabídek` : 'Nabídky na dotaz',
@@ -83,7 +84,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
       <Crumbs
         items={[
-          { name: 'Lokality', href: path('lokality', DEFAULT_LOCALE) },
+          { name: 'Lokality', href: path('lokality', locale) },
           { name: loc.title, href: here },
         ]}
       />
@@ -138,18 +139,18 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           {st.items.length > 0 ? (
             <div className="listing-grid">
               {st.items.slice(0, 9).map((p, i) => (
-                <PropertyCard key={p.id} p={p} locale={DEFAULT_LOCALE} priority={i < 3} />
+                <PropertyCard key={p.id} p={p} locale={locale} priority={i < 3} />
               ))}
             </div>
           ) : (
             <div className="flt__empty">
               <p>V téhle oblasti teď nemám nabídku na webu. Ozvěte se, vyberu vám i z neveřejných nabídek.</p>
-              <Link className="btn btn--saffron" href={`${path('nemovitosti', DEFAULT_LOCALE)}#na-miru`}>Najít nemovitost na míru</Link>
+              <Link className="btn btn--saffron" href={`${path('nemovitosti', locale)}#na-miru`}>Najít nemovitost na míru</Link>
             </div>
           )}
           {st.items.length > 0 && (
             <p className="lok-more">
-              <Link className="btn btn--ghost" href={`${path('nemovitosti', DEFAULT_LOCALE)}?oblast=${slug}#filtr`}>
+              <Link className="btn btn--ghost" href={`${path('nemovitosti', locale)}?oblast=${slug}#filtr`}>
                 Všechny nabídky v oblasti
               </Link>
             </p>
@@ -189,7 +190,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <div className="lok-life__box">
             <h3 className="lok-life__h">Provozní náklady (IMU a TARI)</h3>
             <p>{IMU}</p>
-            <Link href={`${path('jakKoupit', DEFAULT_LOCALE)}#kalkulacka`}>Spočítat celkový rozpočet</Link>
+            <Link href={`${path('jakKoupit', locale)}#kalkulacka`}>Spočítat celkový rozpočet</Link>
           </div>
         </div>
       </section>
@@ -197,7 +198,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       {media.quotes.length > 0 && <section className="sec sec--tight" aria-labelledby="lok-ref">
         <div className="wrap">
           <SecHead id="lok-ref" badge="Reference" title="Klienti," accent="kteří tu koupili" />
-          <ReviewQuotes names={media.quotes} href={path('reference', DEFAULT_LOCALE)} />
+          <ReviewQuotes names={media.quotes} href={path('reference', locale)} />
         </div>
       </section>}
 
@@ -207,7 +208,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <ul className="lok-next">
             {others.map((s) => (
               <li key={s}>
-                <Link href={path('lokalita', DEFAULT_LOCALE, s)} className="lok-next__a media-zoom">
+                <Link href={path('lokalita', locale, s)} className="lok-next__a media-zoom">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={LOCALITIES[s].image.webp} alt={LOCALITIES[s].image.alt} loading="lazy" />
                   <span className="lok-next__t">{LOCALITIES[s].title}</span>
@@ -223,9 +224,15 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         title="Nevíte,"
         accent="kterou vybrat?"
         text="Zavolejme si. Řeknu vám, jestli je pro vás tahle oblast to pravé, a co dalšího zvážit."
-        primary={{ href: path('konzultace', DEFAULT_LOCALE), label: 'Vybrat termín hovoru' }}
+        primary={{ href: path('konzultace', locale), label: 'Domluvit konzultaci' }}
       />
       <MobileCtaBar />
     </main>
   );
+}
+
+export default async function LocalizedPage(props: Parameters<typeof Page>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await Page(props), locale);
 }

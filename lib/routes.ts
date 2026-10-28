@@ -10,11 +10,12 @@
 //   /jak-koupit-nemovitost-v-italii   pilirova stranka
 //   /sluzby /o-mne /reference /kontakt /konzultace
 //   /clanky /clanky/<slug>
-//   /ochrana-osobnich-udaju /cookies /mapa-stranek /dekujeme
+//   /ochrana-osobnich-udaju /podminky-uziti /cookies /mapa-stranek /dekujeme
 //
 // Jazykove verze: cs bez prefixu. Hotove sluzby maji lokalizovane EN/IT segmenty;
 // ostatni existujici routy si ponechavaji sve adresy.
 
+import { articleBySlug, articleFor } from './articles';
 import { DEFAULT_LOCALE, LIVE_LOCALES, LOCALES, localePrefix, type Locale } from './i18n';
 
 export const SEGMENTS = {
@@ -38,6 +39,7 @@ export const SEGMENTS = {
   clanek: 'clanky',
   ochranaUdaju: 'ochrana-osobnich-udaju',
   cookies: 'cookies',
+  podminky: 'podminky-uziti',
   mapaStranek: 'mapa-stranek',
   dekujeme: 'dekujeme',
   dotaznik: 'dotaznik', // neverejna stranka: bez odkazu v menu, noindex, mimo sitemap
@@ -52,31 +54,11 @@ const DYNAMIC: Partial<Record<RouteId, true>> = {
   clanek: true,
 };
 
-/**
- * Stranky, ktere zatim existuji jen cesky. sitemap pro ne neuvadi hreflang na /en a /it
- * a path() na ne i z anglicke a italske verze vede na ceskou adresu (zadny odkaz na 404).
- */
-export const CS_ONLY: RouteId[] = [
-  'nemovitosti',
-  'nemovitost',
-  'lokality',
-  'lokalita',
-  'kontakt',
-  'konzultace',
-  'jakKoupit',
-  'koupePrakticky',
-  'oMne',
-  'reference',
-  'clanky',
-  'clanek',
-  'mapaStranek',
-  'ochranaUdaju',
-  'cookies',
-];
+/** All current routes are available in each published language. */
+export const CS_ONLY: RouteId[] = [];
 
 /** stranky mimo indexaci — nepatri do sitemap.xml */
-// clanky: jen do doby, nez vyjde prvni clanek (prazdny rozcestnik do indexu nepatri)
-export const NOINDEX: RouteId[] = ['dekujeme', 'dotaznik', 'clanky'];
+export const NOINDEX: RouteId[] = ['dekujeme', 'dotaznik'];
 
 export const SERVICE_IDS = ['koupe', 'rekonstrukce', 'sprava', 'pronajem'] as const;
 export type ServiceId = (typeof SERVICE_IDS)[number];
@@ -86,9 +68,13 @@ const SERVICE_SEGMENTS: Record<Locale, Record<ServiceId | 'sluzby', string>> = {
   it: { sluzby: 'servizi', koupe: 'servizi/acquisto-immobili', rekonstrukce: 'servizi/ristrutturazioni', sprava: 'servizi/gestione-immobili', pronajem: 'servizi/gestione-affitti-brevi' },
 };
 
-/** Publication is per route: unfinished EN/IT pages stay outside the index. */
+/** Blog ma v kazdem jazyce vlastni segment (cs /clanky, en a it /blog). */
+const BLOG_SEGMENT: Record<Locale, string> = { cs: 'clanky', en: 'blog', it: 'blog' };
+const isBlog = (id: RouteId) => id === 'clanky' || id === 'clanek';
+
+/** Published language variants used by metadata, navigation and the sitemap. */
 export function publishedLocales(id: RouteId): Locale[] {
-  if (id === 'sluzby' || SERVICE_IDS.includes(id as ServiceId)) return ['cs', 'en', 'it'];
+  if (id === 'sluzby' || isBlog(id) || SERVICE_IDS.includes(id as ServiceId)) return ['cs', 'en', 'it'];
   return CS_ONLY.includes(id) ? [DEFAULT_LOCALE] : LIVE_LOCALES;
 }
 
@@ -106,7 +92,7 @@ export function serviceSlug(id: ServiceId, locale: Locale): string {
  */
 export function path(id: RouteId, locale: Locale = DEFAULT_LOCALE, slug?: string): string {
   const loc = CS_ONLY.includes(id) ? DEFAULT_LOCALE : locale;
-  const segment = id === 'sluzby' || SERVICE_IDS.includes(id as ServiceId)
+  const segment = isBlog(id) ? BLOG_SEGMENT[loc] : id === 'sluzby' || SERVICE_IDS.includes(id as ServiceId)
     ? SERVICE_SEGMENTS[loc][id as ServiceId | 'sluzby'] : SEGMENTS[id];
   const parts = [localePrefix(loc), segment, DYNAMIC[id] ? slug : undefined].filter(
     (x): x is string => Boolean(x),
@@ -114,9 +100,16 @@ export function path(id: RouteId, locale: Locale = DEFAULT_LOCALE, slug?: string
   return '/' + parts.join('/').replace(/^\/+/, '');
 }
 
-/** Keep translated pages in context; unfinished translations open the selected homepage. */
+/** Keep translated pages in context across all three languages. */
 export function languagePath(pathname: string, locale: Locale): string {
   const current = pathname.replace(/\/$/, '') || '/';
+  const blog = current.match(/^(?:\/(?:cs|en|it))?\/(?:clanky|blog)\/([^/]+)$/);
+  if (blog) {
+    const from = LOCALES.find((l) => articleBySlug(l, blog[1]));
+    const art = from && articleBySlug(from, blog[1]);
+    const target = art && articleFor(locale, art.id);
+    return target ? path('clanek', locale, target.slug) : path('clanky', locale);
+  }
   const withoutLocale = current.replace(/^\/(cs|en|it)(?=\/|$)/, '') || '/';
   for (const id of Object.keys(SEGMENTS) as RouteId[]) {
     const base = path(id, DEFAULT_LOCALE);
@@ -143,11 +136,12 @@ export const MAIN_NAV: { id: RouteId; label: Record<Locale, string> }[] = [
     label: { cs: 'Jak koupit v Itálii', en: 'How to buy', it: 'Come comprare' },
   },
   { id: 'sluzby', label: { cs: 'Služby', en: 'Services', it: 'Servizi' } },
+  { id: 'clanky', label: { cs: 'Blog', en: 'Blog', it: 'Blog' } },
   { id: 'oMne', label: { cs: 'O mně', en: 'About', it: 'Chi sono' } },
   { id: 'kontakt', label: { cs: 'Kontakt', en: 'Contact', it: 'Contatti' } },
 ];
 
-export const FOOTER_NAV: RouteId[] = ['ochranaUdaju', 'cookies', 'mapaStranek'];
+export const FOOTER_NAV: RouteId[] = ['ochranaUdaju', 'podminky', 'cookies', 'mapaStranek'];
 
 /** verejna adresa webu — do sitemap, kanonickych URL a hreflang */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://zuzanabajgerova.cz').replace(

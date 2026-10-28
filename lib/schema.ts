@@ -121,6 +121,7 @@ export function webPageNode(opts: {
   name: string;
   description: string;
   image?: string;
+  lang?: string;
 }) {
   const url = absolute(opts.path);
   return {
@@ -129,7 +130,7 @@ export function webPageNode(opts: {
     url,
     name: opts.name,
     description: opts.description,
-    inLanguage: 'cs',
+    inLanguage: opts.lang ?? 'cs',
     isPartOf: { '@id': SITE_ID },
     about: { '@id': AGENT_ID },
     ...(opts.image ? { primaryImageOfPage: { '@type': 'ImageObject', url: absolute(opts.image) } } : {}),

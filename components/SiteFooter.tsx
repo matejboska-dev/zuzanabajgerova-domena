@@ -5,6 +5,7 @@ import { LIVE_LOCALES, LOCALE_NAME, type Locale } from '@/lib/i18n';
 
 const FOOTER_LABEL: Record<string, string> = {
   [SEGMENTS.ochranaUdaju]: 'Ochrana osobních údajů',
+  [SEGMENTS.podminky]: 'Podmínky užití',
   [SEGMENTS.cookies]: 'Cookies',
   [SEGMENTS.mapaStranek]: 'Mapa stránek',
 };
@@ -18,9 +19,9 @@ const SOCIAL = [
 
 export default function SiteFooter({ locale }: { locale: Locale }) {
   const ui = {
-    cs: { intro: 'Realitní specialistka na nemovitosti v Itálii, region Abruzzo. Kompletní servis pro české a slovenské kupující, celý proces v češtině, od výběru přes notáře až po klíče.', sections: 'Sekce webu', contact: 'Kontakt', info: 'Informace', legal: 'Povinné stránky', privacy: 'Ochrana osobních údajů', sitemap: 'Mapa stránek' },
-    en: { intro: 'Personal support for property in Abruzzo, Italy. From choosing a home and coordinating the purchase to renovation, ongoing care and rental operations with a local team.', sections: 'Website sections', contact: 'Contact', info: 'Information', legal: 'Legal information', privacy: 'Privacy policy (Czech)', sitemap: 'Sitemap (Czech)' },
-    it: { intro: 'Supporto personale per gli immobili in Abruzzo. Dalla scelta della casa e dall’acquisto alla ristrutturazione, alla cura dell’immobile e agli affitti, con un team locale.', sections: 'Sezioni del sito', contact: 'Contatti', info: 'Informazioni', legal: 'Informazioni legali', privacy: 'Privacy (in ceco)', sitemap: 'Mappa del sito (in ceco)' },
+    cs: { intro: 'Realitní specialistka na nemovitosti v Itálii, region Abruzzo. Kompletní servis pro české a slovenské kupující, celý proces v češtině, od výběru přes notáře až po klíče.', sections: 'Sekce webu', contact: 'Kontakt', info: 'Informace', legal: 'Povinné stránky', privacy: 'Ochrana osobních údajů', terms: 'Podmínky užití', sitemap: 'Mapa stránek' },
+    en: { intro: 'Personal support for property in Abruzzo, Italy. From choosing a home and coordinating the purchase to renovation, ongoing care and rental operations with a local team.', sections: 'Website sections', contact: 'Contact', info: 'Information', legal: 'Legal information', privacy: 'Privacy policy', terms: 'Terms of use', sitemap: 'Sitemap' },
+    it: { intro: 'Supporto personale per gli immobili in Abruzzo. Dalla scelta della casa e dall’acquisto alla ristrutturazione, alla cura dell’immobile e agli affitti, con un team locale.', sections: 'Sezioni del sito', contact: 'Contatti', info: 'Informazioni', legal: 'Informazioni legali', privacy: 'Privacy', terms: 'Condizioni d’uso', sitemap: 'Mappa del sito' },
   }[locale];
   return (
     <footer className="site-footer">
@@ -62,7 +63,7 @@ export default function SiteFooter({ locale }: { locale: Locale }) {
             <p className="footer-cols__h">{ui.info}</p>
             {FOOTER_NAV.map((id) => (
               <Link key={id} href={path(id, locale)}>
-                {id === 'ochranaUdaju' ? ui.privacy : id === 'mapaStranek' ? ui.sitemap : FOOTER_LABEL[SEGMENTS[id]] ?? id}
+                {id === 'ochranaUdaju' ? ui.privacy : id === 'podminky' ? ui.terms : id === 'mapaStranek' ? ui.sitemap : FOOTER_LABEL[SEGMENTS[id]] ?? id}
               </Link>
             ))}
             {LIVE_LOCALES.length > 1 && (
@@ -89,7 +90,7 @@ export default function SiteFooter({ locale }: { locale: Locale }) {
 
       <div className="footer-legal">
         <span>© {new Date().getFullYear()} {BUSINESS.name}</span>
-        <span>IČO {BUSINESS.ico}</span>
+        <span>{{ cs: 'IČO', en: 'Business ID', it: 'ID impresa' }[locale]} {BUSINESS.ico}</span>
         <span>·</span>
         <span>Web: matejboska.cz</span>
       </div>

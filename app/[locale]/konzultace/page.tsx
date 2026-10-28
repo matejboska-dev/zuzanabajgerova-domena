@@ -1,8 +1,9 @@
+import { localizeTree } from '@/lib/localize.server';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import FaqSection from '@/components/home/FaqSection';
-import CallBooking from '@/components/forms/CallBooking';
+import ContactFormCard from '@/components/forms/ContactFormCard';
 import Crumbs from '@/components/page/Crumbs';
 import CtaBand from '@/components/page/CtaBand';
 import JsonLd from '@/components/page/JsonLd';
@@ -12,24 +13,24 @@ import StepCards from '@/components/page/StepCards';
 import SubHero from '@/components/page/SubHero';
 import { KONZULTACE_FAQ } from '@/lib/content/faq';
 import { waLink } from '@/lib/contact';
-import { DEFAULT_LOCALE } from '@/lib/i18n';
+import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
 import { agentNode, breadcrumbNode, faqNode, graph, webPageNode } from '@/lib/schema';
 import { pageMetadata } from '@/lib/seo';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return [{ locale: DEFAULT_LOCALE }];
+  return LOCALES.map(locale => ({ locale }));
 }
 
 const TITLE = 'Nezávazná konzultace o koupi v Abruzzu';
 const DESC =
-  'Navrhněte termín hovoru zdarma. Projdeme, co hledáte, jaký máte rozpočet a co všechno koupě nemovitosti v Itálii obnáší. Termín osobně potvrdím.';
+  'Napište mi a domluvíme si hovor zdarma. Projdeme, co hledáte, jaký máte rozpočet a co všechno koupě nemovitosti v Itálii obnáší. Ozvu se vám osobně.';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) return {};
-  return pageMetadata({ id: 'konzultace', locale, title: TITLE, description: DESC, onlyCs: true });
+  if (!isLocale(locale)) return {};
+  return pageMetadata({ id: 'konzultace', locale, title: TITLE, description: DESC, });
 }
 
 const AGENDA = [
@@ -40,10 +41,10 @@ const AGENDA = [
   'Jaké budou vaše další kroky',
 ];
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  if (locale !== DEFAULT_LOCALE) notFound();
-  const here = path('konzultace', DEFAULT_LOCALE);
+  if (!isLocale(locale)) notFound();
+  const here = path('konzultace', locale);
 
   return (
     <main className="subpage">
@@ -53,7 +54,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           webPageNode({ path: here, name: TITLE, description: DESC }),
           breadcrumbNode([
             { name: 'Domů', href: '/' },
-            { name: 'Kontakt', href: path('kontakt', DEFAULT_LOCALE) },
+            { name: 'Kontakt', href: path('kontakt', locale) },
             { name: 'Domluvení hovoru', href: here },
           ]),
           faqNode(KONZULTACE_FAQ),
@@ -62,15 +63,15 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
       <SubHero
         id="konzultace-h1"
-        badge="Rezervace hovoru · Zdarma"
+        badge="Konzultace · Zdarma"
         title="Nezávazná konzultace"
         accent="o koupi v Abruzzu"
-        lead="Navrhněte den a část dne, kdy se vám hovor hodí. Termín vám osobně potvrdím. Projdeme vaši představu, rozpočet i postup koupě. Zdarma a nezávazně."
+        lead="Napište mi, s čím vám mohu pomoci. Ozvu se vám osobně a společně se domluvíme na hovoru. Projdeme vaši představu, rozpočet i postup koupě. Zdarma a nezávazně."
         bg={{ src: '/images/abruzzo-zivot-komunita.webp', width: 1600, height: 1069 }}
         bgPosition="center 45%"
         portrait={{ src: '/hero/portret-4k.webp', alt: 'Bc. Zuzana Bajgerová' }}
         ctas={[
-          { href: '#rezervace', label: 'Navrhnout termín hovoru' },
+          { href: '#rezervace', label: 'Napsat zprávu' },
           { href: waLink(), label: 'Radši napíšu na WhatsApp', variant: 'glass', external: true },
         ]}
         chips={['Zdarma a nezávazně', 'Zhruba dvacet minut', 'Česky, telefonem nebo videem']}
@@ -78,7 +79,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
       <Crumbs
         items={[
-          { name: 'Kontakt', href: path('kontakt', DEFAULT_LOCALE) },
+          { name: 'Kontakt', href: path('kontakt', locale) },
           { name: 'Domluvení hovoru', href: here },
         ]}
       />
@@ -88,8 +89,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <SecHead id="po-rezervaci" badge="Jak to probíhá" title="Jak si domluvíme" accent="hovor" />
           <StepCards
             items={[
-              { title: 'Navrhnete termín', text: 'Vyberete den a část dne, kdy se vám hovor hodí, a vyplníte pár údajů o tom, co hledáte.' },
-              { title: 'Osobně potvrdím termín', text: 'Navržený termín vám potvrdím přes WhatsApp, telefon nebo e-mail. Když čas nevyjde, domluvíme jiný.' },
+              { title: 'Napíšete mi', text: 'Necháte mi kontakt a pár řádků o tom, co hledáte nebo co byste chtěli probrat.' },
+              { title: 'Ozvu se vám osobně', text: 'Odpovím vám e-mailem, telefonem nebo přes WhatsApp a společně domluvíme další postup.' },
               { title: 'Zavoláme si', text: 'Hovor trvá zhruba dvacet minut. Pak budete vědět, jestli je koupě v Itálii pro vás reálná a co by obnášela.' },
             ]}
           />
@@ -99,8 +100,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <section className="sec sec--tight" id="rezervace" aria-labelledby="rezervace-h">
         <div className="wrap booking-split">
           <div className="booking-split__form">
-            <SecHead id="rezervace-h" title="Domluvme si hovor" accent="zdarma" lead="Navrhněte termín a nechte mi telefon. Konkrétní čas si společně potvrdíme." left />
-            <CallBooking />
+            <SecHead id="rezervace-h" title="Domluvme si hovor" accent="zdarma" lead="Nechte mi kontakt a napište, co vás zajímá. Ozvu se vám osobně." left />
+            <ContactFormCard source="konzultace" variant="light" />
           </div>
 
           <aside className="booking-split__side" aria-labelledby="agenda-h">
@@ -150,9 +151,15 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         title="Radši rovnou"
         accent="napíšete?"
         text="Nejrychlejší odpověď máte na WhatsApp. Chat se otevře s předvyplněnou zprávou, stačí odeslat."
-        primary={{ href: path('kontakt', DEFAULT_LOCALE), label: 'Všechny kontakty' }}
+        primary={{ href: path('kontakt', locale), label: 'Všechny kontakty' }}
       />
       <MobileCtaBar />
     </main>
   );
+}
+
+export default async function LocalizedPage(props: Parameters<typeof Page>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await Page(props), locale);
 }

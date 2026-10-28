@@ -1,14 +1,17 @@
+
+import { localized } from '@/lib/localize';
 import Link from 'next/link';
 import { waLink } from '@/lib/contact';
 
 /** zaverecne CTA: tmava karta s dvema cestami (hovor, WhatsApp). opakuje se po velkych sekcich. */
-export default function CtaBand({
+function CtaBand({
   id,
   title,
   accent,
   text,
   primary,
   whatsAppText,
+  whatsAppLabel = 'Napsat na WhatsApp',
 }: {
   id: string;
   title: string;
@@ -17,6 +20,7 @@ export default function CtaBand({
   primary: { href: string; label: string };
   /** vlastni predvyplnena zprava, jinak vychozi */
   whatsAppText?: string;
+  whatsAppLabel?: string;
 }) {
   return (
     <section className="sec ctaband-sec" aria-labelledby={id}>
@@ -44,7 +48,7 @@ export default function CtaBand({
               target="_blank"
               rel="noopener noreferrer"
             >
-              Napsat na WhatsApp
+              {whatsAppLabel}
             </a>
           </div>
         </div>
@@ -52,3 +56,5 @@ export default function CtaBand({
     </section>
   );
 }
+
+export default localized(CtaBand);

@@ -1,10 +1,12 @@
+import { localizedTitle, fmtEurL } from '@/lib/property-i18n';
+import { localizeTree, translate, propertyDescription } from '@/lib/localize.server';
 import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getPropertyBySlug, listProperties } from '@/lib/data.server';
-import { photoUrls, fmtEur, fmtCzk, STATUS_LABEL } from '@/lib/types';
+import { photoUrls, fmtEur, fmtCzk, STATUS_LABEL, type Property } from '@/lib/types';
 import { propertySlug } from '@/lib/slug';
-import { isLocale, DEFAULT_LOCALE } from '@/lib/i18n';
+import { isLocale, DEFAULT_LOCALE, LOCALES } from '@/lib/i18n';
 import { absolute, path } from '@/lib/routes';
 import { pageMetadata } from '@/lib/seo';
 import Gallery from '@/components/Gallery';
@@ -36,7 +38,7 @@ export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const properties = await listProperties();
-  return properties.map((p) => ({ locale: DEFAULT_LOCALE, slug: propertySlug(p) }));
+  return LOCALES.flatMap(locale => properties.map(p => ({ locale, slug: propertySlug(p) })));
 }
 
 export async function generateMetadata({
@@ -52,9 +54,24 @@ export async function generateMetadata({
     id: 'nemovitost',
     locale,
     slug: hit.canonicalSlug,
-    title: hit.property.title,
-    description: hit.property.description.slice(0, 155),
+    title: localizedTitle(hit.property, locale),
+    description: locale === 'cs' ? metaDescription(hit.property) : `${localizedTitle(hit.property, locale)}. ${fmtEurL(hit.property.price_eur, locale)}. ${locale === 'en' ? 'Personal support with viewings and buying in Italy, from choosing a property to the notary.' : 'Assistenza personale per le visite e l’acquisto in Italia, dalla scelta dell’immobile al notaio.'}`,
   });
+}
+
+const FEATURE_META: Record<string, string> = { terasa: 'terasou', zahrada: 'zahradou', balkon: 'balkonem', garaz: 'garáží' };
+
+/** popis pro vysledky hledani ze strukturovanych udaju; surovy text inzeratu ma zalomeni a preklepy */
+function metaDescription(p: Property): string {
+  const what = [TYPE_LABEL[p.type] ?? 'Nemovitost', p.type === 'byt' ? p.disposition : null].filter(Boolean).join(' ');
+  const area = p.area_usable_m2 ?? p.area_land_m2;
+  const place = [p.locality.obec, p.locality.provincie && `(${p.locality.provincie})`].filter(Boolean).join(' ');
+  const extras = Object.keys(FEATURE_META).filter((k) => p.features[k]).slice(0, 2).map((k) => FEATURE_META[k]);
+  const head = [what, area ? `${area} m²` : null, place].filter(Boolean).join(', ');
+  const price = p.price_eur ? `, cena ${fmtEur(p.price_eur)}` : '';
+  const status = STATUS_LABEL[p.status] ? `${STATUS_LABEL[p.status]}: ` : '';
+  const withExtras = extras.length ? ` s ${extras.join(' a ')}` : '';
+  return `${status}${head}${withExtras}${price}. Prohlídku i celou koupi v Itálii s vámi vyřeším v češtině, od výběru po notáře.`;
 }
 
 const TYPE_LABEL: Record<string, string> = {
@@ -76,7 +93,7 @@ const FEATURE_LABEL: Record<string, string> = {
   parkovani: 'Parkování',
 };
 
-export default async function DetailPage({
+async function DetailPage({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
@@ -92,7 +109,7 @@ export default async function DetailPage({
     permanentRedirect(path('nemovitost', locale, hit.canonicalSlug));
   }
 
-  const p = hit.property;
+  const p = { ...hit.property, title: localizedTitle(hit.property, locale), description: propertyDescription(hit.property.description, locale), condition_raw: hit.property.condition_raw ? translate(hit.property.condition_raw, locale) : null };
   const photos = photoUrls(p);
   const eyebrow = [
     TYPE_LABEL[p.type] || p.type,
@@ -123,7 +140,7 @@ export default async function DetailPage({
   const gps = p.gps ? `${p.gps.lat},${p.gps.lng}` : null;
   const locSlug = localityOf(p);
   const loc = locSlug ? LOCALITIES[locSlug] : null;
-  const url = absolute(path('nemovitost', DEFAULT_LOCALE, propertySlug(p)));
+  const url = absolute(path('nemovitost', locale, propertySlug(p)));
   const waText = `Dobrý den, mám zájem o nemovitost: ${p.title} (${url}). Prosím, ozvěte se mi.`;
   const all = await listProperties();
   const similar = all
@@ -306,7 +323,7 @@ export default async function DetailPage({
 
       {loc && locSlug && (
         <section className="pd-inner pd-sec" aria-labelledby="pd-lokalita">
-          <Link href={path('lokalita', DEFAULT_LOCALE, locSlug)} className="pd-loc media-zoom">
+          <Link href={path('lokalita', locale, locSlug)} className="pd-loc media-zoom">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={loc.image.webp} alt={loc.image.alt} width={loc.image.width} height={loc.image.height} loading="lazy" />
             <span className="pd-loc__body">
@@ -322,7 +339,7 @@ export default async function DetailPage({
         <h2 id="pd-postup" className="pd-h2">Jak koupit právě tuhle nemovitost</h2>
         <StepCards items={BUY_STEPS.slice(3, 7)} cols={4} />
         <p className="pd-more">
-          <Link href={path('jakKoupit', DEFAULT_LOCALE)}>Celý postup koupě v Itálii krok za krokem</Link>
+          <Link href={path('jakKoupit', locale)}>Celý postup koupě v Itálii krok za krokem</Link>
         </p>
       </section>
 
@@ -346,7 +363,7 @@ export default async function DetailPage({
           fine={
             <>
               Údaje použiji jen k odpovědi na vaši poptávku a na webu se neukládají. Více v{' '}
-              <Link href={path('ochranaUdaju', DEFAULT_LOCALE)}>zásadách ochrany osobních údajů</Link>.
+              <Link href={path('ochranaUdaju', locale)}>zásadách ochrany osobních údajů</Link>.
             </>
           }
         />
@@ -357,7 +374,7 @@ export default async function DetailPage({
           <h2 id="pd-podobne" className="pd-h2">Podobné nemovitosti</h2>
           <div className="listing-grid pd-similar">
             {similar.map((x) => (
-              <PropertyCard key={x.id} p={x} locale={DEFAULT_LOCALE} />
+              <PropertyCard key={x.id} p={x} locale={locale} />
             ))}
           </div>
         </section>
@@ -372,4 +389,10 @@ export default async function DetailPage({
       </div>
     </article>
   );
+}
+
+export default async function LocalizedPage(props: Parameters<typeof DetailPage>[0]) {
+  const { locale } = await props.params;
+  if (!isLocale(locale)) notFound();
+  return localizeTree(await DetailPage(props), locale);
 }
